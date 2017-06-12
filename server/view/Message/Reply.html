@@ -1,0 +1,79 @@
+<layout name="html" src="/view/sub_layout.html" />
+
+<include name="js" src="/public/js/ueditor143/ueditor.config.js"/>
+<script type="text/javascript" src="/public/js/ueditor143/ueditor.all.js"></script>
+
+<table>
+    <tr>
+        <td>
+
+            <table style="width: 100%; border: 1px solid;border-color:#cccc77">
+                <tr>
+                    <td align="right" style="width: 100px;background-color:#00F7FF;  ">
+                        <div style="margin-top: 3px;margin-right: 5px; ">   <% this.model.nickname %>:</div>
+                    </td>
+                    <td style="background-color: #faf595">
+                        <div > <% this.model.title %> </div>
+                    </td>
+                    <td align="center" width="250px">
+                        <% this.model.createtime %>
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" align="right" style="width: 100px;background-color:#00F7FF; ">
+                        <div style="margin-top: 5px;margin-right: 5px;">  内容:
+                        </div>
+                    </td>
+                    <td colspan="2" style="background-color: #0bfad6">
+                        <% this.model.content %>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <form action="" method="post">
+                <table style="width: 100%; border: 1px solid;">
+                <tr>
+                    <td align="right" style="width: 100px;background-color:#00F7FF;  ">
+                        昵称:
+                    </td>
+                    <td>
+                        <input type="text"  name="nickname" maxlength="40" />
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right" style="width: 100px;background-color:#00F7FF;  ">
+                        回复内容:
+                    </td>
+                    <td>
+                        <textarea id="content" name="content"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                    </td>
+                    <td>
+                        <input type="hidden" nam="pid" value="<%this.model._seqid%>" />
+                        <input type="submit" value="保存"/>
+                    </td>
+                </tr>
+            </table>
+            </form>
+        </td>
+    </tr>
+</table>
+
+
+
+<script type="text/javascript">
+    /*        var ue = UE.getEditor('content');*/
+    var uploadURL = "/controller/UploadManager/ajaxUpload";
+    window.UEDITOR_HOME_URL = "/public/js/ueditor143/";
+    window.UEDITOR_CONFIG.initialFrameWidth = "100%";
+    window.UEDITOR_CONFIG.initialFrameHeight = 250;
+    window.UEDITOR_CONFIG.serverUrl = uploadURL;
+    UE.getEditor('content');
+</script>

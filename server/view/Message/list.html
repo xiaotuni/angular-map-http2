@@ -1,0 +1,38 @@
+<layout name="html" src="/view/sub_layout.html"/>
+<table style="width: 100%;border:1px solid;border-color:#112233;">
+    <tr>
+        <td>
+            <% for(var i=0 ; i< this.list.length;i++) {
+                var row = this.list[i];
+            %>
+            <table style="width: 100%; border: 1px solid;border-color:#cccc77">
+                <tr>
+                    <td align="right" style="width: 100px;background-color:#00F7FF;  ">
+                        <div style="margin-top: 3px;margin-right: 5px; ">   <% row.nickname %>:</div>
+                    </td>
+                    <td style="background-color: #faf595">
+                       <div > <% row.title %>
+                       </div>
+                    </td>
+                    <td align="center" width="250px">
+                        <% row.createtime %>
+                        [<a href="/Message/Reply/id/<%row._seqid%>">回复</a>]|[<a href="/Message/Edit/id/<%row._seqid%>">编辑</a>]
+                    </td>
+                </tr>
+                <tr>
+                    <td valign="top" align="right" style="width: 100px;background-color:#00F7FF; ">
+                          <div style="margin-top: 5px;margin-right: 5px;">  内容:
+                          </div>
+                    </td>
+                    <td colspan="2" style="background-color: #0bfad6">
+                        <% row.content %>
+                    </td>
+                </tr>
+            </table>
+                <% if( i !== this.list.length-1){ %>
+                    <hr style=" height:2px;border:none;border-top:2px dotted #185598;" />
+                <% } %>
+            <% } %>
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,65 @@
+/* 
+    Created on : 2015-10-8, 16:19:59
+    Author     : liaohb
+*/
+body,
+textare,
+input {
+    font: 14px "Threbuchet MS", sans-serif;
+}
+
+.login-div {
+    /*width: 100%;*/
+    text-align: center;
+    margin-top: 150px;
+    margin-left: 300px;
+    /*border: 1px solid #bbb;*/
+}
+
+.login-table {
+    width: 120px;
+    align: center;
+    valign: middle;
+    text-align: center;
+}
+
+.chat {
+    max-width: 380px;
+}
+
+.chat-messages,
+.chat-textarea,
+.chat-name {
+    border: 1px solid #bbb;
+    width: 100%;
+    padding: 10px;
+}
+
+.chat-messages {
+    height: 300px;
+    overflow-y: scroll;
+}
+
+.chat-message {
+    margin-bottom: 10px;
+}
+
+.chat-name {
+    border-bottom: 0;
+    margin: 0;
+}
+
+.chat-textarea {
+    margin: 0;
+    border-top: 0;
+    max-width: 100%;
+}
+
+.chat-status {
+    color: #bbb;
+}
+
+.chat-textarea,
+.chat-name {
+    outline: none;
+}

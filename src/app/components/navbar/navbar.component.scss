@@ -1,0 +1,19 @@
+.navbarCss {
+  padding: 5px;
+  // border: 1px solid #41f1ff;
+  background: blue;
+  color: #fff;
+  font-size: 20px;
+  display: flex;
+
+  .left,
+  .right {
+    width: 30px;
+  }
+  .center {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+

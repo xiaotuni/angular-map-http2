@@ -1,0 +1,20 @@
+.appCss {
+  padding: 5px;
+
+  .btnGoBack {
+    margin: 5px;
+    display: flex;
+
+    & > div {
+      padding: 5px 25px;
+      border: 1px solid #f5f5f5;
+      background: blue;
+      color: #fff;
+      border-radius: 5px;
+
+      &:hover {
+        background: #999;
+      }
+    }
+  }
+}

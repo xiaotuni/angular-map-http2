@@ -1,0 +1,33 @@
+<layout name="html" src="/view/sub_layout.html" />
+
+    大家好呀~~~
+    <div>
+        <table>
+            <tr><td>title</td><td>address</td><td>city</td><td>sex</td></tr>
+            <%
+                for(var  i = 0 ; i< this.posts.length ; i++) {
+                var post = this.posts[i];
+            %>
+            <tr>
+                <td><% post.title %></td>
+                <td><% post.address %></td>
+                <td><% post.city %></td>
+                <td><% post.sex %>
+                    [
+                    <% if(post.sex == '男') {%>
+                    1
+                    <% } else { %>
+                    0
+                    <% } %>]
+                </td>
+            </tr>
+            <% } %>
+        </table>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <center>aaaa</center>
+    </div>
+
+<include name="html" src="/view/footer.html" />

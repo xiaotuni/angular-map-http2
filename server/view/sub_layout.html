@@ -1,0 +1,17 @@
+<layout name="html" src="/view/main_layout.html"/>
+<link href="/public/css/test.css" rel="stylesheet" type="text/css"/>
+<div style="width: 100%;">
+    <h1>这是第二层模板,子模板套在主模板里面.</h1>
+    <table style="width: 100%;margin-top: 5px;border:1px solid">
+        <tr>
+            <td valign="top" width="200px" >
+                <include name="html" src="/view/head.html" />
+            </td>
+            <td>
+                <div >
+                    {__CONTENT__}
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

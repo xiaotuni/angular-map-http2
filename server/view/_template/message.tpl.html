@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><% this.title %></title>
+</head>
+<body>
+<div style="width:100%;text-align: center">
+    <div style="margin: 0 auto;width: 600px; height:220px;margin-top: 9%;font-size:20px; ">
+        <% if(1 ===this.flag){ %>
+       <span style="font-size: 40px"> :) ___ </span><span>  <% this.msg %></span>
+        <% } else { %>
+        <span style="font-size: 40px"> :( ___</span><span><% this.msg %></span>
+        <%}%>
+
+    </div>
+    <div style="text-align: center;width:100%;">
+        页面将在
+        [<span id="times" style="font-size: 16px;">
+                    <% this.times %>
+                </span>]秒 <a href="<% this.jump %>">返回</a> &nbsp;&nbsp;&nbsp;&nbsp; <span><a href="/">返回首页</a></span>
+    </div>
+</div>
+<script type="text/javascript">
+    var i = ( <% this.times %> -1);
+    var intervalid;
+    intervalid = setInterval("jump()", 1000);
+    function jump() {
+        if (0 === i) {
+        <% this.jump %>;
+            clearInterval(intervalid);
+        }
+        document.getElementById("times").innerHTML = i;
+        i--;
+    }
+</script>
+</body>
+</html>

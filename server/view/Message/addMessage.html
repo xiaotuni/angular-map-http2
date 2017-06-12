@@ -1,0 +1,16 @@
+<layout name="html" src="/view/sub_layout.html"/>
+
+<include name="js" src="/public/js/ueditor143/ueditor.config.js"/>
+<script type="text/javascript" src="/public/js/ueditor143/ueditor.all.js"></script>
+<form action="" method="post">
+    <include name="html" src="/view/Message/add.html" />
+</form>
+<script type="text/javascript">
+    /*        var ue = UE.getEditor('content');*/
+    var uploadURL = "/controller/UploadManager/ajaxUpload";
+    window.UEDITOR_HOME_URL = "/public/js/ueditor143/";
+    window.UEDITOR_CONFIG.initialFrameWidth = "100%";
+    window.UEDITOR_CONFIG.initialFrameHeight = 250;
+    window.UEDITOR_CONFIG.serverUrl = uploadURL;
+    UE.getEditor('content');
+</script>

@@ -1,0 +1,28 @@
+<layout name="html" src="/view/layout/LayoutBlog.html" />
+这里内容<br/>
+
+<NodejsBlock BlockInfo='{"Method":"Blog/user","DataSourceName":"list"}    '     >
+
+    <table>
+        <tr><td>username</td><td>truename</td></tr>
+        <% for(var i =0 ; i< this.list.length ; i++ ){
+        var row = this.list[i];
+        %>
+        <tr><td><%row.username%></td><td><%row.truename%></td></tr>
+        <%}%>
+    </table>
+</NodejsBlock>
+<hr/>
+这里内容<br/>
+
+<NodejsBlock BlockInfo="{'Method':'Blog/a','DataSourceName':'data'}" >
+
+    <table>
+        <tr><td>nickname</td><td>title</td></tr>
+        <% for(var i =0 ; i< this.data.length ; i++ ){
+        var row = this.data[i];
+        %>
+        <tr><td><%row.nickname%></td><td><%row.title%></td></tr>
+        <%}%>
+    </table>
+</NodejsBlock>

@@ -1,0 +1,76 @@
+<layout name="html" src="/view/sub_layout.html"/>
+
+<include name="css" src="/public/js/jquery-easyui/themes/default/easyui.css"/>
+<include name="css" src="/public/js/jquery-easyui/themes/icon.css"/>
+<include name="js" src="/public/js/jquery-easyui/jquery.min.js"/>
+<include name="js" src="/public/js/jquery-easyui/jquery.easyui.min.js"/>
+
+<meta charset="UTF-8">
+<title>用户注册</title>
+
+<script type="text/javascript">
+    function myformatter(date) {
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        return y + '-' + (m < 10 ? ('0' + m) : m) + '-' + (d < 10 ? ('0' + d) : d);
+    }
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = (s.split('-'));
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+
+    function checkValidate() {
+        return false;
+    }
+</script>
+
+<form action="" method="post">
+    <div>
+
+        <table>
+            <tr>
+                <td align="right">用户名:</td>
+                <td><input type="text" name="username" value="<% username%>"/></td>
+            </tr>
+
+            <tr>
+                <td align="right">真实名称:</td>
+                <td><input type="text" name="truename" value="<% truename %>"/></td>
+            </tr>
+            <tr>
+                <td align="right">出生日期:</td>
+                <td>
+                    <input name="birthday" value="<% birthday %>" class="easyui-datebox" data-options="formatter:myformatter,parser:myparser"/>
+                </td>
+            </tr>
+
+            <td align="right">性别:</td>
+            <td>
+                <label><input type="radio" name="sex" value="1" <% if(this.sex==1) { %> checked="checked" <% } %> >男 </label>
+                <label><input type="radio" name="sex" value="0" <% if(this.sex==0) { %> checked="checked" <% } %> >女 </label>
+            </td>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="hidden" name="_seqid" value="<% this._seqid%>" />
+                    <input type="hidden" name="_id" value="<% this._id%>" />
+                    <input type="reset"/> &nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="submit"/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>

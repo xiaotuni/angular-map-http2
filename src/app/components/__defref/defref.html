@@ -1,0 +1,18 @@
+<div class="appCss">
+  <div class="btnGoBack">
+    <div (click)="__GoBack()">后退</div>
+  </div>
+  <div class="routerDesc">router用法</div>
+  <div class="navber">
+    <div class="rouer">
+      <a routerLink="/member">member</a>
+      <a routerLink="/product">product</a>
+      <a routerLink="/mycomponent">mycomponent</a>
+    </div>
+    <div class="rouer">
+      <a [routerLink]="['/member']">member</a>
+      <a [routerLink]="['/product']">product</a>
+      <a [routerLink]="['/mycomponent']">mycomponent</a>
+    </div>
+  </div>
+</div>

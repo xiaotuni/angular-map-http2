@@ -1,0 +1,47 @@
+<layout name="html" src="/view/sub_layout.html" />
+<div>
+    <table width="100%">
+        <tr>
+            <td>用户名</td><td>真实名称</td><td>出生日期</td><td>性别</td><td>操作</td>
+        </tr>
+        <%
+        for(var  i = 0 ; i< this.Users.length ; i++) {
+        var post = this.Users[i];
+        %>
+        <tr>
+            <td><% post.username %></td>
+            <td><% post.truename %></td>
+            <td><% post.birthday %></td>
+            <td>
+                <% if(post.sex == '1') {%>
+                男
+                <% } else { %>
+                女
+                <% } %>
+            </td>
+            <td>
+               [<a href="/User/delete?id=<%post._seqid%>" onclick="return checkDelete(this);">删除</a> ] |
+                [<a href="/User/edit?id=<%post._seqid%>" onclick='return testConfig(this);' >编辑</a> ]
+            </td>
+        </tr>
+        <% } %>
+    </table>
+    <script>
+        function checkDelete(ctrl){
+            if(confirm("您真的删除当前选中的记录吗?")){
+                return true;
+            }
+            return false;
+        }
+        function testConfig(ctr){
+            if(confirm("您真的编辑当前记录吗?")){
+                return true;
+            }
+            return false;
+        }
+    </script>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+</div>

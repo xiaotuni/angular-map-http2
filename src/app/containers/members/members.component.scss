@@ -1,0 +1,27 @@
+.memberCss {
+  .bind1 {
+    padding: 5px;
+    border: 1px solid #222;
+    display: flex;
+    align-items: center;
+
+    .id {
+      font-size: 18px;
+      padding: 5px;
+    }
+
+    .name {
+      color: blue;
+      padding-left: 15px;
+    }
+  }
+
+  .bind2 {
+    margin-top: 5px;
+
+    .rowInfo {
+      margin-top: 2px;
+      @extend .bind1;
+    }
+  }
+}
