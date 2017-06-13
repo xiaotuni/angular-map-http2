@@ -1,5 +1,5 @@
 <div class="appCss">
-  <div class="btnGoBack">
+  <!--<div class="btnGoBack">
     <div (click)="__GoBack()">后退</div>
   </div>
   <div class="routerDesc">router用法</div>
@@ -13,6 +13,12 @@
       <a [routerLink]="['/member']">member</a>
       <a [routerLink]="['/product']">product</a>
       <a [routerLink]="['/mycomponent']">mycomponent</a>
+    </div>
+  </div>-->
+
+  <div class="components">
+    <div *ngFor="let item of collection">
+      <div (click)="__GoToPage(item)" >{{item.Title}}</div>
     </div>
   </div>
 </div>

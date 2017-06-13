@@ -10,7 +10,9 @@ import { ProductComponent } from './product/product.component';
 import { MembersComponent } from './members/members.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { HomeComponent } from './home/home.component';
-const __Router = { HomeComponent, MyComponentComponent, MembersComponent, ProductComponent, NotFoundComponent };
+import { BaiduMapComponent } from './baidu-map/baidu-map';
+
+const __Router = { BaiduMapComponent, HomeComponent, MyComponentComponent, MembersComponent, ProductComponent, NotFoundComponent };
 const __Keys = Object.keys(__Router);
 
 const __PageList = [];

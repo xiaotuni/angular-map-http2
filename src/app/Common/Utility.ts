@@ -17,17 +17,6 @@ export class Utility {
   }
 
   /**
-   * 实例
-   * @returns {*}
-   */
-  // static instance() {
-  //   if (this.__Instance === null || typeof this.__Instance === 'undefined') {
-  //     this.__Instance = new this();
-  //   }
-  //   return this.__Instance;
-  // }
-
-  /**
    * 常量
    * 
    * @static
@@ -44,6 +33,18 @@ export class Utility {
     },
     UrlItem: {
       GoBack: 'XTN_GOBACK',
+      Home: 'home',
+      BaiduMap: 'baidumap',
+      Member: 'member',
+      MyComponent: 'mycomponent',
+      Product: 'product',
+    },
+    UrlTitle: {
+      '/home': { Title: '首页', },
+      '/baidumap': { Title: '百度地图', },
+      '/member': { Title: '成员', },
+      '/mycomponent': { Title: '我的组件', },
+      '/product': { Title: '产品', },
     }
   };
 
@@ -56,7 +57,7 @@ export class Utility {
   static $actionSheet(msg) {
 
   }
-  
+
   /**
    * 保存内容
    * 
@@ -105,7 +106,6 @@ export class Utility {
       window.localStorage.removeItem(key);
     }
   }
-
 
   /**
    * go to page

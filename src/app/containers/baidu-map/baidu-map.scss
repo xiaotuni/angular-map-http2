@@ -1,0 +1,31 @@
+.baiduMapCss {
+  .allMap {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+
+    > div {
+      position: fixed;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+    }
+  }
+
+  .groupBtn {
+    position: relative;
+    z-index: 999;
+    display: flex;
+    // padding: 0 10px;
+
+    .btn {
+      background: aliceblue;
+      padding: 10px;
+      border-right: 1px solid #f5e5e5;
+
+    }
+  }
+}
