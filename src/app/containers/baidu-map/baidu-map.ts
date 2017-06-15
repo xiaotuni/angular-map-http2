@@ -144,15 +144,158 @@ export class BaiduMapComponent extends BaseComponent implements OnInit, AfterCon
       self.__Map.addOverlay(marker);
     }
     __AddMarker(point, 0);
-    // // 随机向地图添加10个标注    
-    // var bounds = this.__Map.getBounds();
-    // var lngSpan = bounds.Fe - bounds.Ke;
-    // var latSpan = bounds.Ge - bounds.Le;
-    // for (var i = 1; i < 10; i++) {
-    //   var point1 = new this.BMap.Point(bounds.Ke + lngSpan * (Math.random() * 0.7 + 0.15),
-    //     bounds.Le + latSpan * (Math.random() * 0.7 + 0.15));
-    //   __AddMarker(point1, i);
-    // }
   }
 
+  AddInfomation() {
+    if (!this.BMap || !this.__Map) {
+      return;
+    }
+    const opts = {
+      // width: 50,     // 信息窗口宽度    
+      // height: 30,     // 信息窗口高度    
+      title: "Hello"  // 信息窗口标题   
+    }
+    const infoWindow = new this.BMap.InfoWindow("World", opts);  // 创建信息窗口对象    
+    this.__Map.openInfoWindow(infoWindow, this.__Map.getCenter());      // 打开信息窗口
+  }
+
+  AddPolyline() {
+    if (!this.BMap || !this.__Map) {
+      return;
+    }
+    const polyline = new this.BMap.Polyline([
+      new this.BMap.Point(116.380734, 39.913616),
+      new this.BMap.Point(116.434057, 39.914944)
+    ], { strokeColor: "red", strokeWeight: 6, strokeOpacity: 1 });
+    this.__Map.addOverlay(polyline);
+  }
+
+  AddPosition() {
+    if (!this.BMap || !this.__Map) {
+      return;
+    }
+    const _begin = new this.BMap.Point(116.380734, 39.913616);
+    const _end = new this.BMap.Point(116.434057, 39.914944);
+    // 添加 maker
+    const _Marker_begin = new this.BMap.Marker(_begin);
+    const _Marker_end = new this.BMap.Marker(_end);
+
+    //创建驾车实例
+    const driving = new this.BMap.DrivingRoute(this.__Map);
+    //第一个驾车搜索
+    driving.search(_begin, _end);
+    const BMap = this.BMap;
+    const map = this.__Map;
+
+    // marker
+    map.addOverlay(_Marker_begin);
+    map.addOverlay(_Marker_end);
+
+    // label
+    const lab_begin = new BMap.Label("起点", { position: _Marker_begin });        //创建3个label
+    const lab_end = new BMap.Label("终点", { position: _Marker_begin });        //创建3个label
+    map.addOverlay(lab_begin);
+    map.addOverlay(lab_end);
+
+
+    // driving.setSearchCompleteCallback(function (e) {
+    //   //通过驾车实例，获得一系列点的数组
+    //   const pts = driving.getResults().getPlan(0).getRoute(0).getPath();
+    //   console.log(pts);
+    //   // 路线。
+    //   const polyline = new BMap.Polyline(pts);
+    //   map.addOverlay(polyline);
+
+
+
+    //   setTimeout(function () {
+    //     //调整到最佳视野
+    //     map.setViewport([_begin, _end]);
+    //   }, 1000);
+
+    // });
+  }
+
+  AddDefinedOverlay() {
+    if (!this.BMap) {
+      return;
+    }
+
+    function SquareOverlay(center, length, color) {
+      this._center = center;
+      this._length = length;
+      this._color = color;
+    };
+    SquareOverlay.prototype = new this.BMap.Overlay();// { a: 123, b: 11 }
+    SquareOverlay.prototype.initialize = function (map) {
+      // 保存map对象实例   
+      this._map = map;
+      // 创建div元素，作为自定义覆盖物的容器   
+      var div = document.createElement("div");
+      div.style.position = "absolute";
+      // 可以根据参数设置元素外观   
+      div.style.width = this._length + "px";
+      div.style.height = this._length + "px";
+      div.style.background = this._color;
+      // 将div添加到覆盖物容器中   
+      map.getPanes().markerPane.appendChild(div);
+      // 保存div实例   
+      this._div = div;
+      // 需要将div元素作为方法的返回值，当调用该覆盖物的show、   
+      // hide方法，或者对覆盖物进行移除时，API都将操作此元素。   
+      return div;
+    }
+
+    // 实现绘制方法   
+    SquareOverlay.prototype.draw = function () {
+      // 根据地理坐标转换为像素坐标，并设置给容器    
+      var position = this._map.pointToOverlayPixel(this._center);
+      this._div.style.left = position.x - this._length / 2 + "px";
+      this._div.style.top = position.y - this._length / 2 + "px";
+    }
+    // 实现显示方法    
+    SquareOverlay.prototype.show = function () {
+      if (this._div) {
+        this._div.style.display = "";
+      }
+    }
+    // 实现隐藏方法  
+    SquareOverlay.prototype.hide = function () {
+      if (this._div) {
+        this._div.style.display = "none";
+      }
+    }
+
+    // 添加自定义方法   
+    SquareOverlay.prototype.toggle = function () {
+      if (this._div) {
+        if (this._div.style.display == "") {
+          this.hide();
+        }
+        else {
+          this.show();
+        }
+      }
+    }
+    SquareOverlay.prototype.addEventListener = function (event, fun) {
+      this._div['on' + event] = fun;
+    }
+
+    // 添加自定义覆盖物   
+    var mySquare = new SquareOverlay(this.__Map.getCenter(), 100, "red");
+    this.__Map.addOverlay(mySquare);
+
+    // 事件添加不上去。
+    mySquare.addEventListener("click", function (e) {
+      console.log('SquareOverlay', e);
+    });
+    mySquare.addEventListener("mousemover", function (e) {
+      console.log('mousemover', e);
+    });
+    mySquare.onclick = function (e) {
+      console.log('mousemover', e);
+    }
+    mySquare.addEventListener('click', function (e) { console.log('22222222'); });
+    mySquare.V.addEventListener('click', function (e) { console.log('3333333333'); });
+  }
 }
