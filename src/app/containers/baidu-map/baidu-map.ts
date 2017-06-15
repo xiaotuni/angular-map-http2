@@ -108,7 +108,7 @@ export class BaiduMapComponent extends BaseComponent implements OnInit, AfterCon
   }
 
   AddMarker() {
-    if (this.BMap || this.__CurrentPosition) {
+    if (!this.BMap || !this.__CurrentPosition) {
       return;
     }
     const { point } = this.__CurrentPosition;
@@ -117,30 +117,42 @@ export class BaiduMapComponent extends BaseComponent implements OnInit, AfterCon
     const self = this;
 
     const __AddMarker = (point, index) => {  // 创建图标对象   
-      const myIcon = new self.BMap.Icon("markers.png", new self.BMap.Size(23, 25), {
+      const myIcon = new self.BMap.Icon("/assets/img/car-icon.png", new self.BMap.Size(32, 32), {
         // 指定定位位置。   
         // 当标注显示在地图上时，其所指向的地理位置距离图标左上    
         // 角各偏移10像素和25像素。您可以看到在本例中该位置即是   
         // 图标中央下端的尖角位置。    
-        offset: new self.BMap.Size(10, 25),
+        offset: new self.BMap.Size(32, 32),
         // 设置图片偏移。   
         // 当您需要从一幅较大的图片中截取某部分作为标注图标时，您   
         // 需要指定大图的偏移位置，此做法与css sprites技术类似。    
-        imageOffset: new self.BMap.Size(0, 0 - index * 25)   // 设置图片偏移    
+        imageOffset: new self.BMap.Size(0, 0 - index * 32)   // 设置图片偏移    
       });
       // 创建标注对象并添加到地图   
-      var marker = new self.BMap.Marker(point, { icon: myIcon });
+      const marker = new self.BMap.Marker(point, { icon: myIcon });
+
+      // 点击图标事件
+      marker.addEventListener("click", function (e) {
+        console.log('点击图标啦', e);
+      });
+
+      // 让图标可以进行拖拽。
+      marker.enableDragging();
+      marker.addEventListener("dragend", function (e) {
+        console.log("当前位置：" + e.point.lng + ", " + e.point.lat);
+      })
       self.__Map.addOverlay(marker);
     }
-    // 随机向地图添加10个标注    
-    var bounds = this.__Map.getBounds();
-    var lngSpan = bounds.maxX - bounds.minX;
-    var latSpan = bounds.maxY - bounds.minY;
-    for (var i = 0; i < 10; i++) {
-      var point1 = new this.BMap.Point(bounds.minX + lngSpan * (Math.random() * 0.7 + 0.15),
-        bounds.minY + latSpan * (Math.random() * 0.7 + 0.15));
-      addMarker(point, i);
-    }
+    __AddMarker(point, 0);
+    // // 随机向地图添加10个标注    
+    // var bounds = this.__Map.getBounds();
+    // var lngSpan = bounds.Fe - bounds.Ke;
+    // var latSpan = bounds.Ge - bounds.Le;
+    // for (var i = 1; i < 10; i++) {
+    //   var point1 = new this.BMap.Point(bounds.Ke + lngSpan * (Math.random() * 0.7 + 0.15),
+    //     bounds.Le + latSpan * (Math.random() * 0.7 + 0.15));
+    //   __AddMarker(point1, i);
+    // }
   }
 
 }
