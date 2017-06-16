@@ -1,17 +1,24 @@
 <div class="loginCss">
-  <div class="a"></div>
+  <div class="top"></div>
   <div class="ctrl">
-    <div><input type="text" placeholder="Enter username"></div>
-    <div><input type="password" placeholder="Enter password"></div>
+    <div class="username">
+      <input type="text" placeholder="Enter username" required [(ngModel)]="UserInfo.username">
+    </div>
+    <div class="password">
+      <input type="password" placeholder="Enter password" required [(ngModel)]="UserInfo.password">
+    </div>
+  </div>
 
-    <div>
-      <div class="btn">
+  <div class="operator">
+    <div class="btn" (click)="submit()">
+      <div class="login">
         login
       </div>
-      <div class="btn">
-        forget password
+    </div>
+    <div class="btn">
+      <div class="forget" (click)="forgetPassword()" >
+        forget
       </div>
     </div>
   </div>
-  <div class="a"></div>
 </div>

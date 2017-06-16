@@ -1,17 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, Input } from '@angular/core';
 import { Utility } from '../Core';
-
 @Component({
-  moduleId: module.id,
-  selector: 'app-mamager-login',
+  selector: 'xtn-manage-login',
   templateUrl: './login.html',
-  styleUrls: ['./login.scss'],
+  styleUrls: ['./login.scss']
 })
 export class LoginComponent implements OnInit {
+  public UserInfo: any;
   constructor() {
-
+    this.UserInfo = { username: 'admin', password: 'admin@163.com' };
   }
-  ngOnInit(): void {
 
+  ngOnInit() {
+  }
+
+  submit() {
+    console.log('------------', this.UserInfo);
+  }
+
+  forgetPassword() {
+    console.log('forgetPassword');
   }
 }
