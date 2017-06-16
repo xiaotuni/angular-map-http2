@@ -16,6 +16,8 @@ export class BaiduMapComponent extends BaseComponent implements OnInit, AfterCon
   __Map: any;
   __CurrentPosition: any;
   __ZoomControl: Object = new Object();
+  __Driving: any;
+
   constructor(private el: ElementRef) {
     super();
   }
@@ -170,50 +172,84 @@ export class BaiduMapComponent extends BaseComponent implements OnInit, AfterCon
     this.__Map.addOverlay(polyline);
   }
 
+  __PositionList: Array<any> = new Array<any>();
+  __PositionIndex: number = 3;
+  __Polyline: any;
+
   AddPosition() {
     if (!this.BMap || !this.__Map) {
       return;
     }
+    const BMap = this.BMap;
+    const map = this.__Map;
     const _begin = new this.BMap.Point(116.380734, 39.913616);
     const _end = new this.BMap.Point(116.434057, 39.914944);
-    // 添加 maker
-    const _Marker_begin = new this.BMap.Marker(_begin);
-    const _Marker_end = new this.BMap.Marker(_end);
 
     //创建驾车实例
     const driving = new this.BMap.DrivingRoute(this.__Map);
     //第一个驾车搜索
     driving.search(_begin, _end);
+
+    const __self = this;
+    driving.setSearchCompleteCallback(function (e) {
+      // 添加 maker
+      const _Marker_begin = new BMap.Marker(_begin);
+      const _Marker_end = new BMap.Marker(_end);
+      map.addOverlay(_Marker_begin);
+      map.addOverlay(_Marker_end);
+      // label
+      const lab_begin = new BMap.Label("起点", { offset: new BMap.Size(-30, -60), position: _begin });
+      const lab_end = new BMap.Label("终点", { position: _end });
+      map.addOverlay(lab_begin);
+      map.addOverlay(lab_end);
+
+      //通过驾车实例，获得一系列点的数组
+      const pts = driving.getResults().getPlan(0).getRoute(0).getPath();
+      __self.__PositionList = pts;
+      // 路线。
+      const polyline = new BMap.Polyline(pts);
+      __self.__Polyline = polyline;
+      map.addOverlay(polyline);
+      setTimeout(function () {
+        //调整到最佳视野
+        map.setViewport([_begin, _end]);
+        __self.__MovePosition(pts[0], _end);
+        map.removeOverlay(_Marker_begin);
+        map.removeOverlay(lab_begin);
+        // setTimeout(() => {
+        //   map.removeOverlay(polyline);
+        // }, 500);
+      }, 1000);
+    });
+    this.__Driving = driving;
+  }
+
+  __MovePosition(_begin, _end) {
     const BMap = this.BMap;
     const map = this.__Map;
-
-    // marker
+    // 添加 maker
+    const _Marker_begin = new BMap.Marker(_begin);
     map.addOverlay(_Marker_begin);
-    map.addOverlay(_Marker_end);
-
     // label
-    const lab_begin = new BMap.Label("起点", { position: _Marker_begin });        //创建3个label
-    const lab_end = new BMap.Label("终点", { position: _Marker_begin });        //创建3个label
+    const lab_begin = new BMap.Label("当前位置", { offset: new BMap.Size(-30, -40), position: _begin });
     map.addOverlay(lab_begin);
-    map.addOverlay(lab_end);
+    this.__PositionList.splice(0, this.__PositionIndex);
+    // const polyline = new BMap.Polyline(this.__PositionList);
+    // map.addOverlay(polyline);
+    this.__Polyline.setPath(this.__PositionList);
 
-
-    // driving.setSearchCompleteCallback(function (e) {
-    //   //通过驾车实例，获得一系列点的数组
-    //   const pts = driving.getResults().getPlan(0).getRoute(0).getPath();
-    //   console.log(pts);
-    //   // 路线。
-    //   const polyline = new BMap.Polyline(pts);
-    //   map.addOverlay(polyline);
-
-
-
-    //   setTimeout(function () {
-    //     //调整到最佳视野
-    //     map.setViewport([_begin, _end]);
-    //   }, 1000);
-
-    // });
+    // 只移动位置就可以了。
+    setTimeout(() => {
+      if (this.__PositionList.length > 0) {
+        this.__MovePosition(this.__PositionList[0], _end);
+        map.removeOverlay(_Marker_begin);
+        map.removeOverlay(lab_begin);
+        // setTimeout(() => {
+        // }, 1000);
+      } else {
+        map.removeOverlay(this.__Polyline);
+      }
+    }, 1000);
   }
 
   AddDefinedOverlay() {
@@ -299,3 +335,42 @@ export class BaiduMapComponent extends BaseComponent implements OnInit, AfterCon
     mySquare.V.addEventListener('click', function (e) { console.log('3333333333'); });
   }
 }
+
+
+// //创建驾车实例
+    // const driving = new this.BMap.DrivingRoute(this.__Map);
+    // //第一个驾车搜索
+    // driving.search(_begin, _end);
+    // const __self = this;
+    // driving.setSearchCompleteCallback(function (e) {
+    //   try {
+    //     //通过驾车实例，获得一系列点的数组
+    //     const pts = driving.getResults().getPlan(0).getRoute(0).getPath();
+    //     console.log(pts.length);
+    //     // 添加 maker
+    //     const _Marker_begin = new BMap.Marker(_begin);
+    //     map.addOverlay(_Marker_begin);
+    //     // label
+    //     const lab_begin = new BMap.Label("起点", { position: _begin });
+    //     map.addOverlay(lab_begin);
+    //     if (pts.length > 5) {
+    //       // 路线。
+    //       const polyline = new BMap.Polyline(pts);
+    //       map.addOverlay(polyline);
+    //       setTimeout(function () {
+    //         try {
+    //           //调整到最佳视野
+    //           map.setViewport([_begin, _end]);
+    //           __self.__MovePosition(pts.length > 10 ? pts[9] : pts[pts.length - 1], _end);
+    //           map.removeOverlay(_Marker_begin);
+    //           map.removeOverlay(lab_begin);
+    //           map.removeOverlay(polyline);
+    //         } catch (ex1) {
+    //           console.log('1111', ex1);
+    //         }
+    //       }, 1000);
+    //     }
+    //   } catch (ex) {
+    //     console.log(ex);
+    //   }
+    // });
