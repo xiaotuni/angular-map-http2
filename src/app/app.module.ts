@@ -5,12 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppRouting } from './app.router';
-import { CommonComponent, RouterComponent, PageComponentList } from './containers/Core';
+import { CommonComponent, PageComponentList } from './containers/Core';
+import { ManagerPageComponentList } from './managers/Core';
+
 import { AppComponent } from './app.component';
 const Routers = AppRouting.Router();
 
 @NgModule({
-  declarations: [AppComponent, PageComponentList, CommonComponent],
+  declarations: [AppComponent, PageComponentList, ManagerPageComponentList, CommonComponent],
   imports: [
     BrowserAnimationsModule, BrowserModule, FormsModule, HttpModule, Routers
   ],

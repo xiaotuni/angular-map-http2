@@ -11,7 +11,7 @@ var Comm = require("./commonMethod");
  * @type {string}
  * @private
  */
-var _databaseName = "MessageBook";
+var _databaseName = "TravelTogether";
 /**
  * 数据库连接字符串
  * @type {string}
