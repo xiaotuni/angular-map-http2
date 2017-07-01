@@ -37,19 +37,16 @@ var WebApi = {
     // console.log(opt);
     const { GET } = opt;
     const { pageIndex, pageSize } = GET;
-    console.log(pageIndex, pageSize);
+    console.log('(pageIndex,pageSize):(', pageIndex, pageSize, ')');
     const _index = Number(pageIndex) || 0;
     const _size = Number(pageSize) || 10;
 
     // console.log(_index, _size, _index * _size, (_index + 1) * _size);
     // console.log('----------------');
     for (var i = _index * _size; i < (_index + 1) * _size; i++) {
-      result.push({
-        Id: i,
-        Guid: newGuid(),
-        DateTime: CurrentTime + Math.round(Number(Math.random() * 10000))
-      });
+      result.push({ Id: i, Guid: newGuid(), DateTime: CurrentTime + Math.round(Number(Math.random() * 10000)) });
     }
+    res.setHeader('token', new Date().getTime());
     res.SendJSON(result);
   },
   saveUser: function (req, res, opt) {
