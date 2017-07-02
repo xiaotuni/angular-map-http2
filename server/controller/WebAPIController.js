@@ -58,6 +58,9 @@ var WebApi = {
   },
 
   userLogin: function (req, res, opt) {
+    const {POST} = opt;
+    console.log(JSON.stringify(opt));
+    
     const __mysql = MySqlHelper;
     console.log(__mysql);
 

@@ -6,7 +6,7 @@ import { HttpModule } from '@angular/http';
 
 import { AppRouting } from './app.router';
 import { CommonComponent, PageComponentList } from './containers/Core';
-import { ManagerPageComponentList } from './managers/Core';
+import { ManagerPageComponentList } from './managers/Index';
 
 import { AppComponent } from './app.component';
 const Routers = AppRouting.Router();

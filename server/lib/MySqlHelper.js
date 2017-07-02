@@ -27,12 +27,17 @@ exports.MySqlHelper = {
   __Error(err, msg) {
     err({ code: 500, msg });
   },
-  Query(success, error) {
+  Query(sql, success, error) {
     const conn = this.pool();
     if (!conn) {
+      this.__Error(error, '数据库接连失败...');
       return;
     }
-    conn.query('select * from xtn_userinfo', (err, result, fields) => {
+    if (!sql) {
+      this.__Error(error, '请输入要查询的SQL语句...');
+      return;
+    }
+    conn.query(sql, (err, result, fields) => {
       if (err) {
         error(err);
       }
@@ -43,6 +48,10 @@ exports.MySqlHelper = {
     const conn = this.pool();
     if (!conn) {
       this.__Error(error, '数据库连接失败...');
+      return;
+    }
+    if (!sql) {
+      this.__Error(error, '请输入要查询的SQL语句...');
       return;
     }
     conn.query(sql, (err, result, fields) => {
