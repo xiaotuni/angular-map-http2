@@ -3,6 +3,7 @@
  * File name By BlogController.js
  */
 var Comm = require("./../lib/commonMethod");
+var MySqlHelper = require("./../lib/MySqlHelper").MySqlHelper;
 
 function newGuid() {
   var guid = "";
@@ -55,6 +56,22 @@ var WebApi = {
   saveUser: function (req, res, opt) {
     res.SendErrorMsg({ code: 401, msg: '111输入的信息错误了' });
   },
+
+  userLogin: function (req, res, opt) {
+    const __mysql = MySqlHelper;
+    console.log(__mysql);
+
+    MySqlHelper.QueryOne('select * from xtn_userinfo', (fields, result) => {
+      console.log(JSON.stringify(result));
+      res.SendJSON(result);
+    }, (err) => {
+      try {
+        res.SendErrorMsg({ code: 500, msg: '未知错误' });
+        console.log(err);
+      }
+      catch (ex) { }
+    });
+  }
 }
 
 exports.WebApi = WebApi;

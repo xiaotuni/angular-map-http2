@@ -14,7 +14,8 @@
         "${workspaceRoot}/out/**/*.js"
       ],
       "env": {
-        "PORT": "30081"
+        "PORT": "30001",
+        "DEVPORT": "30081"
       }
     }
   ]

@@ -28,7 +28,8 @@
       "env": {
         "NODE_PATH": "./server",
         "NODE_ENV": "production",
-        "PORT": 30080,
+        "PORT": 30000,
+        "DEVPORT": 30080,
         "APIPORT": 30081
       }
     }
@@ -54,7 +55,9 @@
     "@types/jasmine": "2.5.38",
     "@types/node": "~6.0.60",
     "better-npm-run": "0.0.15",
+    "code-point-at": "^1.1.0",
     "codelyzer": "~2.0.0",
+    "concurrent": "^0.3.2",
     "concurrently": "^3.4.0",
     "fibers": "^2.0.0",
     "http2": "^3.3.6",
@@ -67,7 +70,9 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "mongodb": "^2.2.28",
+    "mysql": "^2.13.0",
     "protractor": "~5.1.0",
+    "querystringify": "^1.0.0",
     "superagent": "^3.5.2",
     "ts-node": "~2.0.0",
     "tslint": "~4.5.0",

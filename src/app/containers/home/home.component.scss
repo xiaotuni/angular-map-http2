@@ -1,0 +1,28 @@
+.homeCss {
+  padding: 5px 1px;
+
+  .apiResult {
+    border: 1px solid #f5f5f5;
+    .row {
+      border: 1px solid #f5f5f5;
+      display: flex;
+      padding: 5px 0px;
+      margin-bottom: 5px;
+      &:hover {
+        background: blue;
+        color: #fff;
+      }
+      .id,
+      .datetime {
+        white-space: nowrap;
+      }
+
+      .guid {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin: 0px 5px;
+      }
+    }
+  }
+}
