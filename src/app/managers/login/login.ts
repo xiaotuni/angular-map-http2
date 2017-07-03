@@ -18,9 +18,13 @@ export class LoginComponent implements OnInit {
   }
 
   submit() {
-    console.log('------------', this.UserInfo);
-    console.log(CryptoJS.MD5('xiaotuni').toString());
-    this.sHelper.Login(this.UserInfo);
+    // console.log(CryptoJS.MD5('xiaotuni').toString());
+    const data = Object.assign({}, this.UserInfo);
+    data.password = CryptoJS.MD5(data.password).toString();
+    const __self = this;
+    this.sHelper.Login(data).then(() => {
+      console.log(__self.sHelper.UserInfo);
+    });
   }
 
   forgetPassword() {

@@ -13,6 +13,7 @@ export default function clientMiddleware(client) {
       });
       return results;
     }).catch((error) => {
+      console.log(error);
     });
   };
 

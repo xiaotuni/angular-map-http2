@@ -29,9 +29,11 @@ function route(response, request) {
     if (_pathname.indexOf('/WebApi/') >= 0) {
       response.setHeader("Content-Type", "application/json;charset=utf-8");
       response.setHeader("Access-Control-Allow-Origin", "*");
-      response.setHeader("access-control-allow-headers", "x-pingother, origin, x-requested-with, content-type, accept, xiaotuni");
+      response.setHeader("access-control-allow-headers", "x-pingother, origin, x-requested-with, content-type, accept, xiaotuni,systemdate");
       response.setHeader("access-control-allow-methods", "GET, POST, PUT, DELETE, OPTIONS");
-      response.setHeader("Access-Control-Expose-Headers", "date, token");
+      response.setHeader("Access-Control-Expose-Headers", "date, token,systemdate");
+      response.setHeader('systemdate', new Date().getTime());
+
       const { method } = request;
       if (method && method === 'OPTIONS') {
         response.end();

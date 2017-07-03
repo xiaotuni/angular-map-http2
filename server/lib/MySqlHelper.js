@@ -12,15 +12,15 @@ exports.MySqlHelper = {
         password: 'xiaotuni',
         database: 'nodejs'
       });
-      this.__pool.on('acquire', (conn) => {
-        console.log('当前连接线程为：%d', conn.threadId);
-      });
-      this.__pool.on('connection', () => {
-        console.log('connection...');
-      });
-      this.__pool.on('enqueue', () => {
-        console.log('等待可用连接...');
-      });
+      // this.__pool.on('acquire', (conn) => {
+      //   console.log('当前连接线程为：%d', conn.threadId);
+      // });
+      // this.__pool.on('connection', () => {
+      //   console.log('connection...');
+      // });
+      // this.__pool.on('enqueue', () => {
+      //   console.log('等待可用连接...');
+      // });
     }
     return this.__pool;
   },

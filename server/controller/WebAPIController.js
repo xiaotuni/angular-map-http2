@@ -3,6 +3,8 @@
  * File name By BlogController.js
  */
 var Comm = require("./../lib/commonMethod");
+var Utility = Comm.Comm;
+var Log = Comm.Log;
 var MySqlHelper = require("./../lib/MySqlHelper").MySqlHelper;
 
 function newGuid() {
@@ -55,15 +57,22 @@ var WebApi = {
   },
 
   userLogin: function (req, res, opt) {
-    const {POST} = opt;
-    console.log(JSON.stringify(opt));
-    
+    const { POST } = opt;
+    const { username, password } = POST || {};
+    // console.log(JSON.stringify(opt));
+
     const __mysql = MySqlHelper;
     console.log(__mysql);
+    const sql = Utility.format("select * from xtn_userinfo t where t.username = '{0}' and t.password = '{1}'", username, password);
+    Log.Print(sql);
 
-    MySqlHelper.QueryOne('select * from xtn_userinfo', (fields, result) => {
-      console.log(JSON.stringify(result));
-      res.SendJSON(result);
+    MySqlHelper.QueryOne(sql, (fields, result) => {
+      // console.log(JSON.stringify(fields));
+      if (Object.keys(result).length === 0) {
+        res.SendErrorMsg({ code: 500, msg: '用户名或密码错误' });
+      } else {
+        res.SendJSON(result);
+      }
     }, (err) => {
       try {
         res.SendErrorMsg({ code: 500, msg: '未知错误' });

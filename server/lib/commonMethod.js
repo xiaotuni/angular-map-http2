@@ -25,6 +25,13 @@ var _encrypt_key = "xiaotuni@liaohaibing!@#$%^&*()";
  * @type {{ToMD5: Function, ToSHA1: Function, ToEncryptAES: Function, ToDecryptAES: Function, IsArray: Function, IsString: Function, IsDate: Function, IsFunction: Function, IsObject: Function, IsNumber: Function}}
  */
 var Comm = {
+	format: function (format) {
+		const args = Array.prototype.slice.call(arguments, 1);
+		return format.replace(/{(\d+)}/g, (match, number) => {
+			return typeof args[number] !== 'undefined'
+				? args[number] : match;
+		});
+	},
 	/**
 	 * 获取当前时间
 	 * @returns {*}

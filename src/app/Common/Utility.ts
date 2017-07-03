@@ -145,4 +145,20 @@ export class Utility {
     this.$SetContent(this.$ConstItem.AppIsGoBack, true, false);
     this.$ToPage(this.$ConstItem.UrlItem.GoBack, {});
   }
+
+  /**
+  * 格式化
+  * @example
+  * format('{0} is dead, but {1} is alive! {0} {2}', 'ASP', 'ASP.NET');
+  * ASP is dead, but ASP.NET is alive! ASP {2}
+  * @param format
+  * @returns {*}
+  */
+  static $format(format) {
+    const args = Array.prototype.slice.call(arguments, 1);
+    return format.replace(/{(\d+)}/g, (match, number) => {
+      return typeof args[number] !== 'undefined'
+        ? args[number] : match;
+    });
+  }
 }
