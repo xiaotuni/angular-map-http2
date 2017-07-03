@@ -1,8 +1,8 @@
-import http from 'http';
-import util from 'util';
-import queryString from 'querystring';
-import formidable from 'formidable';
-import url from 'url';
+const http = require('http');
+const util = require('util');
+const queryString = require('querystring');
+const formidable = require('formidable');
+const url = require('url');
 
 class server {
   constructor() { }
@@ -20,6 +20,7 @@ class server {
       r.parseFormDataInfo();
       r.processRequest();
     }).listen(port || 10000);
+    console.log('http://127.0.0.1:%d', port || 10000)
   }
 }
 
@@ -30,29 +31,33 @@ class routes {
   }
 
   initHeader() {
-    response.setHeader("Content-Type", "application/json;charset=utf-8");
-    response.setHeader("Access-Control-Allow-Origin", "*");
-    response.setHeader("access-control-allow-headers", "x-pingother, origin, x-requested-with, content-type, accept, xiaotuni,systemdate");
-    response.setHeader("access-control-allow-methods", "GET, POST, PUT, DELETE, OPTIONS");
-    response.setHeader("Access-Control-Expose-Headers", "date, token,systemdate");
-    response.setHeader('systemdate', new Date().getTime());
-    const { method } = request;
+    console.log('initHeader');
+    this.res.setHeader("Content-Type", "application/json;charset=utf-8");
+    this.res.setHeader("Access-Control-Allow-Origin", "*");
+    this.res.setHeader("access-control-allow-headers", "x-pingother, origin, x-requested-with, content-type, accept, xiaotuni,systemdate");
+    this.res.setHeader("access-control-allow-methods", "GET, POST, PUT, DELETE, OPTIONS");
+    this.res.setHeader("Access-Control-Expose-Headers", "date, token,systemdate");
+    this.res.setHeader('systemdate', new Date().getTime());
+    const { method } = this.req;
     if (method && method === 'OPTIONS') {
       response.end();
       return;
     }
   }
   parseUrlParams() {
+    console.log('parseUrlParams');
 
     // this.query = 
   }
 
   parseFormDataInfo() {
-
+    console.log('parseFormDataInfo');
   }
 
   processRequest() {
-
+    console.log('processRequest');
+    this.res.write(JSON.stringify({ code: 1, msg: 'ok', date: new Date().getTime() }));
+    this.res.end();
   }
 }
 
