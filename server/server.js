@@ -44,7 +44,7 @@ const options = {
 };
 function start(route) {
   try {
-    const listenPort = process.env.PORT || global.Config.ListenPort || 80;
+    const listenPort = process.env.DEVPORT || global.Config.ListenPort || 80;
     http2.createServer(options, function (request, response) {
       response.setHeader("Content-Type", "text/html;charset=utf-8");
       response.setHeader("Access-Control-Allow-Origin", "*");
@@ -53,7 +53,9 @@ function start(route) {
 
       route(response, request);
     }).listen(listenPort);
-    console.log("start http server :https://127.0.0.1:%d", listenPort);
+    const WEB_PORT = process.env.PORT;
+    console.log("http access :http://127.0.0.1:%d", WEB_PORT);
+    console.log("https server api address:https://127.0.0.1:%d", listenPort);
   } catch (e) {
     console.log(util.inspect(e, true, 3, true));
   }

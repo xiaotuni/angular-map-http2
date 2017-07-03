@@ -22,6 +22,7 @@ export default class ApiClient {
        * post
        */
       SaveUser: '/saveUser',
+      UserLogin: '/userLogin',
     }
   }
 

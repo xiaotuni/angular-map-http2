@@ -1,6 +1,6 @@
 import { RouterModule } from '@angular/router';
 import { RouterComponent } from './containers/Core';
-import { ManagerRouterComponent } from './managers/Core';
+import { ManagerRouterComponent } from './managers/Index';
 export const AppRouting = {
   Router() {
     const {
