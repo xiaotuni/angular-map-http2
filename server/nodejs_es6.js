@@ -3,6 +3,7 @@ const util = require('util');
 const queryString = require('querystring');
 const formidable = require('formidable');
 const url = require('url');
+const api = require('./ctrl_es6/index');
 
 class server {
   constructor() { }
@@ -52,12 +53,13 @@ class routes {
 
   parseFormDataInfo() {
     console.log('parseFormDataInfo');
+    new api.webapi(this.req, this.res).dept();
   }
 
   processRequest() {
     console.log('processRequest');
-    this.res.write(JSON.stringify({ code: 1, msg: 'ok', date: new Date().getTime() }));
-    this.res.end();
+    // this.res.write(JSON.stringify({ code: 1, msg: 'ok', date: new Date().getTime() }));
+    // this.res.end();
   }
 }
 
