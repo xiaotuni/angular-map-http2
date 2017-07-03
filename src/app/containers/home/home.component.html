@@ -1,6 +1,15 @@
 <xtn-navbar [(Title)]="__Title"></xtn-navbar>
 <xtn-defref></xtn-defref>
 
-<div>
-  <div (click)="__CallApi()">call api</div>
+<div class="homeCss">
+  <div class="callApi" (click)="__CallApi()">call api</div>
+
+  <div class="apiResult">
+    <div class="row" *ngFor="let item of DataList">
+      <div class="id">{{item.Id}}</div>
+      <div class="guid">{{item.Guid}}</div>
+      <div class="datetime">{{item.DateTime| date:'yyyy-MM-dd HH:mm:ss'}}</div>
+    </div>
+    <div></div>
+  </div>
 </div>
