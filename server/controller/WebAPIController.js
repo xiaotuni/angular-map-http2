@@ -6,6 +6,7 @@ var Comm = require("./../lib/commonMethod");
 var Utility = Comm.Comm;
 var Log = Comm.Log;
 var MySqlHelper = require("./../lib/MySqlHelper").MySqlHelper;
+var os = require('os');
 
 function newGuid() {
   var guid = "";
@@ -26,12 +27,19 @@ var WebApi = {
 
   GetValues: function (req, res, opt) {
     console.log('--------------123-----------');
-    const result = [
-      { id: 1, title: '标题', content: '哈哈~~~' },
-      { id: 1, title: '标题', content: '哈哈~~~' },
-      { id: 1, title: '标题', content: '哈哈~~~' },
-      { id: 1, title: '标题', content: '哈哈~~~' },
-    ];
+    const result = { id: 1, title: '标题', content: '哈哈~~~' };
+    const a = os.networkInterfaces();
+    result.networkInterfaces = a.无线网络连接;
+    if (a.无线网络连接.length > 0) {
+      for (let i = 0; i < a.无线网络连接.length; i++) {
+        const row = a.无线网络连接[i];
+        if (row.family === 'IPv4') {
+          result.currentWiFi = row;
+          result.address = row.address;
+          break;
+        }
+      }
+    }
     res.SendJSON(result);
   },
   depts: function (req, res, opt) {
