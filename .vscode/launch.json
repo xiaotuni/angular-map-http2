@@ -7,6 +7,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "NodeJsEs6",
+      "protocol": "auto",
+      "program": "${workspaceRoot}/server/nodejs_es6.js",
+      "env": {
+        "PORT": "10001",
+        "DEVPORT": "10081"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "protocol": "auto",
       "name": "启动程序",
       "program": "${workspaceRoot}/server/index.js",
