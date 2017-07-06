@@ -5,7 +5,8 @@ const methods = ['get', 'post', 'put', 'patch', 'del'];
 
 function formatUrl(path) {
   const adjustedPath = path[0] !== '/' ? '/' + path : path;
-  const _ApiUrl = 'https://127.0.0.1:30080/WebApi' + adjustedPath;
+  // const _ApiUrl = 'https://127.0.0.1:30080/WebApi' + adjustedPath;
+  const _ApiUrl = 'https://127.0.0.1:10001/webapi' + adjustedPath;
   return _ApiUrl;
 }
 
@@ -22,7 +23,7 @@ export default class ApiClient {
        * post
        */
       SaveUser: '/saveUser',
-      UserLogin: '/userLogin',
+      UserLogin: '/userinfo/user',
     }
   }
 

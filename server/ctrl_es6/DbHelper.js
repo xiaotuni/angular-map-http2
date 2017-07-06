@@ -46,6 +46,7 @@ class MySqlHelper {
     }
     conn.query(sql, (err, result, fields) => {
       if (err) {
+        error && error(err);
         return;
       }
       success && success({ fields, result });

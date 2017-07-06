@@ -24,7 +24,9 @@ class UserInfo {
     DbHelper.QueryOne('select * from xtn_userinfo', (data) => {
       const { result } = data || {};
       response.Send(result);
-    }, () => { });
+    }, (err) => {
+      response.Send_500({ status: 500, msg: err });
+    });
   }
 
   /**
@@ -34,8 +36,10 @@ class UserInfo {
    * @param {any} response 
    * @memberof UserInfo
    */
-  post_user(request, response, options) {
-
+  post_user(DbHelper, request, response, options) {
+    console.log(options);
+    const { data } = options;
+    response.Send('ok');
   }
 
   /**
@@ -45,7 +49,7 @@ class UserInfo {
    * @param {any} response 
    * @memberof UserInfo
    */
-  delete_user(request, response, options) {
+  delete_user(DbHelper, request, response, options) {
 
   }
 
@@ -56,7 +60,7 @@ class UserInfo {
    * @param {any} response 
    * @memberof UserInfo
    */
-  put_user(request, response, options) {
+  put_user(DbHelper, request, response, options) {
 
   }
 }

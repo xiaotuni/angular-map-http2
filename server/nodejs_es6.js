@@ -1,4 +1,4 @@
-const http = require('http');
+const http = require('http2');
 const util = require('util');
 const queryString = require('querystring');
 const formidable = require('formidable');
@@ -17,13 +17,25 @@ http.ServerResponse.prototype.Send = function (data) {
   this.write(JSON.stringify(data));
   this.end();
 };
+http.ServerResponse.prototype.Send_404 = function (data) {
+  this.statusCode = 404;
+  this.Send(data);
+};
+http.ServerResponse.prototype.Send_500 = function (data) {
+  this.statusCode = 500;
+  this.Send(data);
+};
 
 
 class server {
   constructor() { }
 
   createServer(port) {
-    http.createServer((req, res) => {
+    const options = {
+      key: fs.readFileSync('./ca/www.other.org.key'), //读取key
+      cert: fs.readFileSync('./ca/www.other.org.crt') //读取crt
+    };
+    http.createServer(options, (req, res) => {
       res.setHeader("Content-Type", "text/html;charset=utf-8");
       res.setHeader("Access-Control-Allow-Origin", "*");
       res.setHeader("access-control-allow-headers", "x-pingother, origin, x-requested-with, content-type, accept");
@@ -52,7 +64,7 @@ class routes {
     this.res.setHeader('systemdate', new Date().getTime());
     const { method } = this.req;
     if (method && method === 'OPTIONS') {
-      response.end();
+      this.res.end();
       return;
     }
 
@@ -64,9 +76,9 @@ class routes {
     if (!this.judgeIsCallApi(PathInfo)) {
       return;
     }
-    this.Method = method;
+    this.Method = method.toLocaleLowerCase();
     this.parseUrlParams();
-    switch (method.toLocaleLowerCase()) {
+    switch (this.Method) {
       case 'get':
         this.GetRequest(PathInfo);
         break;
@@ -167,33 +179,49 @@ class routes {
   }
 
   PostReqeust(PathInfo) {
-    
+    const __CallApi = this.__FindMethod(PathInfo);
+    if (!__CallApi) {
+      return;
+    }
+    let __ReData = '';
+    this.req.setEncoding('utf8');
+    this.req.on('data', (data) => {
+      __ReData += data;
+    });
+    this.req.on('end', () => {
+      __CallApi(DbHelper, this.req, this.res, { data: JSON.parse(__ReData), urlparams: this.QueryParams });
+    });
   }
 
   PutRequest(PathInfo) {
-
+    this.PostReqeust(PathInfo);
   }
 
   __FindMethod(PathInfo) {
     const { pathname } = this.UrlInfo;
     const pathList = pathname.split('/');
     pathList.shift();
+    if (pathList.length === 1) {
+      this.res.Send_404({ status: 404, msg: pathname + '接口没有找到' });
+      return;
+    }
     const __last = pathList.pop();
     let __CallApi = this.ApiInfo[pathList[0]];
-    const __ApiIsExist = true;
+    let __ApiIsExist = true;
     for (let i = 1; i < pathList.length; i++) {
       __CallApi = __CallApi[pathList[i]];
       if (!__CallApi) {
         __ApiIsExist = false;
+        break;
       }
     }
     if (!__ApiIsExist) {
-      this.res.Send({ status: 404, msg: pathname + '接口没有找到' });
+      this.res.Send_404({ status: 404, msg: pathname + '接口没有找到' });
       return false;
     }
     __CallApi = __CallApi[this.Method + '_' + __last]
     if (!__CallApi) {
-      this.res.Send({ status: 404, msg: pathname + '接口没有找到' });
+      this.res.Send_404({ status: 404, msg: pathname + '接口没有找到' });
       return false;
     }
 
