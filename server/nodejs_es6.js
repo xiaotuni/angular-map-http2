@@ -64,7 +64,7 @@ class routes {
     if (!this.judgeIsCallApi(PathInfo)) {
       return;
     }
-    console.log('method name:', method);
+    this.Method = method;
     this.parseUrlParams();
     switch (method.toLocaleLowerCase()) {
       case 'get':
@@ -153,7 +153,28 @@ class routes {
   }
 
   GetRequest(PathInfo) {
-    console.log(PathInfo);
+    const __CallApi = this.__FindMethod(PathInfo);
+    if (__CallApi) {
+      __CallApi(DbHelper, this.req, this.res, this.QueryParams);
+    }
+  }
+
+  DeleteRequest(PathInfo) {
+    const __CallApi = this.__FindMethod(PathInfo);
+    if (__CallApi) {
+      __CallApi(DbHelper, this.req, this.res, this.QueryParams);
+    }
+  }
+
+  PostReqeust(PathInfo) {
+    
+  }
+
+  PutRequest(PathInfo) {
+
+  }
+
+  __FindMethod(PathInfo) {
     const { pathname } = this.UrlInfo;
     const pathList = pathname.split('/');
     pathList.shift();
@@ -168,26 +189,15 @@ class routes {
     }
     if (!__ApiIsExist) {
       this.res.Send({ status: 404, msg: pathname + '接口没有找到' });
-      return;
+      return false;
     }
-    __CallApi = __CallApi['get_' + __last]
+    __CallApi = __CallApi[this.Method + '_' + __last]
     if (!__CallApi) {
       this.res.Send({ status: 404, msg: pathname + '接口没有找到' });
-      return;
+      return false;
     }
-    __CallApi(DbHelper, this.req, this.res, this.QueryParams);
-  }
 
-  PostReqeust(PathInfo) {
-
-  }
-
-  DeleteRequest(PathInfo) {
-
-  }
-
-  PutRequest(PathInfo) {
-
+    return __CallApi;
   }
 }
 

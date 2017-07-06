@@ -21,8 +21,7 @@ class UserInfo {
    * @memberof UserInfo
    */
   get_user(DbHelper, request, response, options) {
-    const a = DbHelper;
-    a.QueryOne('select * from xtn_userinfo', (data) => {
+    DbHelper.QueryOne('select * from xtn_userinfo', (data) => {
       const { result } = data || {};
       response.Send(result);
     }, () => { });
@@ -60,7 +59,6 @@ class UserInfo {
   put_user(request, response, options) {
 
   }
-
 }
 
 module.exports = UserInfo;
