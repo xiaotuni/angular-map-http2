@@ -4,13 +4,30 @@
  * @class UserInfo
  */
 class UserInfo {
-  constructor() {
+  constructor(DbHelper, Utility) {
+    this.DbHelper = DbHelper;
+    this.Utility = Utility;
   }
-  get_users(DbHelper, request, response, options) {
-    DbHelper.Query('select * from xtn_userinfo', (data) => {
+  get_users(request, response, options) {
+    this.DbHelper.Query('select * from xtn_userinfo', (data) => {
       const { result } = data || {};
       response.Send(result);
     }, () => { });
+  }
+
+  get_userdetail(request, response, options) {
+    const { id } = options || {};
+    if (!id) {
+      response.SendError({ status: 400, code: 10000, msg: '用户ID没有传.' });
+      return;
+    }
+    const sql = this.Utility.Comm.format('select * from xtn_userinfo t where t.id = {0}', id)
+    this.DbHelper.QueryOne(sql, (data) => {
+      const { result } = data || {};
+      response.Send(result);
+    }, (err) => {
+      response.Send_500({ status: 500, msg: err });
+    });
   }
 
   /**
@@ -20,8 +37,8 @@ class UserInfo {
    * @param {any} response 
    * @memberof UserInfo
    */
-  get_user(DbHelper, request, response, options) {
-    DbHelper.QueryOne('select * from xtn_userinfo', (data) => {
+  get_user(request, response, options) {
+    this.DbHelper.QueryOne('select * from xtn_userinfo', (data) => {
       const { result } = data || {};
       response.Send(result);
     }, (err) => {
@@ -36,7 +53,7 @@ class UserInfo {
    * @param {any} response 
    * @memberof UserInfo
    */
-  post_user(DbHelper, request, response, options) {
+  post_user(request, response, options) {
     console.log(options);
     const { data } = options;
     response.Send('ok');
@@ -49,7 +66,7 @@ class UserInfo {
    * @param {any} response 
    * @memberof UserInfo
    */
-  delete_user(DbHelper, request, response, options) {
+  delete_user(request, response, options) {
 
   }
 
@@ -60,7 +77,7 @@ class UserInfo {
    * @param {any} response 
    * @memberof UserInfo
    */
-  put_user(DbHelper, request, response, options) {
+  put_user(request, response, options) {
 
   }
 }

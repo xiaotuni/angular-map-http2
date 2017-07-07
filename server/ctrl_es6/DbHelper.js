@@ -56,9 +56,11 @@ class MySqlHelper {
   static QueryOne(sql, success, error) {
     this.Query(sql, (options) => {
       const { fields, result } = options;
-      if (result && result.length && result.length > 0) {
-        success({ fields, result: result[0] });
-      }
+      success && success({
+        fields,
+        result: result && result.length > 0 ? result[0] : {}
+      });
+
     }, error);
   }
 }

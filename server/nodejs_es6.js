@@ -25,15 +25,36 @@ http.ServerResponse.prototype.Send_500 = function (data) {
   this.statusCode = 500;
   this.Send(data);
 };
+http.ServerResponse.prototype.SendError = function (data) {
+  const {code } = data;
+  this.statusCode = code || 400;
+  this.Send(data);
+};
 
 
 class server {
   constructor() { }
 
   createServer(port) {
+    const __key = '/ca/www.other.org.key';
+    const __crt = '/ca/www.other.org.crt';
+    const __keys = [path.join('.', 'server', __key), '.' + __key];
+    const __crts = [path.join('.', 'server', __crt), '.' + __crt];
+    const extKey = __keys.filter((p) => {
+      if (fs.existsSync(p)) {
+        return p;
+      }
+    });
+    const extCrt = __crts.filter((p) => {
+      if (fs.existsSync(p)) {
+        return p;
+      }
+    });
+    console.log(extKey, extCrt);
+
     const options = {
-      key: fs.readFileSync('./ca/www.other.org.key'), //读取key
-      cert: fs.readFileSync('./ca/www.other.org.crt') //读取crt
+      key: fs.readFileSync(extKey[0]), //读取key
+      cert: fs.readFileSync(extCrt[0]) //读取crt
     };
     http.createServer(options, (req, res) => {
       res.setHeader("Content-Type", "text/html;charset=utf-8");
@@ -157,30 +178,30 @@ class routes {
   }
 
   parseFormDataInfo() {
-    // new api.webapi(this.req, this.res).dept();
     const __api = api;
     const __webapi = __api.webapi;
-    // __api.webapi.tempabc(this.req, this.res);
     this.res.Send({ msg: '哈全', date: new Date().getTime() });
   }
 
   GetRequest(PathInfo) {
-    const __CallApi = this.__FindMethod(PathInfo);
-    if (__CallApi) {
-      __CallApi(DbHelper, this.req, this.res, this.QueryParams);
+    const { func, ctrl } = this.__FindMethod(PathInfo) || {};
+    if (!func) {
+      return;
     }
+    func.apply(ctrl, [this.req, this.res, this.QueryParams]);
   }
 
   DeleteRequest(PathInfo) {
-    const __CallApi = this.__FindMethod(PathInfo);
-    if (__CallApi) {
-      __CallApi(DbHelper, this.req, this.res, this.QueryParams);
+    const { func, ctrl } = this.__FindMethod(PathInfo);
+    if (!func) {
+      return;
     }
+    func.apply(ctrl, [this.req, this.res, this.QueryParams]);
   }
 
   PostReqeust(PathInfo) {
-    const __CallApi = this.__FindMethod(PathInfo);
-    if (!__CallApi) {
+    const { func, ctrl } = this.__FindMethod(PathInfo);
+    if (!func) {
       return;
     }
     let __ReData = '';
@@ -189,7 +210,7 @@ class routes {
       __ReData += data;
     });
     this.req.on('end', () => {
-      __CallApi(DbHelper, this.req, this.res, { data: JSON.parse(__ReData), urlparams: this.QueryParams });
+      func.apply(ctrl, [this.req, this.res, { data: JSON.parse(__ReData), urlparams: this.QueryParams }]);
     });
   }
 
@@ -203,7 +224,7 @@ class routes {
     pathList.shift();
     if (pathList.length === 1) {
       this.res.Send_404({ status: 404, msg: pathname + '接口没有找到' });
-      return;
+      return null;
     }
     const __last = pathList.pop();
     let __CallApi = this.ApiInfo[pathList[0]];
@@ -217,15 +238,16 @@ class routes {
     }
     if (!__ApiIsExist) {
       this.res.Send_404({ status: 404, msg: pathname + '接口没有找到' });
-      return false;
+      return null;
     }
+    const Controller = __CallApi;
     __CallApi = __CallApi[this.Method + '_' + __last]
     if (!__CallApi) {
       this.res.Send_404({ status: 404, msg: pathname + '接口没有找到' });
-      return false;
+      return null;
     }
 
-    return __CallApi;
+    return { func: __CallApi, ctrl: Controller };
   }
 }
 
