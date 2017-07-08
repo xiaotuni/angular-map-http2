@@ -40,6 +40,7 @@ export class Utility {
       Product: 'product',
       ManagerLogin: 'manager/login',
       ManagerRegister: 'manager/register',
+      ManagerUserlist: 'manager/userlist',
     },
     UrlTitle: {
       '/home': { Title: '首页', },
@@ -49,6 +50,7 @@ export class Utility {
       '/product': { Title: '产品', },
       '/manager/login': { Title: '登录', },
       '/manager/register': { Title: '注册', },
+      '/manager/userlist': { Title: '用户列表', },
     }
   };
 

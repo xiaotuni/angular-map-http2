@@ -1,0 +1,35 @@
+<div class="userlistCss">
+  <div>
+
+  </div>
+  <div class="users">
+    <div class="row">
+      <div class="choose">全选</div>
+      <div class="id">ID</div>
+      <div class="name">名称</div>
+      <div class="tel">电话</div>
+      <div class="del">
+        <div>删除</div>
+      </div>
+      <div class="modify">
+        <div>修改</div>
+      </div>
+    </div>
+
+    <div class="row" *ngFor="let item of userList">
+      <div class="choose">
+        <div></div>
+      </div>
+      <div class="id">{{item.id}}</div>
+      <div class="name">{{item.username}}</div>
+      <div class="tel">{{item.tel}}</div>
+      <div class="btn" (click)="__ClickDelete(item)">
+        <div>删除</div>
+      </div>
+      <div class="btn" (click)="__ClickModify(item)">
+        <div>修改</div>
+      </div>
+    </div>
+
+  </div>
+</div>

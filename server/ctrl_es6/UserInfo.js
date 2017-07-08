@@ -76,7 +76,11 @@ class UserInfo {
    * @memberof UserInfo
    */
   delete_user(request, response, options) {
-
+    this.DbHelper.DeleteSQL('xtn_userinfo', options, (data) => {
+      response.Send({ msg: 'ok' });
+    }, (err) => {
+      response.Send_500({ status: 500, msg: err });
+    });
   }
 
   /**

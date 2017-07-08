@@ -31,6 +31,7 @@ export default function clientMiddleware(client) {
     const [REQUEST, SUCCESS, FAILURE] = types;
     const actionPromise = promise(client);
     actionPromise.then((result) => {
+      return result;
     }, (error) => {
       console.log('------1--------');
     }).catch((error) => {

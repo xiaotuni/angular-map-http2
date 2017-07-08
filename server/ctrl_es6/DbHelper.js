@@ -88,6 +88,23 @@ class MySqlHelper {
     });
   }
 
+  static DeleteSQL(TableName, Where, Success, Error) {
+    const conn = this.Conn(Error);
+    if (!conn) {
+      return;
+    }
+    // const sql = "delete from ?? where ?" 
+    const __query = conn.query('delete from ?? where ?', [TableName, Where], (err, result, fields) => {
+      console.log(__query.sql);
+      if (err) {
+        Error && Error(err);
+        return;
+      }
+      Success && Success({ fields, result });
+    });
+
+  }
+
   static ExecuteProcedure(ProcedureName, Params, Success, Error) {
 
   }

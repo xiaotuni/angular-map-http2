@@ -1,8 +1,9 @@
 import { LoginComponent } from './login/Login';
-import { DashboardComponent } from './Dashboard/Dashboard';
+import { DashboardComponent } from './dashboard/dashboard';
 import { RegisterComponent } from './register/register';
+import { UserListComponent } from './userlist/userlist';
 
-const __Router = { LoginComponent, RegisterComponent, DashboardComponent };
+const __Router = { LoginComponent, UserListComponent, RegisterComponent, DashboardComponent };
 const __Keys = Object.keys(__Router);
 
 const __PageList = [];

@@ -4,8 +4,8 @@ import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'xtn-manage-register',
-  templateUrl: './Register.html',
-  styleUrls: ['./Register.scss'],
+  templateUrl: './register.html',
+  styleUrls: ['./register.scss'],
   providers: [ServiceHelper]
 })
 export class RegisterComponent implements OnInit {
@@ -32,7 +32,4 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  forgetPassword() {
-    console.log('forgetPassword');
-  }
 }

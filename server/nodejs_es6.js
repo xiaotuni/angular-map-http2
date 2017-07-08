@@ -50,7 +50,7 @@ class server {
         return p;
       }
     });
-    console.log(extKey, extCrt);
+    // console.log(extKey, extCrt);
 
     const options = {
       key: fs.readFileSync(extKey[0]), //读取key
