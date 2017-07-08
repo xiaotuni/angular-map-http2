@@ -14,6 +14,14 @@ class MySqlHelper {
       password: 'xiaotuni',
       database: 'nodejs'
     });
+
+    this.pool.on('connection', function (connection) {
+      // connection.query('SET SESSION auto_increment_increment=1')
+      console.log('--------');
+    });
+    this.pool.on('release', function (connection) {
+      console.log('Connection %d released', connection.threadId);
+    });
   }
 
   static instance() {
@@ -62,6 +70,34 @@ class MySqlHelper {
       });
 
     }, error);
+  }
+
+  static InsertSQL(TableName, data, success, error) {
+    const conn = this.Conn(error);
+    if (!conn) {
+      return;
+    }
+    // const sql = "insert into ?? set ?" 
+    const __query = conn.query('insert into ?? set ?', [TableName, data], (err, result, fields) => {
+      console.log(__query.sql);
+      if (err) {
+        error && error(err);
+        return;
+      }
+      success && success({ fields, result });
+    });
+  }
+
+  static ExecuteProcedure(ProcedureName, Params, Success, Error) {
+
+  }
+
+  static ExecuteSQL(Sql, Success, Error) {
+
+  }
+
+  static BatchExecuteSQL(SqlCollection, Success, Error) {
+
   }
 }
 

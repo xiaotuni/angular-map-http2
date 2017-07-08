@@ -24,13 +24,22 @@ export class AppComponent {
     Utility.$SetContent(Utility.$ConstItem.BrowerTitle, this.titleService, false);
     Utility.$SetContent(Utility.$ConstItem.Location, this.__Location, false);
 
+    const _FindFirstChild = (parent) => {
+      //
+      const { firstChild } = parent;
+      if (firstChild) {
+        return _FindFirstChild(firstChild);
+      }
+      return parent;
+    };
     const __self = this;
     router.events.subscribe((obj: any) => {
       if (obj instanceof RoutesRecognized) {
         const state = obj.state;
         const root = state.root;
+
         const queryParams = root.queryParams;
-        const firstChild = root.firstChild;
+        const firstChild = _FindFirstChild(root.firstChild);
         const routeConfig = firstChild.routeConfig;
         const { path, data } = routeConfig;
         const { title } = data || { title: '空' };

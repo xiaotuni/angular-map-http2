@@ -12,7 +12,6 @@ export class __DefRefComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log('__DefRefComponent');
     const { UrlTitle } = Utility.$ConstItem;
     const __list = [];
     Object.keys(UrlTitle).forEach((key) => {
@@ -22,7 +21,6 @@ export class __DefRefComponent implements OnInit {
   }
 
   __GoToPage(item) {
-    console.log(item);
     Utility.$ToPage(item.key, {});
   }
 }

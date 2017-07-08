@@ -59,6 +59,15 @@ class UserInfo {
     response.Send('ok');
   }
 
+  post_test(request, response, options) {
+    this.DbHelper.InsertSQL('xtn_userinfo', options.data, (data) => {
+      console.log(JSON.stringify(data));
+      response.Send({ msg: 'ok' });
+    }, (err) => {
+      response.Send_500({ status: 500, msg: err });
+    })
+  }
+
   /**
    * 删除用户
    * 

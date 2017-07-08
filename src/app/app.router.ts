@@ -7,7 +7,7 @@ export const AppRouting = {
       BaiduMapComponent,
       ProductComponent, MembersComponent, MyComponentComponent, NotFoundComponent, HomeComponent
      } = RouterComponent;
-    const { LoginComponent, DashboardComponent } = ManagerRouterComponent;
+    const { LoginComponent, RegisterComponent, DashboardComponent } = ManagerRouterComponent;
     const routes = [
       { path: '', redirectTo: 'home', pathMatch: 'full', data: { title: '首页' } },
       { path: 'home', component: HomeComponent, data: { title: '首页' } },
@@ -19,7 +19,8 @@ export const AppRouting = {
       {
         path: 'manager', data: { title: '用户登录' },
         children: [
-          { path: 'login', component: LoginComponent, data: { title: '用户登录' } },
+          { path: 'register', component: RegisterComponent, data: { title: '用户注册' } },
+          { path: 'login', component: LoginComponent, data: { title: '用户登录1' } },
           { path: 'dashboard', component: DashboardComponent, data: { title: '控制面板' } },
         ]
       },

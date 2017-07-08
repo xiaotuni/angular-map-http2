@@ -15,7 +15,7 @@ export class HomeComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     setTimeout(() => {
-      this.__CallApi();
+      // this.__CallApi();
     }, 2000);
   }
 

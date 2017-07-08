@@ -1,0 +1,21 @@
+<div class="registerCss">
+  <div class="title">用户注册</div>
+  <div class="row">
+    <input type="text" [(ngModel)]="UserInfo.UserName" placeholder="请输入用户名称" maxtLength="50">
+  </div>
+  <div class="row">
+    <input type="password" [(ngModel)]="UserInfo.Password" placeholder="请输入密码" maxtLength="30">
+  </div>
+  <div class="row">
+    <input type="password" [(ngModel)]="UserInfo.ConfromPassword" placeholder="确定密码" maxtLength="30">
+  </div>
+  <div class="row">
+    <input type="text" [(ngModel)]="UserInfo.Tel" placeholder="电话" maxtLength="20">
+  </div>
+  <div class="row">
+    <input type="text" [(ngModel)]="UserInfo.Address" placeholder="地址" maxtLength="150">
+  </div>
+  <div class="btn">
+    <div type="text" (click)="__ClickRegister()">确定</div>
+  </div>
+</div>

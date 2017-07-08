@@ -38,6 +38,8 @@ export class Utility {
       Member: 'member',
       MyComponent: 'mycomponent',
       Product: 'product',
+      ManagerLogin: 'manager/login',
+      ManagerRegister: 'manager/register',
     },
     UrlTitle: {
       '/home': { Title: '首页', },
@@ -45,6 +47,8 @@ export class Utility {
       '/member': { Title: '成员', },
       '/mycomponent': { Title: '我的组件', },
       '/product': { Title: '产品', },
+      '/manager/login': { Title: '登录', },
+      '/manager/register': { Title: '注册', },
     }
   };
 
