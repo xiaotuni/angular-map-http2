@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2017-07-09 18:03:44
+Date: 2017-07-09 21:52:43
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -28,12 +28,13 @@ CREATE TABLE `sys_rule` (
   `RuleContent` text COMMENT '规则内容',
   `CreateTime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='系统规则表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='系统规则表';
 
 -- ----------------------------
 -- Records of sys_rule
 -- ----------------------------
-INSERT INTO `sys_rule` VALUES ('1', '/webapi/userinfo/users', 'get', '1', '[{\"id\": 1, \"sql\": \"select * from xtn_userinfo where username = \':username\' and password = \':password\'\", \"name\": \"admininfo\", \"type\": \"query\", \"isRows\": false}, {\"id\": 2, \"sql\": \"select * from xtn_userinfo where id> :id\", \"name\": \"userlist\", \"type\": \"query\", \"isRows\": true}]', '\'{\\\"id\\\": 1, \\\"tel\\\": \\\"1112\\\", \\\"address\\\": \\\"1123\\\", \\\"password\\\": \\\"admin\\\", \\\"username\\\": \\\"admin\\\", \\\"createdate\\\": \\\"2017-07-02T10:15:32.000Z\\\"}\'');
+INSERT INTO `sys_rule` VALUES ('1', '/webapi/demo', 'get', '1', '{\"rules\": [{\"id\": 1, \"sql\": \"select * from xtn_userinfo where username = \':username\' and password = \':password\'\", \"name\": \"admininfo\", \"type\": \"query\", \"isRows\": false}, {\"id\": 2, \"sql\": \"select * from xtn_userinfo where id> :id\", \"name\": \"userlist\", \"type\": \"query\", \"isRows\": true}], \"fields\": \"username,password,id\", \"result\": 1}', '');
+INSERT INTO `sys_rule` VALUES ('2', '/webapi/userinfo/users', 'get', '1', '{\"rules\": [{\"id\": 1, \"sql\": \"select * from xtn_userinfo t order by t.id desc\", \"name\": \"UserList\", \"type\": \"query\", \"isRows\": \"true\"}], \"fields\": \"\", \"result\": 1}', null);
 
 -- ----------------------------
 -- Table structure for xtn_deps
