@@ -26,7 +26,7 @@ http.ServerResponse.prototype.Send_500 = function (data) {
   this.Send(data);
 };
 http.ServerResponse.prototype.SendError = function (data) {
-  const {code } = data;
+  const { code } = data;
   this.statusCode = code || 400;
   this.Send(data);
 };
@@ -99,21 +99,34 @@ class routes {
     }
     this.Method = method.toLocaleLowerCase();
     this.parseUrlParams();
-    switch (this.Method) {
-      case 'get':
-        this.GetRequest(PathInfo);
-        break;
-      case 'post':
-        this.PostReqeust(PathInfo);
-        break;
-      case 'put':
-        this.PutRequest(PathInfo);
-        break;
-      case 'delete':
-        this.DeleteRequest(PathInfo);
-        break;
-    }
+
+    this.__ProcessApi();
+    return;
+    // switch (this.Method) {
+    //   case 'get':
+    //     this.GetRequest(PathInfo);
+    //     break;
+    //   case 'post':
+    //     this.PostReqeust(PathInfo);
+    //     break;
+    //   case 'put':
+    //     this.PutRequest(PathInfo);
+    //     break;
+    //   case 'delete':
+    //     this.DeleteRequest(PathInfo);
+    //     break;
+    // }
     // this.parseFormDataInfo();
+  }
+
+  __ProcessApi() {
+    const a = { pathname: this.UrlInfo.pathname, method: this.Method };
+
+    this.ApiInfo.DealBusiness.Process(this.req, this.res, {
+      methodInfo: a,
+      params: this.QueryParams,
+      data: {}
+    });
   }
 
   judgeIsCallApi(PathInfo) {

@@ -1,5 +1,15 @@
 const mysql = require('mysql');
 
+const queryFormat = function (query, values) {
+  if (!values) return query;
+  return query.replace(/\:(\w+)/g, function (txt, key) {
+    if (values.hasOwnProperty(key)) {
+      return this.escape(values[key]);
+    }
+    return txt;
+  }.bind(this));
+};
+
 class MySqlHelper {
 
   constructor() {
@@ -52,7 +62,10 @@ class MySqlHelper {
     if (!conn) {
       return;
     }
-    conn.query(sql, (err, result, fields) => {
+    const a = queryFormat('select * from xtn_userinfo t where t.username = :username', { username: 'admin' });
+    console.log(a);
+    const __query = conn.query(sql, (err, result, fields) => {
+      console.log('执行的SQL语句：[', __query.sql, ']');
       if (err) {
         error && error(err);
         return;
@@ -66,7 +79,7 @@ class MySqlHelper {
       const { fields, result } = options;
       success && success({
         fields,
-        result: result && result.length > 0 ? result[0] : {}
+        result: result && result.length > 0 ? result[0] : null
       });
 
     }, error);

@@ -1,2 +1,9 @@
+const DbHelper = require('./DbHelper');
+
 const webapi = require('./webapi');
-module.exports = { webapi }
+
+const DealBusiness = require('./DealBusiness');
+module.exports = {
+  webapi,
+  DealBusiness: new DealBusiness(DbHelper)
+}
