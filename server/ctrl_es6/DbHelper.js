@@ -62,8 +62,8 @@ class MySqlHelper {
     if (!conn) {
       return;
     }
-    const a = queryFormat('select * from xtn_userinfo t where t.username = :username', { username: 'admin' });
-    console.log(a);
+    // const a = queryFormat('select * from xtn_userinfo t where t.username = :username', { username: 'admin' });
+    // console.log(a);
     const __query = conn.query(sql, (err, result, fields) => {
       console.log('执行的SQL语句：[', __query.sql, ']');
       if (err) {
@@ -123,7 +123,18 @@ class MySqlHelper {
   }
 
   static ExecuteSQL(Sql, Success, Error) {
-
+    const conn = this.Conn(error);
+    if (!conn) {
+      return;
+    }
+    const __query = conn.query(Sql, (err, result, fields) => {
+      console.log(__query.sql);
+      if (err) {
+        Error && Error(err);
+        return;
+      }
+      Success && Success({ fields, result });
+    });
   }
 
   static BatchExecuteSQL(SqlCollection, Success, Error) {

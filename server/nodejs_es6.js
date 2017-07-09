@@ -121,11 +121,17 @@ class routes {
 
   __ProcessApi() {
     const a = { pathname: this.UrlInfo.pathname, method: this.Method };
-
-    this.ApiInfo.DealBusiness.Process(this.req, this.res, {
-      methodInfo: a,
-      params: this.QueryParams,
-      data: {}
+    this.req.setEncoding('utf8');
+    let __ReData = "";
+    this.req.on('data', (data) => {
+      __ReData += data;
+    });
+    this.req.on('end', () => {
+      this.ApiInfo.DealBusiness.Process(this.req, this.res, {
+        methodInfo: a,
+        params: this.QueryParams,
+        data: __ReData && __ReData !== '' ? JSON.parse(__ReData) : {}
+      });
     });
   }
 
