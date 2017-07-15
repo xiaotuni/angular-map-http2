@@ -65,52 +65,87 @@ class dealbusiness {
     }
 
     const __first = rules.shift();
-
+    const __self = this;
     this.__Rules(__first, rules, Object.assign({}, data, params, { Result: {} }), (success) => {
       const { Result } = success;
-      Response.Send(Result[result]);
+      // 组织结果
+      const __Data = __self.__ResultInfo(result, success);
+      Response.Send(__Data);
     });
   }
 
-  __Rules(rule, RuleCollection, Options, Complete) {
-    const { id, type, sql, isRows, name } = rule;
+  __Rules(Rule, RuleCollection, Options, Complete) {
+    const { id, type, sql, isRows, name, resultName } = Rule;
+    console.log('id-->', id);
     const _t = (type || 'query').toLocaleLowerCase();
     const _FormatSQL = queryFormat(sql, Options);
     const _NextRule = RuleCollection.shift();
+    const __Next = () => {
+      if (_NextRule) {
+        this.__Rules(_NextRule, RuleCollection, Options, Complete);
+      } else {
+        Complete(Options);
+      }
+    };
     switch (_t) {
       case 'query':
         if (isRows) {
           this.DbHelper.Query(_FormatSQL, (data) => {
             const { result } = data;
-            Options.Result[id] = result;
-            if (_NextRule) {
-              this.__Rules(_NextRule, RuleCollection, Options, Complete);
-            } else {
-              Complete(Options);
-            }
+            Options.Result[id] = { __name: name, result };
+            __Next();
           }, () => { });
         } else {
           this.DbHelper.QueryOne(_FormatSQL, (data) => {
             const { result } = data;
-            Options.Result[id] = result;
-            Options.Result[id].__name = name;
-            if (_NextRule) {
-              this.__Rules(_NextRule, RuleCollection, Options, Complete);
-            } else {
-              Complete(Options);
-            }
+            Options.Result[id] = { __name: name, result };
+            __Next();
           }, () => { });
         }
         break;
       case 'insert':
+        this.DbHelper.InsertSQL(_FormatSQL, (data) => {
+          const { result } = data;
+          if (resultName && resultName !== '') {
+            const __InsertResultInfo = {};
+            __InsertResultInfo[resultName] = result.insertId;
+            Object.assign(Options, __InsertResultInfo);
+          }
+          __Next();
+        }, () => { });
         break;
       case 'delete':
+        this.DbHelper.DeleteSQL(_FormatSQL, (data) => {
+          __Next();
+        }, () => { });
         break;
       case 'update':
+        this.DbHelper.UpdateSQL(_FormatSQL, (data) => {
+          __Next();
+        }, () => { });
         break;
     }
 
   }
+
+  __ResultInfo(ResultNo, Options) {
+    const { Result } = Options;
+    const __ResultNoInfo = Result[ResultNo];
+    if (__ResultNoInfo) {
+      const __Info = __ResultNoInfo.result;
+      delete __Info.__name;
+      delete Result[ResultNo];
+
+      Object.values(Result).forEach((value) => {
+        const { __name, result } = value;
+        __Info[__name] = result;
+      });
+
+      return __Info;
+    }
+    return Object.values(__Result)[0];
+  }
+
 }
 
 module.exports = dealbusiness;

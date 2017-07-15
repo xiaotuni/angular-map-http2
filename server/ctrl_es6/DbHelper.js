@@ -27,10 +27,10 @@ class MySqlHelper {
 
     this.pool.on('connection', function (connection) {
       // connection.query('SET SESSION auto_increment_increment=1')
-      console.log('--------');
+      // console.log('--------');
     });
     this.pool.on('release', function (connection) {
-      console.log('Connection %d released', connection.threadId);
+      // console.log('Connection %d released', connection.threadId);
     });
   }
 
@@ -65,7 +65,7 @@ class MySqlHelper {
     // const a = queryFormat('select * from xtn_userinfo t where t.username = :username', { username: 'admin' });
     // console.log(a);
     const __query = conn.query(sql, (err, result, fields) => {
-      console.log('执行的SQL语句：[', __query.sql, ']');
+      console.log('查询SQL语句：[', __query.sql, ']');
       if (err) {
         error && error(err);
         return;
@@ -85,7 +85,7 @@ class MySqlHelper {
     }, error);
   }
 
-  static InsertSQL(TableName, data, success, error) {
+  static InsertSQL1(TableName, data, success, error) {
     const conn = this.Conn(error);
     if (!conn) {
       return;
@@ -101,7 +101,7 @@ class MySqlHelper {
     });
   }
 
-  static DeleteSQL(TableName, Where, Success, Error) {
+  static DeleteSQL1(TableName, Where, Success, Error) {
     const conn = this.Conn(Error);
     if (!conn) {
       return;
@@ -139,6 +139,54 @@ class MySqlHelper {
 
   static BatchExecuteSQL(SqlCollection, Success, Error) {
 
+  }
+
+
+
+  static UpdateSQL(Sql, Success, Error) {
+    const conn = this.Conn(Error);
+    if (!conn) {
+      return;
+    }
+    const __query = conn.query(Sql, (err, result, fields) => {
+      console.log('更新SQL语句：[', __query.sql, ']');
+      if (err) {
+        Error && Error(err);
+        return;
+      }
+      Success && Success({ fields, result });
+    });
+  }
+
+  static InsertSQL(Sql, Success, Error) {
+    const conn = this.Conn(Error);
+    if (!conn) {
+      return;
+    }
+    const __query = conn.query(Sql, (err, result, fields) => {
+      console.log('插入SQL语句：[', __query.sql, ']');
+      if (err) {
+        Error && Error(err);
+        return;
+      }
+      const { insertId } = result;
+      Success && Success({ fields, result: { insertId } });
+    });
+  }
+
+  static DeleteSQL(Sql, Success, Error) {
+    const conn = this.Conn(Error);
+    if (!conn) {
+      return;
+    }
+    const __query = conn.query(Sql, (err, result, fields) => {
+      console.log('删除SQL语句：[', __query.sql, ']');
+      if (err) {
+        Error && Error(err);
+        return;
+      }
+      Success && Success({ fields, result });
+    });
   }
 }
 
