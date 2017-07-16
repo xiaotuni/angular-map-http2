@@ -1,6 +1,7 @@
 import { RouterModule } from '@angular/router';
 import { RouterComponent } from './containers/Core';
 import { ManagerRouterComponent } from './managers/Index';
+import { ManagerApiRouterComponent } from './manageapi/Index';
 export const AppRouting = {
   Router() {
     const {
@@ -8,6 +9,7 @@ export const AppRouting = {
       ProductComponent, MembersComponent, MyComponentComponent, NotFoundComponent, HomeComponent
      } = RouterComponent;
     const { LoginComponent, UserListComponent, RegisterComponent, DashboardComponent } = ManagerRouterComponent;
+    const { ApiListComponent } = ManagerApiRouterComponent;
     const routes = [
       { path: '', redirectTo: 'home', pathMatch: 'full', data: { title: '首页' } },
       { path: 'home', component: HomeComponent, data: { title: '首页' } },
@@ -25,7 +27,12 @@ export const AppRouting = {
           { path: 'dashboard', component: DashboardComponent, data: { title: '控制面板' } },
         ]
       },
-
+      {
+        path: 'api', data: { title: '后台API管理' },
+        children: [
+          { path: 'list', component: ApiListComponent, data: { title: 'Api列表' } },
+        ]
+      },
 
       { path: '**', component: NotFoundComponent, data: { title: '404页面未找到' } }
     ];

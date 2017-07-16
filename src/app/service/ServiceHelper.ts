@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Client } from './Core';
+import { ApiManagerService } from './ApiManager';
 
 @Injectable()
 export class ServiceHelper {
+  public ApiManager: ApiManagerService;
+  constructor() {
+    this.ApiManager = new ApiManagerService(Client);
+  }
 
   public UserInfo: any;
   public Users: any[];

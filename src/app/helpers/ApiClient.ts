@@ -27,6 +27,9 @@ export default class ApiClient {
       AddUser: '/userinfo/test',
       Userlist: '/userinfo/users',
       DeleteUser: '/userinfo/user',
+    },
+    Api: {
+      List: '/manager/api/list',
     }
   }
 

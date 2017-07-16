@@ -1,0 +1,53 @@
+<div class="apiitemCss">
+  <div class="master">
+    <span class="title">是否启用</span>
+    <input type="checkbox" [(ngModel)]="ApiInfo.Status">
+    <span class="title">请求方式：</span>
+    <select [(ngModel)]="ApiInfo.Method">
+          <option value="get">get</option>  
+          <option value="delete">delete</option>  
+          <option value="post">post</option>  
+          <option value="put">put</option>  
+        </select>
+    <span class="title">接口：</span>
+    <input type="text" [(ngModel)]="ApiInfo.PathName" />
+  </div>
+  <div class="ruleTitle">
+    规则列表：
+  </div>
+  <div class="ruleInfo">
+    <span>返回结果索引</span>
+    <input type="text" [(ngModel)]="RuleInfo.result">
+    <span>参数字段</span>
+    <input type="text" [(ngModel)]="RuleInfo.fields">
+  </div>
+
+  <div class="rule">
+    <div *ngFor="let rule of RuleInfo.rules">
+      <div>
+        <span>序号</span> <input type="number" [(ngModel)]="rule.id" />
+      </div>
+      <div>
+        <span>类型</span>
+        <select required [(ngModel)]="rule.type">
+          <option *ngFor="let item of RuleType" [value]="item.key">{{item.title}} </option>
+        </select>
+      </div>
+      <div>
+        <span>是否返回多行数据</span>
+        <input type="checkbox" [(ngModel)]="rule.isRows" />
+      </div>
+      <div>
+        <span>结果名称</span>
+        <input type="text" required [(ngModel)]="rule.name" />
+      </div>
+      <div>
+        <span>SQL语句</span>
+        <input type="text" [(ngModel)]="rule.sql" /> </div>
+    </div>
+  </div>
+
+  <div>
+    {{Source|json}}
+  </div>
+</div>

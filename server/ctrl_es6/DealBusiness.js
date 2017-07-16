@@ -163,7 +163,8 @@ class dealbusiness {
 
       return __Info;
     }
-    return Object.values(__Result)[0];
+    const values = Object.values(Result);
+    return values && values.length > 0 ? values[0] : { msg: 'ok' };
   }
 
 }

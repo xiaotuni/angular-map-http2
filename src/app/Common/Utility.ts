@@ -41,6 +41,7 @@ export class Utility {
       ManagerLogin: 'manager/login',
       ManagerRegister: 'manager/register',
       ManagerUserlist: 'manager/userlist',
+      ApiList: 'api/list',
     },
     UrlTitle: {
       '/home': { Title: '首页', },
@@ -51,6 +52,7 @@ export class Utility {
       '/manager/login': { Title: '登录', },
       '/manager/register': { Title: '注册', },
       '/manager/userlist': { Title: '用户列表', },
+      '/api/list': { Title: '接口列表', },
     }
   };
 

@@ -7,12 +7,13 @@ import { HttpModule } from '@angular/http';
 import { AppRouting } from './app.router';
 import { CommonComponent, PageComponentList } from './containers/Core';
 import { ManagerPageComponentList } from './managers/Index';
+import { ManagerApiPageComponentList } from './manageapi/Index';
 
 import { AppComponent } from './app.component';
 const Routers = AppRouting.Router();
 
 @NgModule({
-  declarations: [AppComponent, PageComponentList, ManagerPageComponentList, CommonComponent],
+  declarations: [AppComponent, PageComponentList, ManagerPageComponentList, ManagerApiPageComponentList, CommonComponent],
   imports: [
     BrowserAnimationsModule, BrowserModule, FormsModule, HttpModule, Routers
   ],

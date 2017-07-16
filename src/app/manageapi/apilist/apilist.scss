@@ -1,0 +1,36 @@
+.apiListCss {
+  font-size: 12px;
+
+  .apiInfo {
+
+    .api {
+      display: flex;
+      border-top: 1px solid #f5f5f5; // padding: 5px 0px;
+      >div {
+        border-right: 1px solid #f5f5f5;
+        padding: 5px 0px;
+      }
+
+      .method {
+        width: 80px;
+        padding: 5px;
+      }
+      .statu {
+        padding: 5px 15px;
+      }
+
+      .path {
+        flex: 1;
+        padding-left: 5px;
+      }
+
+      .operator {
+        padding: 5px 10px;
+      }
+    }
+
+    .item {
+      border: 1px solid #f5f5f5;
+    }
+  }
+}

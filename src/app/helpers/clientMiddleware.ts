@@ -33,9 +33,11 @@ export default function clientMiddleware(client) {
     actionPromise.then((result) => {
       return result;
     }, (error) => {
-      console.log('------1--------');
+      console.log('1-->', JSON.stringify(error));
+      return error;
     }).catch((error) => {
-      console.log('------2--------');
+      console.log('2-->', JSON.stringify(error));
+      return error;
     });
 
     return actionPromise;
