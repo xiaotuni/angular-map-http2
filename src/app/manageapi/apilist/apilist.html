@@ -8,11 +8,11 @@
       <div class="operator">操作</div>
     </div>
     <div *ngFor="let item of ApiList">
-      <div class="api">
+      <div class="api" (click)="__ClickExpand(item)">
         <div class="method">{{item.Method}}</div>
         <div class="statu">{{item.StatusCn}}</div>
         <div class="path">{{item.PathName}}</div>
-        <div class="operator" (click)="__ClickExpand(item)">
+        <div class="operator">
           {{ CurrentItem && CurrentItem.Id === item.Id ?'收起' :'展开' }}
         </div>
       </div>

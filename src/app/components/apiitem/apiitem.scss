@@ -1,5 +1,10 @@
 .apiitemCss {
+  border: 1px solid;
+  >div {
+    cursor: default;
+  }
   .master {
+    border-bottom: 1px solid;
     padding: 10px;
     display: flex;
     align-items: center;
@@ -17,10 +22,73 @@
     }
   }
   .ruleTitle {
+    border-bottom: 1px solid;
     padding: 10px;
     font-size: 16px;
+    display: flex;
+    align-items: center;
+    .desc {}
+    .number {
+      width: 40px;
+    }
+
+    .fields {
+      flex: 1;
+    }
   }
+
   .rule {
     padding: 10px;
+    border-bottom: 1px solid #9a9a9a;
+
+    .row {
+      display: flex;
+      align-items: center;
+      .title {
+        padding: 5px 15px;
+      }
+      input[type='number'] {
+        width: 30px;
+      }
+      input[type='text'] {
+        width: 100px;
+      }
+
+      .btns {
+        display: flex;
+
+        .btn {
+          margin: 0px 5px;
+
+          >div {
+            padding: 5px 10px;
+            border: 1px solid #f5f5f5;
+            border-radius: 5px;
+            &:hover {
+              background: #999;
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+
+    .sqlInfo {
+      border-top: 1px solid #666;
+      div {
+        padding: 5px 0px;
+        font-size: 14px;
+      }
+      textarea {
+        padding: 5px;
+        width: calc(100% - 10px);
+        min-height: 50px;
+        font-size: 14px;
+      }
+    }
+  }
+
+  >div:last-child {
+    border-bottom: none;
   }
 }

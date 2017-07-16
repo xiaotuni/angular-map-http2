@@ -26,7 +26,23 @@ export class ApiItemComponent implements OnInit {
     console.log(this.RuleInfo);
   }
 
-  __GoBack() {
-    Utility.$GoBack();
+  __ClickMove(type, index) {
+    const currentRule = this.RuleInfo.rules[index];
+    const __nextIndex = type + index;
+    if (__nextIndex >= 0 && __nextIndex < this.RuleInfo.rules.length) {
+      const __nextRule = this.RuleInfo.rules[__nextIndex];
+      this.RuleInfo.rules[__nextIndex] = currentRule;
+      this.RuleInfo.rules[index] = __nextRule;
+    }
+    console.log(index);
+  }
+  __ClickDelete(item, index) {
+    this.RuleInfo.rules.splice(index, 1);
+  }
+
+  __ClickInsert(index) {
+    const NewRule = JSON.parse(JSON.stringify(this.RuleInfo.rules[index]));
+    this.RuleInfo.rules.splice(index, 0, NewRule);
+    // [].unshift({});
   }
 }
