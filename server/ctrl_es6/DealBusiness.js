@@ -71,36 +71,56 @@ class dealbusiness {
       // 组织结果
       const __Data = __self.__ResultInfo(result, success);
       Response.Send(__Data);
+    }, (err) => {
+      Response.SendError({ code: 500, msg: err });
     });
   }
 
-  __Rules(Rule, RuleCollection, Options, Complete) {
+  __Rules(Rule, RuleCollection, Options, Complete, Error) {
     const { id, type, sql, isRows, name, resultName } = Rule;
     console.log('id-->', id);
     const _t = (type || 'query').toLocaleLowerCase();
-    const _FormatSQL = queryFormat(sql, Options);
+    const _FormatSQL = queryFormat(sql || ' ', Options);
     const _NextRule = RuleCollection.shift();
-    const __Next = () => {
+    const __Next = (err) => {
+      if (err) {
+        Error && Error(err);
+        return;
+      }
       if (_NextRule) {
-        this.__Rules(_NextRule, RuleCollection, Options, Complete);
+        this.__Rules(_NextRule, RuleCollection, Options, Complete, Error);
       } else {
         Complete(Options);
       }
     };
     switch (_t) {
+      case 'begintran':
+        this.DbHelper.BeginTransaction(() => {
+          __Next();
+        }, (error) => {
+          __Next(error);
+        });
+        break;
+      case 'commit':
+        this.DbHelper.Commit(() => {
+          __Next();
+        }, (err) => {
+          __Next(error);
+        });
+        break;
       case 'query':
         if (isRows) {
           this.DbHelper.Query(_FormatSQL, (data) => {
             const { result } = data;
             Options.Result[id] = { __name: name, result };
             __Next();
-          }, () => { });
+          }, (err) => { __Next(err); });
         } else {
           this.DbHelper.QueryOne(_FormatSQL, (data) => {
             const { result } = data;
             Options.Result[id] = { __name: name, result };
             __Next();
-          }, () => { });
+          }, (err) => { __Next(err); });
         }
         break;
       case 'insert':
@@ -112,17 +132,17 @@ class dealbusiness {
             Object.assign(Options, __InsertResultInfo);
           }
           __Next();
-        }, () => { });
+        }, (err) => { __Next(err); });
         break;
       case 'delete':
         this.DbHelper.DeleteSQL(_FormatSQL, (data) => {
           __Next();
-        }, () => { });
+        }, (err) => { __Next(err); });
         break;
       case 'update':
         this.DbHelper.UpdateSQL(_FormatSQL, (data) => {
           __Next();
-        }, () => { });
+        }, (err) => { __Next(err); });
         break;
     }
 
