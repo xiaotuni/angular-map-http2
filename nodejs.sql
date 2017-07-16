@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2017-07-09 21:52:43
+Date: 2017-07-16 23:39:24
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -28,13 +28,15 @@ CREATE TABLE `sys_rule` (
   `RuleContent` text COMMENT '规则内容',
   `CreateTime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='系统规则表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='系统规则表';
 
 -- ----------------------------
 -- Records of sys_rule
 -- ----------------------------
-INSERT INTO `sys_rule` VALUES ('1', '/webapi/demo', 'get', '1', '{\"rules\": [{\"id\": 1, \"sql\": \"select * from xtn_userinfo where username = \':username\' and password = \':password\'\", \"name\": \"admininfo\", \"type\": \"query\", \"isRows\": false}, {\"id\": 2, \"sql\": \"select * from xtn_userinfo where id> :id\", \"name\": \"userlist\", \"type\": \"query\", \"isRows\": true}], \"fields\": \"username,password,id\", \"result\": 1}', '');
+INSERT INTO `sys_rule` VALUES ('1', '/webapi/demo', 'get', '1', '{\"rules\": [{\"id\": 1, \"sql\": \"select * from xtn_userinfo where username = \':username\' and password = \':password\'\", \"name\": \"admininfo\", \"type\": \"query\", \"isRows\": false}, {\"id\": 2, \"sql\": \"select * from xtn_userinfo where id> :id\", \"name\": \"userlist\", \"type\": \"query\", \"isRows\": true}, {\"id\": 3, \"type\": \"beginTran\"}, {\"id\": 4, \"sql\": \"update xtn_userinfo t set t.tel=\':tel\' where t.id = :id1\", \"name\": \"update_info\", \"type\": \"update\", \"isRows\": false}, {\"id\": 5, \"sql\": \"select * from xtn_userinfo where id = :id1\", \"name\": \"id1_info\", \"type\": \"query\", \"isRows\": false}, {\"id\": 6, \"sql\": \"insert into xtn_userinfo(username,password,tel,address) values(uuid_short(),md5(now()),\':tel\',\'哈哈\');\", \"name\": \"insert_result\", \"type\": \"insert\", \"resultName\": \"InsertNo\"}, {\"id\": 7, \"sql\": \"select * from xtn_userinfo t where t.id = :InsertNo\", \"name\": \"insert_result11\", \"type\": \"query\", \"isRows\": false}, {\"id\": 9, \"sql\": \"select count(1) total from xtn_userinfo \", \"name\": \"insert_total1\", \"type\": \"query\", \"isRows\": false}, {\"id\": 10, \"sql\": \"delete from xtn_userinfo where id = :InsertNo - 5\", \"name\": \"delete_result\", \"type\": \"delete\"}, {\"id\": 11, \"type\": \"commit\"}, {\"id\": 13, \"sql\": \"select count(1) total from xtn_userinfo \", \"name\": \"insert_total2\", \"type\": \"query\", \"isRows\": false}], \"fields\": \"username,password,id,tel\", \"result\": 1}', '');
 INSERT INTO `sys_rule` VALUES ('2', '/webapi/userinfo/users', 'get', '1', '{\"rules\": [{\"id\": 1, \"sql\": \"select * from xtn_userinfo t order by t.id desc\", \"name\": \"UserList\", \"type\": \"query\", \"isRows\": \"true\"}], \"fields\": \"\", \"result\": 1}', null);
+INSERT INTO `sys_rule` VALUES ('3', '/webapi/userinfo/user', 'delete', '1', '{\"rules\": [{\"id\": 1, \"sql\": \"delete from xtn_userinfo where id = :id \", \"type\": \"delete\"}], \"fields\": \"id\", \"result\": 1}', null);
+INSERT INTO `sys_rule` VALUES ('4', '/webapi/manager/api/list', 'get', '1', '{\"rules\": [{\"id\": 1, \"sql\": \"select (case t.status when 1 then \'启用\' when 0 then \'禁用\' end) StatusCn,t.* from sys_rule t;\", \"type\": \"query\", \"isRows\": true}], \"fields\": \"\", \"result\": 1}', null);
 
 -- ----------------------------
 -- Table structure for xtn_deps
@@ -81,7 +83,7 @@ CREATE TABLE `xtn_userinfo` (
   `address` varchar(200) DEFAULT '' COMMENT '地址',
   `createdate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COMMENT='用户信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=239 DEFAULT CHARSET=utf8 COMMENT='用户信息表';
 
 -- ----------------------------
 -- Records of xtn_userinfo
@@ -89,11 +91,13 @@ CREATE TABLE `xtn_userinfo` (
 INSERT INTO `xtn_userinfo` VALUES ('1', 'admin', 'admin', '1112', '1123', '2017-07-02 18:15:32');
 INSERT INTO `xtn_userinfo` VALUES ('4', '23', '21ad0bd836b90d08f4cf640b4c298e7c', 'dd', 'ee', '2017-07-08 14:53:01');
 INSERT INTO `xtn_userinfo` VALUES ('5', '23', '21ad0bd836b90d08f4cf640b4c298e7c', 'dd', 'ee', '2017-07-08 14:54:25');
-INSERT INTO `xtn_userinfo` VALUES ('6', '23', '21ad0bd836b90d08f4cf640b4c298e7c', 'dd', 'ee', '2017-07-08 14:59:36');
+INSERT INTO `xtn_userinfo` VALUES ('6', '23', '21ad0bd836b90d08f4cf640b4c298e7c', '123', 'ee', '2017-07-08 14:59:36');
 INSERT INTO `xtn_userinfo` VALUES ('7', '23', '21ad0bd836b90d08f4cf640b4c298e7c', 'dd', 'ee', '2017-07-08 14:59:49');
 INSERT INTO `xtn_userinfo` VALUES ('8', 'update xtn_userinfo set username=\'23\' where username=\'aa\'', '21ad0bd836b90d08f4cf640b4c298e7c', 'dd', 'ee', '2017-07-08 15:08:14');
-INSERT INTO `xtn_userinfo` VALUES ('9', 'delete xtn_userinfo where username=\'23\'', '21ad0bd836b90d08f4cf640b4c298e7c', 'dd', 'ee', '2017-07-08 15:10:03');
-INSERT INTO `xtn_userinfo` VALUES ('16', 'asdfasdf', '68eee0308454ed1e4195554afc6568a7', 'adfsafd', 'asdfasdfa', '2017-07-08 22:31:12');
+INSERT INTO `xtn_userinfo` VALUES ('9', 'delete xtn_userinfo where username=\'23\'', '21ad0bd836b90d08f4cf640b4c298e7c', '1111', 'ee', '2017-07-08 15:10:03');
+INSERT INTO `xtn_userinfo` VALUES ('16', 'asdfasdf', '68eee0308454ed1e4195554afc6568a7', '123', 'asdfasdfa', '2017-07-08 22:31:12');
+INSERT INTO `xtn_userinfo` VALUES ('17', '295ff6ab-68f2-11e7-9e50-0022645f5c4b', 'daf828384bbe2a5a5dad2d9134ae0c0e', 'tel', '哈哈', '2017-07-15 08:11:34');
+INSERT INTO `xtn_userinfo` VALUES ('45', '97224655458271259', '916d6fc9d2d83659f38946ea35e8186b', '123', '哈哈', '2017-07-15 08:52:47');
 
 -- ----------------------------
 -- Table structure for xtn_user_deps
