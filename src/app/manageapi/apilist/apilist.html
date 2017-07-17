@@ -1,5 +1,4 @@
 <div class="apiListCss">
-  apilist
   <div class="apiInfo">
     <div class="api">
       <div class="method">请求方式</div>
@@ -17,9 +16,24 @@
         </div>
       </div>
       <div class="item" *ngIf=" CurrentItem && CurrentItem.Id === item.Id">
-        <xtn-api-item [Source]="CurrentItem"></xtn-api-item>
+        <xtn-api-item [Source]="CurrentItem" (onDelete)="__ClickDeleteItem($event,item)"></xtn-api-item>
       </div>
     </div>
 
+  </div>
+  <div class="addApi">
+    <xtn-api-item [Source]="NewApiInfo" *ngIf="isAddNewApiInfo"></xtn-api-item>
+    <div class="btns">
+      <div class="btn" (click)="__ClickAddApi()">
+        <div>
+          添加接口
+        </div>
+      </div>
+      <div class="btn" (click)="__ClickSaveApi()">
+        <div>
+          保存接口
+        </div>
+      </div>
+    </div>
   </div>
 </div>

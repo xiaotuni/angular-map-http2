@@ -65,7 +65,7 @@ class server {
       const r = new routes(req, res);
       r.initHeader();
     }).listen(port || 10000);
-    console.log('http://127.0.0.1:%d', port || 10000)
+    console.log('https://127.0.0.1:%d', port || 10000)
   }
 }
 

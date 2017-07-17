@@ -8,7 +8,6 @@ export class ApiManagerService {
     this.__Client = client;
   }
   List(): Promise<any> {
-    console.log('api list');
     const __self = this;
     const options = {
       action: {
@@ -18,6 +17,12 @@ export class ApiManagerService {
     };
     return this.__Client(options).then((data) => {
       __self.ApiList = data;
+      __self.ApiList.forEach(row => {
+        const { Content } = row;
+        try {
+          row.RuleInfo = JSON.parse(Content);
+        } catch (ex) { console.log(ex); }
+      });
       return data;
     });
   }

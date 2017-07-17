@@ -4,26 +4,42 @@
     <input type="checkbox" [(ngModel)]="ApiInfo.Status">
     <span class="title">请求方式：</span>
     <select [(ngModel)]="ApiInfo.Method">
-          <option value="get">get</option>  
-          <option value="delete">delete</option>  
-          <option value="post">post</option>  
-          <option value="put">put</option>  
-        </select>
+      <option *ngFor="let item of MethodCollection"  [value]="item.key">{{item.title}}</option>
+    </select>
     <span class="title">接口：</span>
     <input type="text" [(ngModel)]="ApiInfo.PathName" />
   </div>
+  <div>
+    <span class="ruleList"> 规则列表： </span>
+    <div class="btns">
+      <div class="btn">
+        <div (click)="__AddRule()">添加一条规则</div>
+      </div>
+    </div>
+  </div>
   <div class="ruleTitle">
-    <span class="desc"> 规则列表： </span>
     <span class="index">返回结果索引</span>
     <input class="number" type="number" [(ngModel)]="RuleInfo.result">
     <span class="params">参数字段</span>
     <input class="fields" type="text" [(ngModel)]="RuleInfo.fields">
 
   </div>
-  <div class="rule" *ngFor="let rule of RuleInfo.rules; let i = index;
-  let isFirst = first;
-  let isLast = last;
-  ">
+  <div class="rule" *ngFor="let rule of RuleInfo.rules; let i = index; let isFirst = first; let isLast = last; ">
+    <div class="btns">
+      <div class="btn" *ngIf="!isFirst">
+        <div (click)="__ClickMove(-1,i)">上移</div>
+      </div>
+      <div class="btn" *ngIf="!isLast">
+        <div (click)="__ClickMove(1,i)">下移</div>
+      </div>
+      <div class="btn">
+        <div (click)="__ClickInsert(i)">插入一条</div>
+      </div>
+      <div class="btn">
+        <div (click)="__ClickDelete(rule,i)">删除</div>
+      </div>
+    </div>
+
     <div class="row">
       <span class="title">规则号</span>
       <input type="number" [(ngModel)]="rule.id" />
@@ -35,21 +51,6 @@
       <input type="checkbox" [(ngModel)]="rule.isRows" />
       <span class="title">结果名称</span>
       <input type="text" required [(ngModel)]="rule.name" />
-
-      <div class="btns">
-        <div class="btn" *ngIf="!isFirst">
-          <div (click)="__ClickMove(-1,i)">上移</div>
-        </div>
-        <div class="btn" *ngIf="!isLast">
-          <div (click)="__ClickMove(1,i)">下移</div>
-        </div>
-        <div class="btn"> 
-          <div (click)="__ClickInsert(i)">插入一条</div>
-        </div>
-        <div class="btn">
-          <div (click)="__ClickDelete(rule,i)">删除</div>
-        </div>
-      </div>
     </div>
     <div class="sqlInfo">
       <div class="title">规则执行的SQL语句</div>

@@ -1,20 +1,20 @@
 .apiListCss {
   font-size: 12px;
-
   .apiInfo {
-
     .api {
       display: flex;
       border-top: 1px solid #f5f5f5; // padding: 5px 0px;
-      >div {
+
+      > div {
         border-right: 1px solid #f5f5f5;
-        padding: 5px 0px;
+        padding: 5px 0;
       }
 
       .method {
         width: 80px;
         padding: 5px;
       }
+
       .statu {
         padding: 5px 15px;
       }
@@ -31,6 +31,32 @@
 
     .item {
       border: 1px solid #f5f5f5;
+    }
+  }
+
+  .addApi {
+    border: 1px solid #f5f5f5;
+
+    .btns {
+      display: flex;
+      justify-content: center;
+      // padding: 20px;
+
+      .btn {
+        margin: 5px;
+
+        > div {
+          border: 1px solid #f5f5f5;
+          border-radius: 5px;
+          padding: 5px 20px;
+          font-size: 14px;
+
+          &:hover {
+            background: blue;
+            color: #fff;
+          }
+        }
+      }
     }
   }
 }

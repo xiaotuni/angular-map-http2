@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, Input } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { Utility } from '../../Common/Utility';
 @Component({
   selector: 'xtn-api-item',
@@ -8,6 +8,7 @@ import { Utility } from '../../Common/Utility';
 export class ApiItemComponent implements OnInit {
 
   @Input('Source') ApiInfo: any;
+  @Output() onDelete: EventEmitter<any> = new EventEmitter();
   public RuleInfo: any;
   public RuleType: Array<any> = [
     { key: 'query', title: '查询' },
@@ -16,14 +17,19 @@ export class ApiItemComponent implements OnInit {
     { key: 'insert', title: '插入' },
     { key: 'delete', title: '删除' },
     { key: 'commit', title: '提交事务' }];
+  public MethodCollection: Array<any> = [
+    { key: 'get', title: 'get' },
+    { key: 'delete', title: 'delete' },
+    { key: 'post', title: 'post' },
+    { key: 'put', title: 'put' },
+  ];
   constructor() {
-    console.log('constructor', this.ApiInfo);
   }
 
   ngOnInit() {
-    console.log(this.ApiInfo);
-    this.RuleInfo = JSON.parse(this.ApiInfo.Content);
-    console.log(this.RuleInfo);
+    // this.RuleInfo = JSON.parse(this.ApiInfo.Content);
+    const { RuleInfo } = this.ApiInfo || { RuleInfo: {} };
+    this.RuleInfo = RuleInfo || {};
   }
 
   __ClickMove(type, index) {
@@ -34,7 +40,9 @@ export class ApiItemComponent implements OnInit {
       this.RuleInfo.rules[__nextIndex] = currentRule;
       this.RuleInfo.rules[index] = __nextRule;
     }
-    console.log(index);
+    if (this.onDelete) {
+      this.onDelete.emit({ type, index });
+    }
   }
   __ClickDelete(item, index) {
     this.RuleInfo.rules.splice(index, 1);
@@ -43,6 +51,12 @@ export class ApiItemComponent implements OnInit {
   __ClickInsert(index) {
     const NewRule = JSON.parse(JSON.stringify(this.RuleInfo.rules[index]));
     this.RuleInfo.rules.splice(index, 0, NewRule);
-    // [].unshift({});
+  }
+
+  __AddRule() {
+    if (!this.ApiInfo.RuleInfo.rules) {
+      this.ApiInfo.RuleInfo.rules = [];
+    }
+    this.ApiInfo.RuleInfo.rules.push({});
   }
 }

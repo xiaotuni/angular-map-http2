@@ -11,16 +11,18 @@ import * as CryptoJS from 'crypto-js';
 export class ApiListComponent implements OnInit {
   public UserInfo: any;
   public ApiList: any;
+  public NewApiInfo: any = { RuleInfo: { rules: [] } };
   public CurrentItem: any;
+  public isAddNewApiInfo: boolean = false;
+
   constructor(private sHelper: ServiceHelper) {
+
     this.UserInfo = { username: 'admin', password: 'admin@163.com' };
   }
 
   ngOnInit() {
-    console.log(this.sHelper);
     const __self = this;
     this.sHelper.ApiManager.List().then(() => {
-      const a = __self;
       __self.ApiList = __self.sHelper.ApiManager.ApiList;
     }, (err) => {
       console.log(err);
@@ -33,5 +35,20 @@ export class ApiListComponent implements OnInit {
     } else {
       this.CurrentItem = item;
     }
+  }
+
+  __ClickDeleteItem(item, b, c) {
+    console.log('__ClickDeleteItem-->', item, b, c);
+  }
+
+  __ClickAddApi() {
+    // const newApi = JSON.parse(JSON.stringify(this.ApiList[this.ApiList.length - 1]));
+    // this.ApiList.push(newApi);
+
+    this.isAddNewApiInfo = !this.isAddNewApiInfo;
+  }
+
+  __ClickSaveApi() {
+    console.log(this.NewApiInfo);
   }
 }
