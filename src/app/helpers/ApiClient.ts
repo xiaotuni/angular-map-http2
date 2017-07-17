@@ -30,6 +30,9 @@ export default class ApiClient {
     },
     Api: {
       List: '/manager/api/list',
+      Add: '/manager/api/add',
+      Delete: '/manager/api/delete',
+      Modify: '/manager/api/modify',
     }
   }
 

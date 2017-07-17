@@ -50,5 +50,8 @@ export class ApiListComponent implements OnInit {
 
   __ClickSaveApi() {
     console.log(this.NewApiInfo);
+    const _a = JSON.stringify(this.NewApiInfo.RuleInfo);
+    this.NewApiInfo.Cnt = "'" + _a.substr(0, _a.length) + "'"
+    this.sHelper.ApiManager.AddApi(this.NewApiInfo).then(() => { }, () => { });
   }
 }

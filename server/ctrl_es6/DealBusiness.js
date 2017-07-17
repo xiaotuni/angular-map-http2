@@ -4,7 +4,12 @@ const queryFormat = function (query, values) {
   if (!values) return query;
   return query.replace(/\:(\w+)/g, function (txt, key) {
     if (values.hasOwnProperty(key)) {
-      return this.escape(values[key]);
+      let _value = values[key];
+      if (_value.constructor.name === 'Object') {
+        _value = JSON.stringify(_value);
+        return _value;
+      }
+      return this.escape(_value);
     }
     return txt;
   }.bind(this));
