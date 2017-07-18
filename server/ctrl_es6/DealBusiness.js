@@ -243,3 +243,100 @@ class dealbusiness {
 }
 
 module.exports = dealbusiness;
+
+
+
+
+
+// update sys_rule set content = '
+// {
+//     "rules":[
+//         {
+//             "id":1,
+//             "sql":"select * from xtn_userinfo where username = \':username\' and password = \':password\'",
+//             "name":"admininfo",
+//             "type":"query",
+//             "isRows":false
+//         },
+//         {
+//           "id":10,
+//           "sql":"select count(1) as total from xtn_userinfo where username = \':username\' and password = \':password\'",
+//           "type":"judge",
+//           "judgeinfo":{
+//              "resultField":"total",
+// 			 "operator": "<=",
+//              "datatype":"number",
+//              "contrastvalue":1,
+//              "successMsg":"",
+//              "failMsg":"用户存在",
+//              "isNext":1
+//            }
+//         },
+//         {
+//             "id":2,
+//             "sql":"select * from xtn_userinfo where id> :id",
+//             "name":"userlist",
+//             "type":"query",
+//             "isRows":true
+//         },
+//         {
+//             "id":3,
+//             "type":"beginTran"
+//         },
+//         {
+//             "id":4,
+//             "sql":"update xtn_userinfo t set t.tel=\':tel\' where t.id = :id1",
+//             "name":"update_info",
+//             "type":"update",
+//             "isRows":false
+//         },
+//         {
+//             "id":5,
+//             "sql":"select * from xtn_userinfo where id = :id1",
+//             "name":"id1_info",
+//             "type":"query",
+//             "isRows":false
+//         },
+//         {
+//             "id":6,
+//             "sql":"insert into xtn_userinfo(username,password,tel,address) values(uuid_short(),md5(now()),\':tel\',\'哈哈\');",
+//             "name":"InsertNo",
+//             "type":"insert"
+//         },
+//         {
+//             "id":7,
+//             "sql":"select * from xtn_userinfo t where t.id = :InsertNo",
+//             "name":"insert_result11",
+//             "type":"query",
+//             "isRows":false
+//         },
+//         {
+//             "id":9,
+//             "sql":"select count(1) total from xtn_userinfo ",
+//             "name":"insert_total1",
+//             "type":"query",
+//             "isRows":false
+//         },
+//         {
+//             "id":10,
+//             "sql":"delete from xtn_userinfo where id = :InsertNo - 5",
+//             "name":"delete_result",
+//             "type":"delete"
+//         },
+//         {
+//             "id":11,
+//             "type":"commit"
+//         },
+//         {
+//             "id":13,
+//             "sql":"select count(1) total from xtn_userinfo ",
+//             "name":"insert_total2",
+//             "type":"query",
+//             "isRows":false
+//         }
+//     ],
+//     "fields":"username,password,id,tel,id1",
+//     "result":1
+// }
+// '
+// where id = 5
