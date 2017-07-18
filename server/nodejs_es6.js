@@ -17,6 +17,9 @@ http.ServerResponse.prototype.Send = function (data) {
   this.write(JSON.stringify(data));
   this.end();
 };
+http.ServerResponse.prototype.SendOk = function () {
+  this.Send({ msg: 'ok' });
+};
 http.ServerResponse.prototype.Send_404 = function (data) {
   this.statusCode = 404;
   this.Send(data);
@@ -100,38 +103,26 @@ class routes {
     this.Method = method.toLocaleLowerCase();
     this.parseUrlParams();
 
-    this.__ProcessApi();
-    return;
-    // switch (this.Method) {
-    //   case 'get':
-    //     this.GetRequest(PathInfo);
-    //     break;
-    //   case 'post':
-    //     this.PostReqeust(PathInfo);
-    //     break;
-    //   case 'put':
-    //     this.PutRequest(PathInfo);
-    //     break;
-    //   case 'delete':
-    //     this.DeleteRequest(PathInfo);
-    //     break;
-    // }
-    // this.parseFormDataInfo();
+    this.__ProcessApi(PathInfo);
   }
 
-  __ProcessApi() {
-    const a = { pathname: this.UrlInfo.pathname, method: this.Method };
+  __ProcessApi(PathInfo) {
+    const methodInfo = { pathname: this.UrlInfo.pathname, method: this.Method };
     this.req.setEncoding('utf8');
     let __ReData = "";
     this.req.on('data', (data) => {
       __ReData += data;
     });
+    const __self = this;
     this.req.on('end', () => {
-      this.ApiInfo.DealBusiness.Process(this.req, this.res, {
-        methodInfo: a,
-        params: this.QueryParams,
-        data: __ReData && __ReData !== '' ? JSON.parse(__ReData) : {}
-      });
+      const { func, ctrl } = __self.__FindMethod(PathInfo) || {};
+      const data = __ReData && __ReData !== '' ? JSON.parse(__ReData) : {};
+      if (func) {
+        func.apply(ctrl, [__self.req, __self.res, { params: __self.QueryParams, data }]);
+        return;
+      }
+      const _db = new DbHelper();
+      __self.ApiInfo.DealBusiness.Process(_db, __self.req, __self.res, { methodInfo, params: __self.QueryParams, data });
     });
   }
 
@@ -196,53 +187,14 @@ class routes {
     this.QueryParams = querystring.parse(query);
   }
 
-  parseFormDataInfo() {
-    const __api = api;
-    const __webapi = __api.webapi;
-    this.res.Send({ msg: '哈全', date: new Date().getTime() });
-  }
-
-  GetRequest(PathInfo) {
-    const { func, ctrl } = this.__FindMethod(PathInfo) || {};
-    if (!func) {
-      return;
-    }
-    func.apply(ctrl, [this.req, this.res, this.QueryParams]);
-  }
-
-  DeleteRequest(PathInfo) {
-    const { func, ctrl } = this.__FindMethod(PathInfo);
-    if (!func) {
-      return;
-    }
-    func.apply(ctrl, [this.req, this.res, this.QueryParams]);
-  }
-
-  PostReqeust(PathInfo) {
-    const { func, ctrl } = this.__FindMethod(PathInfo);
-    if (!func) {
-      return;
-    }
-    let __ReData = '';
-    this.req.setEncoding('utf8');
-    this.req.on('data', (data) => {
-      __ReData += data;
-    });
-    this.req.on('end', () => {
-      func.apply(ctrl, [this.req, this.res, { data: JSON.parse(__ReData), urlparams: this.QueryParams }]);
-    });
-  }
-
-  PutRequest(PathInfo) {
-    this.PostReqeust(PathInfo);
-  }
-
-  __FindMethod(PathInfo) {
+  __FindMethod(PathInfo, isSendMsg) {
     const { pathname } = this.UrlInfo;
     const pathList = pathname.split('/');
     pathList.shift();
     if (pathList.length === 1) {
-      this.res.Send_404({ status: 404, msg: pathname + '接口没有找到' });
+      if (isSendMsg) {
+        this.res.Send_404({ status: 404, msg: pathname + '接口没有找到' });
+      }
       return null;
     }
     const __last = pathList.pop();
@@ -256,13 +208,17 @@ class routes {
       }
     }
     if (!__ApiIsExist) {
-      this.res.Send_404({ status: 404, msg: pathname + '接口没有找到' });
+      if (isSendMsg) {
+        this.res.Send_404({ status: 404, msg: pathname + '接口没有找到' });
+      }
       return null;
     }
     const Controller = __CallApi;
     __CallApi = __CallApi[this.Method + '_' + __last]
     if (!__CallApi) {
-      this.res.Send_404({ status: 404, msg: pathname + '接口没有找到' });
+      if (isSendMsg) {
+        this.res.Send_404({ status: 404, msg: pathname + '接口没有找到' });
+      }
       return null;
     }
 

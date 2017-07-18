@@ -24,7 +24,7 @@ export default class ApiClient {
        */
       SaveUser: '/saveUser',
       UserLogin: '/userinfo/user',
-      AddUser: '/userinfo/test',
+      AddUser: '/userinfo/register',
       Userlist: '/userinfo/users',
       DeleteUser: '/userinfo/user',
     },

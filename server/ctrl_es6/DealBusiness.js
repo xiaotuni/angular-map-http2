@@ -7,21 +7,24 @@ const queryFormat = function (query, values) {
       let _value = values[key];
       if (_value.constructor.name === 'Object') {
         _value = JSON.stringify(_value);
-        return _value;
+        const rValue = _value.replace(/'/g, "\\'").replace(/\"/g, '\\"');
+        return rValue;
       }
-      return this.escape(_value);
+      // return this.escape(_value);
+      // 之所以不用上面那个，是因为用escape的时候会将内容进行转义。
+      return _value;
     }
     return txt;
   }.bind(this));
 };
 
 class dealbusiness {
-  constructor(DbHelper) {
-    this.DbHelper = DbHelper;
+  constructor() {
+    // this.DbHelper = DbHelper;
   }
 
-  Process(Request, Response, Options) {
-    // Response.Send("ok");
+  Process(DbHelper, Request, Response, Options) {
+    this.DbHelper = DbHelper;
     const { methodInfo } = Options;
     const { pathname, method } = methodInfo;
     const sql = Comm.format("select * from sys_rule t where t.status = 1 and t.PathName = '{0}' and t.Method = '{1}'",
@@ -82,36 +85,35 @@ class dealbusiness {
   }
 
   __Rules(Rule, RuleCollection, Options, Complete, Error) {
-    const { id, type, sql, isRows, name, resultName } = Rule;
-    console.log('id-->', id);
+    const { id, type, sql, isRows, name, resultName, judgeinfo } = Rule;
     const _t = (type || 'query').toLocaleLowerCase();
     const _FormatSQL = queryFormat(sql || ' ', Options);
+    console.log('id序号 =>%d--执行的SQL语句【%s】', id, _FormatSQL);
     const _NextRule = RuleCollection.shift();
     const __Next = (err) => {
       if (err) {
-        Error && Error(err);
+        this.DbHelper.ClosePool(() => Error && Error(err), (pe) => {
+          console.log('关闭连接池出错了-->', JSON.stringify(pe));
+          Error && Error(err);
+        });
         return;
       }
       if (_NextRule) {
         this.__Rules(_NextRule, RuleCollection, Options, Complete, Error);
       } else {
-        Complete(Options);
+        this.DbHelper.ClosePool(() => Complete(Options), (pe) => {
+          console.log('关闭连接池出错了-->', JSON.stringify(pe));
+          Complete(Options);
+        });
       }
     };
+    const __self = this;
     switch (_t) {
       case 'begintran':
-        this.DbHelper.BeginTransaction(() => {
-          __Next();
-        }, (error) => {
-          __Next(error);
-        });
+        this.DbHelper.BeginTransaction(() => __Next(), (error) => __Next(error));
         break;
       case 'commit':
-        this.DbHelper.Commit(() => {
-          __Next();
-        }, (err) => {
-          __Next(error);
-        });
+        this.DbHelper.Commit(() => __Next(), (err) => __Next(error));
         break;
       case 'query':
         if (isRows) {
@@ -119,38 +121,38 @@ class dealbusiness {
             const { result } = data;
             Options.Result[id] = { __name: name, result };
             __Next();
-          }, (err) => { __Next(err); });
+          }, (err) => __Next(err));
         } else {
           this.DbHelper.QueryOne(_FormatSQL, (data) => {
             const { result } = data;
             Options.Result[id] = { __name: name, result };
             __Next();
-          }, (err) => { __Next(err); });
+          }, (err) => __Next(err));
         }
         break;
       case 'insert':
         this.DbHelper.InsertSQL(_FormatSQL, (data) => {
           const { result } = data;
-          if (resultName && resultName !== '') {
+          if (name && name !== '') {
             const __InsertResultInfo = {};
-            __InsertResultInfo[resultName] = result.insertId;
+            __InsertResultInfo[name] = result.insertId;
             Object.assign(Options, __InsertResultInfo);
           }
           __Next();
-        }, (err) => { __Next(err); });
+        }, (err) => __Next(err));
         break;
       case 'delete':
-        this.DbHelper.DeleteSQL(_FormatSQL, (data) => {
-          __Next();
-        }, (err) => { __Next(err); });
+        this.DbHelper.DeleteSQL(_FormatSQL, (data) => __Next(), (err) => __Next(err));
         break;
       case 'update':
-        this.DbHelper.UpdateSQL(_FormatSQL, (data) => {
-          __Next();
-        }, (err) => { __Next(err); });
+        this.DbHelper.UpdateSQL(_FormatSQL, (data) => __Next(), (err) => __Next(err));
+        break;
+      case 'judge':
+        this.DbHelper.QueryOne(_FormatSQL, (data) => {
+          __self.__ProcessJudge(judgeinfo, data, () => __Next(), (err) => __Next(err));
+        }, (err) => __Next(err));
         break;
     }
-
   }
 
   __ResultInfo(ResultNo, Options) {
@@ -158,7 +160,9 @@ class dealbusiness {
     const __ResultNoInfo = Result[ResultNo];
     if (__ResultNoInfo) {
       const __Info = __ResultNoInfo.result;
-      delete __Info.__name;
+      if (__Info) {
+        delete __Info.__name;
+      }
       delete Result[ResultNo];
 
       Object.values(Result).forEach((value) => {
@@ -172,6 +176,70 @@ class dealbusiness {
     return values && values.length > 0 ? values[0] : { msg: 'ok' };
   }
 
+  __ProcessJudge(judgeinfo, data, Success, Error) {
+    const { result } = data;
+    const { resultField, operator, datatype, contrastvalue, successMsg, failMsg, isNext } = judgeinfo || {};
+    const __ResultValue = result[resultField];
+    let _CValue = contrastvalue;
+    switch (datatype) {
+      case 'number':
+        _CValue = Number(_CValue);
+        break;
+      case 'string':
+        _CValue = String(_CValue);
+        break;
+    }
+    let _ExecResult;
+    switch (operator) {
+      case '=':
+        _ExecResult = _CValue === __ResultValue;
+        break;
+      case '>':
+        _ExecResult = __ResultValue > _CValue;
+        break;
+      case '<':
+        _ExecResult = __ResultValue < _CValue;
+        break;
+      case '>=':
+        _ExecResult = __ResultValue >= _CValue;
+        break;
+      case '<=':
+        _ExecResult = __ResultValue <= _CValue;
+        break;
+    }
+    if (_ExecResult) {
+      if (isNext) {
+        if (failMsg && failMsg !== '') {
+          Error && Error({ msg: failMsg });
+        } else {
+          Success && Success();
+        }
+      } else {
+        // false 的
+        if (successMsg && successMsg !== '') {
+          Error && Error({ msg: successMsg });
+        } else {
+          Success && Success();
+        }
+      }
+      return;
+    }
+
+    if (isNext) {
+      if (failMsg && failMsg !== '') {
+        Error && Error({ msg: failMsg });
+      } else {
+        Success && Success();
+      }
+    } else {
+      if (successMsg && successMsg !== '') {
+        Error && Error({ msg: successMsg });
+      } else {
+        Success && Success();
+      }
+    }
+
+  }
 }
 
 module.exports = dealbusiness;
