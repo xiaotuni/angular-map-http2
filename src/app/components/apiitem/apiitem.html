@@ -8,9 +8,6 @@
     </select>
     <span class="title">接口：</span>
     <input type="text" [(ngModel)]="ApiInfo.PathName" />
-  </div>
-  <div>
-    <span class="ruleList"> 规则列表： </span>
     <div class="btns">
       <div class="btn">
         <div (click)="__AddRule()">添加一条规则</div>
@@ -25,36 +22,46 @@
 
   </div>
   <div class="rule" *ngFor="let rule of RuleInfo.rules; let i = index; let isFirst = first; let isLast = last; ">
-    <div class="btns">
-      <div class="btn" *ngIf="!isFirst">
-        <div (click)="__ClickMove(-1,i)">上移</div>
-      </div>
-      <div class="btn" *ngIf="!isLast">
-        <div (click)="__ClickMove(1,i)">下移</div>
-      </div>
-      <div class="btn">
-        <div (click)="__ClickInsert(i)">插入一条</div>
-      </div>
-      <div class="btn">
-        <div (click)="__ClickDelete(rule,i)">删除</div>
-      </div>
-    </div>
-
-    <div class="row">
-      <span class="title">规则号</span>
-      <input type="number" [(ngModel)]="rule.id" />
-      <span class="title">类型</span>
-      <select required [(ngModel)]="rule.type">
+    <div class="content">
+      <div class="row">
+        <div class="title">
+          <div class="name"> 规则号</div>
+          <input type="number" [(ngModel)]="rule.id" /></div>
+        <div class="title">
+          <div class="name"> 类型 </div>
+          <select required [(ngModel)]="rule.type">
           <option *ngFor="let item of RuleType" [value]="item.key">{{item.title}} </option>
         </select>
-      <span class="title">多行数据</span>
-      <input type="checkbox" [(ngModel)]="rule.isRows" />
-      <span class="title">结果名称</span>
-      <input type="text" required [(ngModel)]="rule.name" />
-    </div>
-    <div class="sqlInfo">
-      <div class="title">规则执行的SQL语句</div>
-      <textarea [(ngModel)]="rule.sql"></textarea>
+        </div>
+        <div class="title">
+          <div class="name"> 多行数据</div>
+          <input type="checkbox" [(ngModel)]="rule.isRows" />
+        </div>
+        <div class="title">
+          <div class="name"> 结果名称</div>
+          <input type="text" required [(ngModel)]="rule.name" />
+        </div>
+      </div>
+      <div class="sqlInfo">
+        <div class="oper">
+          <div class="title">规则执行的SQL语句</div>
+          <div class="btns btn-right">
+            <div class="btn" *ngIf="!isFirst">
+              <div (click)="__ClickMove(-1,i)">上移</div>
+            </div>
+            <div class="btn" *ngIf="!isLast">
+              <div (click)="__ClickMove(1,i)">下移</div>
+            </div>
+            <div class="btn">
+              <div (click)="__ClickInsert(i)">插入一条</div>
+            </div>
+            <div class="btn">
+              <div (click)="__ClickDelete(rule,i)">删除</div>
+            </div>
+          </div>
+        </div>
+        <textarea [(ngModel)]="rule.sql"></textarea>
+      </div>
     </div>
   </div>
 </div>

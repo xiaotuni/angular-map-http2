@@ -20,6 +20,10 @@
     }
   }
 
+  .btn-right {
+    justify-content: flex-end;
+  }
+
   > div {
     cursor: default;
   }
@@ -56,6 +60,14 @@
     display: flex;
     align-items: center;
 
+    span {
+      padding-right: 5px;
+    }
+
+    .params {
+      padding-left: 5px;
+    }
+
     .number {
       width: 40px;
     }
@@ -66,40 +78,59 @@
   }
 
   .rule {
-    padding: 10px;
-    border-bottom: 1px solid #9a9a9a;
+    padding: 5px 10px;
+    border: 1px solid #dea7e9;
 
-    .row {
+    .content {
       display: flex;
-      align-items: center;
 
-      .title {
-        padding: 5px 15px;
+      .row {
+        padding-top: 5px;
+
+        .title {
+          padding: 5px;
+          display: flex;
+
+          .name {
+            margin-right: 5px;
+            width: 50px;
+            text-align: right;
+          }
+        }
+
+        input[type='number'] {
+          width: 30px;
+        }
+
+        input[type='text'] {
+          width: 100px;
+        }
+
       }
 
-      input[type='number'] {
-        width: 30px;
-      }
+      .sqlInfo {
+        flex: 1;
+        height: 100%;
 
-      input[type='text'] {
-        width: 100px;
-      }
+        .oper {
+          padding: 5px 0;
+          display: flex;
+          align-items: center;
 
-    }
+          .title {
+            flex: 1;
+          }
 
-    .sqlInfo {
-      border-top: 1px solid #666;
+        }
 
-      div {
-        padding: 5px 0;
-        font-size: 14px;
-      }
-
-      textarea {
-        padding: 5px;
-        width: calc(100% - 10px);
-        min-height: 50px;
-        font-size: 14px;
+        textarea {
+          height: 100%;
+          padding: 5px;
+          width: calc(100% - 10px);
+          min-height: 50px;
+          font-size: 14px;
+          height: 75px;
+        }
       }
     }
   }

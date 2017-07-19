@@ -65,18 +65,21 @@ export default class ApiClient {
           function __ProcessError(err, body, __req) {
             try {
               Utility.$LoadingHide();
+              const { code, msg } = body || { code: 400, msg: '处理错误' };
               if (err.status) {
                 if (HttpStatus[err.status]) {
                   if (err.status === 400 && HttpStatus[__req.status]) {
-                    Utility.$emit(HttpStatus[__req.status], { code: __req.status, err, body });
+                    Utility.$Emit(HttpStatus[__req.status], { code: code || __req.status, msg: msg || err.message, body });
                   } else {
-                    Utility.$emit(HttpStatus[err.status], { code: err.status, err, body });
+                    Utility.$Emit(HttpStatus[err.status], { code: code || err.status, msg: msg || err.message, body });
                   }
+                } else {
+                  Utility.$Emit(HttpStatus[400], { code: err.status, msg: err.message });
                 }
               } else if (!!err.crossDomain) {
-                Utility.$actionSheet('与服务器连接中断...');
+                Utility.$ActionSheet('与服务器连接中断...');
               } else if (err.message && err.message !== '') {
-                Utility.$actionSheet(err.message);
+                Utility.$ActionSheet(err.message);
               }
             } catch (ex) {
               console.log(ex);
@@ -88,13 +91,11 @@ export default class ApiClient {
               const { body } = Response || { body: {} };
               if (err) {
                 __ProcessError(err, body, Response);
-                // reject-->拒绝,要在外面 .catch((ex)=>{console.log(ex);}) 抛出异常进行接受;
                 reject(body);
               } else {
                 if (!body) {
-                  Utility.$emit(HttpStatus[Response.status], { status: Response.status, msg: '处理成功', Response });
+                  Utility.$Emit(HttpStatus[Response.status], { status: Response.status, msg: '处理成功', Response });
                 }
-                // resolve-->解决
                 resolve(body);
               }
             });

@@ -12,8 +12,11 @@ export default function clientMiddleware(client) {
         const { type, ...rest } = list[index];
       });
       return results;
+    }, (err) => {
+      return err;
     }).catch((error) => {
       console.log(error);
+      return error;
     });
   };
 

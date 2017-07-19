@@ -3,6 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Utility } from './containers/Core';
+import { EventEmitter } from 'events';
 
 
 @Component({
@@ -13,16 +14,19 @@ import { Utility } from './containers/Core';
 export class AppComponent {
   __Title111 = 'app works!';
   private __Location: Location;
+
   constructor(private router: Router, private location: Location, private activatedRoute: ActivatedRoute,
     private titleService: Title) {
     this.__Location = location;
     this.__RouterListen(router);
+    this.__ListenEmit();
   }
 
   __RouterListen(router: Router): void {
     Utility.$SetContent(Utility.$ConstItem.Route, router, false);
     Utility.$SetContent(Utility.$ConstItem.BrowerTitle, this.titleService, false);
     Utility.$SetContent(Utility.$ConstItem.Location, this.__Location, false);
+    Utility.$SetContent(Utility.$ConstItem.Event, new EventEmitter(), false);
 
     const _FindFirstChild = (parent) => {
       //
@@ -60,7 +64,15 @@ export class AppComponent {
     // router.events.changes(() => { });
     // router.subscribe((item) => { });
   }
+
   __GoBack() {
     Utility.$GoBack();
+  }
+
+  __ListenEmit() {
+    const { HttpStatus } = Utility.$ConstItem.Events;
+    Utility.$On(HttpStatus[400], (args) => {
+      console.log(args);
+    });
   }
 }
