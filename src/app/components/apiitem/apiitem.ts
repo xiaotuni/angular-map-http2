@@ -16,7 +16,9 @@ export class ApiItemComponent implements OnInit {
     { key: 'update', title: '更新' },
     { key: 'insert', title: '插入' },
     { key: 'delete', title: '删除' },
-    { key: 'commit', title: '提交事务' }];
+    { key: 'commit', title: '提交事务' },
+    { key: 'judge', title: '条件判断' },
+  ];
   public MethodCollection: Array<any> = [
     { key: 'get', title: 'get' },
     { key: 'delete', title: 'delete' },
