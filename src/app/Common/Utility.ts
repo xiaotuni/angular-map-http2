@@ -28,8 +28,26 @@ export class Utility {
     Location: 'XTN_Location',
     AppIsGoBack: 'XTN_APP_IS_GO_BACK',
     BrowerTitle: 'XTN_BrowerTitle',
+    Event: 'XTN_EVENT_INFO',
     Events: {
-      HttpStatus: {}
+      HttpStatus: {
+        400: 'XTN_HTTP_STATUS_404',
+        401: 'XTN_HTTP_STATUS_401',
+        402: 'XTN_HTTP_STATUS_402',
+        403: 'XTN_HTTP_STATUS_403',
+        404: 'XTN_HTTP_STATUS_404',
+        405: 'XTN_HTTP_STATUS_405',
+        500: 'XTN_HTTP_STATUS_500',
+        501: 'XTN_HTTP_STATUS_501',
+      },
+      ShowModel: {
+        onActionSheet: 'XTN_MODEL_ACTION_SHEET',
+        onActionSheetHide: 'XTN_MODEL_ACTION_SHEET_HIDE',
+        onLoading: 'XTN_MODEL_LOADING',
+        onLoadingHide: 'XTN_MODEL_LOADING_HIDE',
+        onDialog: 'XTN_MODEL_DIALOG',
+        onDialogHide: 'XTN_MODEL_DIALOG_HIDE',
+      }
     },
     UrlItem: {
       GoBack: 'XTN_GOBACK',
@@ -56,15 +74,50 @@ export class Utility {
     }
   };
 
+  static $Emit(eventName, args) {
+    if (!eventName || eventName === '') {
+      return;
+    }
+    const __event = this.$GetContent(this.$ConstItem.Event);
+    if (!__event) {
+      return;
+    }
+    __event.emit(eventName, args);
+  }
+  static $On(eventName, callback) {
+    if (!eventName || eventName === '') {
+      return;
+    }
+    const __event = this.$GetContent(this.$ConstItem.Event);
+    if (!__event) {
+      return;
+    }
+    __event.on(eventName, callback);
+  }
+
+  static $Loading() {
+    this.$Emit(this.$ConstItem.Events.ShowModel.onLoading, null);
+  }
   static $LoadingHide() {
-
+    this.$Emit(this.$ConstItem.Events.ShowModel.onLoadingHide, null);
   }
-  static $emit(name, args) {
 
+  static $ActionSheet(msg) {
+    this.$Emit(this.$ConstItem.Events.ShowModel.onActionSheet, { msg });
   }
-  static $actionSheet(msg) {
 
+  static $ActionSheetHide() {
+    this.$Emit(this.$ConstItem.Events.ShowModel.onActionSheetHide, null);
   }
+
+  static $ShowDialog(Title, Msg, OkBtn, CancelBtn, Options) {
+    this.$Emit(this.$ConstItem.Events.ShowModel.onDialog, { Title, Msg, OkBtn, CancelBtn, Options });
+  }
+
+  static $ShowDialogHide() {
+    this.$Emit(this.$ConstItem.Events.ShowModel.onDialogHide, null);
+  }
+
 
   /**
    * 保存内容

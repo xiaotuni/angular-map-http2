@@ -35,10 +35,10 @@ class dealbusiness {
       if (result) {
         __self.__ProcessRule(Request, Response, Options, result);
       } else {
-        Response.SendError({ code: 404, msg: '方法没有找到' });
+        Response.SendError({ code: 404, msg: '【' + pathname + '】接口没有找到' });
       }
     }, (err) => {
-      Response.SendError({ code: 404, msg: '方法没有找到' });
+      Response.SendError({ code: 404, msg: '【' + pathname + '】接口没有找到' });
     });
   }
 
