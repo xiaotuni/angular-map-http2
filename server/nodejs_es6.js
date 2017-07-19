@@ -108,20 +108,23 @@ class routes {
 
   __ProcessApi(PathInfo) {
     const methodInfo = { pathname: this.UrlInfo.pathname, method: this.Method };
+    // 以utf-8的形式接受body数据
     this.req.setEncoding('utf8');
     let __ReData = "";
+    // 这里接受用户调用接口时，向body发送的数据
     this.req.on('data', (data) => {
       __ReData += data;
     });
     const __self = this;
-    this.req.on('end', () => {
+    this.req.on('end', () => {      // 监听数据接受完后事件。
+      // 查询用户定义好的接口。
       const { func, ctrl } = __self.__FindMethod(PathInfo) || {};
       const data = __ReData && __ReData !== '' ? JSON.parse(__ReData) : {};
       if (func) {
         func.apply(ctrl, [__self.req, __self.res, { params: __self.QueryParams, data }]);
         return;
       }
-      const _db = new DbHelper();
+      const _db = new DbHelper(); // 实例化一个数据库操作类
       __self.ApiInfo.DealBusiness.Process(_db, __self.req, __self.res, { methodInfo, params: __self.QueryParams, data });
     });
   }
