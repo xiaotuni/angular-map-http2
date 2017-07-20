@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Utility } from '../Core';
+import { Utility } from '../ComponentTools';
 
 @Component({
   moduleId: module.id,

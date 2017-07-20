@@ -14,12 +14,13 @@ import { EventEmitter } from 'events';
 export class AppComponent {
   __Title111 = 'app works!';
   private __Location: Location;
+  public ActionSheetInfo: any;
 
   constructor(private router: Router, private location: Location, private activatedRoute: ActivatedRoute,
     private titleService: Title) {
     this.__Location = location;
     this.__RouterListen(router);
-    this.__ListenEmit();
+    this.__ListenEmit(this);
   }
 
   __RouterListen(router: Router): void {
@@ -53,26 +54,23 @@ export class AppComponent {
       }
     });
 
-    window.onpopstate = (a) => {
-      // console.log('pop');
-      // const __key = Utility.$ConstItem.AppIsGoBack;
-      // Utility.$SetContent(__key, true, false);;
-      // setTimeout(() => {
-      //   Utility.$RemoveContent(__key, false);
-      // }, 650);
-    };
-    // router.events.changes(() => { });
-    // router.subscribe((item) => { });
   }
 
   __GoBack() {
     Utility.$GoBack();
   }
 
-  __ListenEmit() {
-    const { HttpStatus } = Utility.$ConstItem.Events;
+  __ListenEmit(_this) {
+    const { ShowModel, HttpStatus } = Utility.$ConstItem.Events;
     Utility.$On(HttpStatus[400], (args) => {
       console.log(args);
+      Utility.$Emit(ShowModel.onActionSheet, args);
+    });
+    Utility.$On(ShowModel.onActionSheet, (args) => {
+      _this.ActionSheetInfo = args;
+    });
+    Utility.$On(ShowModel.onActionSheetHide, (args) => {
+      delete _this.ActionSheetInfo;
     });
   }
 }

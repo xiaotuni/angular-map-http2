@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
-import { Utility } from '../../Common/Utility';
+import { Utility } from '../ComponentTools';
 @Component({
   selector: 'xtn-api-item',
   templateUrl: './apiitem.html',
