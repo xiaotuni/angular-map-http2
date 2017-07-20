@@ -1,5 +1,24 @@
 # TravelTogether
 
+项目的依赖安装
+```bash
+npm install
+```
+项目启动
+```bash
+npm run dev
+```
+单独启动前端的话
+```
+npm run start
+```
+单独启动后台接口
+```bash
+npm run start-dev
+```
+
+如果专门调试接口的话，还是分别单独启动为好
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.3.
 
 ## Development server
