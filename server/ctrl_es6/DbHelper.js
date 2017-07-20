@@ -39,7 +39,6 @@ class MySqlHelper {
 
     this.pool.on('connection', function (connection) {
       // connection.query('SET SESSION auto_increment_increment=1')
-      // console.log('--------');
     });
     this.pool.on('release', function (connection) {
       // console.log('Connection %d released', connection.threadId);

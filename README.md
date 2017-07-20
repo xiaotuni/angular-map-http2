@@ -17,7 +17,38 @@ npm run start
 npm run start-dev
 ```
 
-如果专门调试接口的话，还是分别单独启动为好
+如果专门调试接口的话，还是分别单独启动为好.
+
+## nodejs.sql MySql 5.7以上版本。
+由于本试例中要用到MYSQL数据，所在在项目的根目录中有一个nodejs.sql的文件。将结构导入到数据库中即可，数据库版本是5.7以的，因为里面有一个sys_rule表里的Content存放的是JSON,只有5.7才能支持JSON字段。
+ 
+ ## 修改数据库连接
+ /server/ctrl_es6/DbHelper.js里33行左右
+ ```javascript
+ /**
+   * 创建一个资源池
+   * 
+   * @memberof MySqlHelper
+   */
+  __CreatePool() {
+    this.pool = mysql.createPool({
+      connectionLimit: 10,
+      host: 'localhost', // 数据库连接
+      user: 'liaohb',    // 数据库名用户名
+      password: 'xiaotuni', // 密码
+      database: 'nodejs'   // 表空间
+    });
+
+    this.pool.on('connection', (connection)=> {
+      // connection.query('SET SESSION auto_increment_increment=1')
+    });
+    this.pool.on('release', (connection)=> {
+      // console.log('Connection %d released', connection.threadId);
+    });
+  }
+
+ ```
+ 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.3.
 
