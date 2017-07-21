@@ -12,12 +12,7 @@ export default function clientMiddleware(client) {
         const { type, ...rest } = list[index];
       });
       return results;
-    }, (err) => {
-      return err;
-    }).catch((error) => {
-      console.log(error);
-      return error;
-    });
+    }, (err) => err).catch((error) => error);
   };
 
   const __CallMethod = (args) => {
@@ -33,15 +28,7 @@ export default function clientMiddleware(client) {
     }
     const [REQUEST, SUCCESS, FAILURE] = types;
     const actionPromise = promise(client);
-    actionPromise.then((result) => {
-      return result;
-    }, (error) => {
-      console.log('1-->', JSON.stringify(error));
-      return error;
-    }).catch((error) => {
-      console.log('2-->', JSON.stringify(error));
-      return error;
-    });
+    actionPromise.then((result) => result, (error) => error).catch((error) => error);
 
     return actionPromise;
   };

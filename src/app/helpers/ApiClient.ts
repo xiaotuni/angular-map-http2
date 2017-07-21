@@ -33,6 +33,12 @@ export default class ApiClient {
       Add: '/manager/api/add',
       Delete: '/manager/api/delete',
       Modify: '/manager/api/modify',
+    },
+    UserInfo: {
+      Info: '/userinfo/user',
+      Add: '/userinfo/user',
+      Delete: '/userinfo/user',
+      Put: '/userinfo/user',
     }
   }
 

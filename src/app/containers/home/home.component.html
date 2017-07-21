@@ -3,6 +3,14 @@
 
 <div class="homeCss">
   <div class="callApi" (click)="__CallApi()">call api</div>
+  <div class="demo">
+    <div class="btns">
+      <div class="btn" (click)="__UserInfo('get')">get request</div>
+      <div class="btn" (click)="__UserInfo('post')">post request</div>
+      <div class="btn" (click)="__UserInfo('del')">delete request</div>
+      <div class="btn" (click)="__UserInfo('put')">put request</div>
+    </div>
+  </div>
 
   <div class="apiResult">
     <div class="row" *ngFor="let item of DataList">

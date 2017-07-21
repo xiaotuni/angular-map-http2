@@ -32,7 +32,7 @@ class UserInfo {
   delete_user(request, response, options) {
     response.Send({ msg: '这是一个 delete 请求', options });
   }
-
+ 
   put_user(request, response, options) {
     response.Send({ msg: '这是一个 put 请求', options });
   }
