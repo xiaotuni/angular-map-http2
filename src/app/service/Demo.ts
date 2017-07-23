@@ -1,4 +1,4 @@
-// import { Client } from './Core';
+import { Client } from './Core';
 
 export class DemoService {
   private __Client: any;

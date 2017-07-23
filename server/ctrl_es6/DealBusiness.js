@@ -1,5 +1,7 @@
 const Utility = require('../lib/commonMethod');
 const Comm = Utility.Comm;
+const Log = Utility.Log;
+
 const queryFormat = function (query, values) {
   if (!values) return query;
   return query.replace(/\:(\w+)/g, function (txt, key) {
@@ -23,6 +25,15 @@ class dealbusiness {
     // this.DbHelper = DbHelper;
   }
 
+  /**
+   * 处理操作
+   * 
+   * @param {any} DbHelper 数据库访问类
+   * @param {any} Request 请求
+   * @param {any} Response 响应
+   * @param {any} Options 参数选择信息
+   * @memberof dealbusiness
+   */
   Process(DbHelper, Request, Response, Options) {
     this.DbHelper = DbHelper;
     const { methodInfo } = Options;
@@ -42,6 +53,14 @@ class dealbusiness {
     });
   }
 
+  /**
+   * 检查参数，规则里定义的要传的参数，与接口伟来的参数进行匹配检查。
+   * 
+   * @param {string} fields 字段
+   * @param {object} params 参数对象
+   * @returns 
+   * @memberof dealbusiness
+   */
   __CheckFields(fields, params) {
     if (fields === "") {
       return true;
@@ -59,6 +78,16 @@ class dealbusiness {
     return false;
   }
 
+  /**
+   * 处理规则
+   * 
+   * @param {any} Request 请求
+   * @param {any} Response 响应
+   * @param {any} Options 参数选择信息
+   * @param {any} RuleInfo 规则信息
+   * @returns 
+   * @memberof dealbusiness
+   */
   __ProcessRule(Request, Response, Options, RuleInfo) {
     // 开始处理规则
     const { Content } = RuleInfo;
@@ -75,7 +104,6 @@ class dealbusiness {
     const __first = rules.shift();
     const __self = this;
     this.__Rules(__first, rules, Object.assign({}, data, params, { Result: {} }), (success) => {
-      const { Result } = success;
       // 组织结果
       const __Data = __self.__ResultInfo(result, success);
       Response.Send(__Data);
@@ -84,25 +112,35 @@ class dealbusiness {
     });
   }
 
+  /**
+   * 处理规则
+   * 
+   * @param {any} Rule 当前要处理的规则
+   * @param {any} RuleCollection 剩余的规则集合 
+   * @param {any} Options 参数
+   * @param {any} Complete 处理完的回调
+   * @param {any} Error 错误回调
+   * @memberof dealbusiness
+   */
   __Rules(Rule, RuleCollection, Options, Complete, Error) {
     const { id, type, sql, isRows, name, resultName, judgeinfo } = Rule;
     const _t = (type || 'query').toLocaleLowerCase();
     const _FormatSQL = queryFormat(sql || ' ', Options);
-    console.log('id序号 =>%d--执行的SQL语句【%s】', id, _FormatSQL);
-    const _NextRule = RuleCollection.shift();
-    const __Next = (err) => {
+    Log.Print('id序号 =>%d--执行的SQL语句【%s】', id, _FormatSQL);
+    const __Next = (rList, rOption, rComplete, rError, err) => {
       if (err) {
         this.DbHelper.ClosePool(() => Error && Error(err), (pe) => {
-          console.log('关闭连接池出错了-->', JSON.stringify(pe));
+          Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
           Error && Error(err);
         });
         return;
       }
-      if (_NextRule) {
-        this.__Rules(_NextRule, RuleCollection, Options, Complete, Error);
+      const nR = rList.shift();
+      if (nR) {
+        this.__Rules(nR, rList, rOption, rComplete, rError);
       } else {
         this.DbHelper.ClosePool(() => Complete(Options), (pe) => {
-          console.log('关闭连接池出错了-->', JSON.stringify(pe));
+          Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
           Complete(Options);
         });
       }
@@ -110,24 +148,24 @@ class dealbusiness {
     const __self = this;
     switch (_t) {
       case 'begintran':
-        this.DbHelper.BeginTransaction(() => __Next(), (error) => __Next(error));
+        this.DbHelper.BeginTransaction(() => __Next(RuleCollection, Options, Complete, Error), (error) => __Next(null, null, null, null, error));
         break;
       case 'commit':
-        this.DbHelper.Commit(() => __Next(), (err) => __Next(error));
+        this.DbHelper.Commit(() => __Next(RuleCollection, Options, Complete, Error), (err) => __Next(null, null, null, null, err));
         break;
       case 'query':
         if (isRows) {
           this.DbHelper.Query(_FormatSQL, (data) => {
             const { result } = data;
             Options.Result[id] = { __name: name, result };
-            __Next();
-          }, (err) => __Next(err));
+            __Next(RuleCollection, Options, Complete, Error);
+          }, (err) => __Next(null, null, null, null, err));
         } else {
           this.DbHelper.QueryOne(_FormatSQL, (data) => {
             const { result } = data;
             Options.Result[id] = { __name: name, result };
-            __Next();
-          }, (err) => __Next(err));
+            __Next(RuleCollection, Options, Complete, Error);
+          }, (err) => __Next(null, null, null, null, err));
         }
         break;
       case 'insert':
@@ -138,28 +176,48 @@ class dealbusiness {
             __InsertResultInfo[name] = result.insertId;
             Object.assign(Options, __InsertResultInfo);
           }
-          __Next();
-        }, (err) => __Next(err));
+          __Next(RuleCollection, Options, Complete, Error);
+        }, (err) => __Next(null, null, null, null, err));
         break;
       case 'delete':
-        this.DbHelper.DeleteSQL(_FormatSQL, (data) => __Next(), (err) => __Next(err));
+        this.DbHelper.DeleteSQL(_FormatSQL,
+          (data) => __Next(RuleCollection, Options, Complete, Error),
+          (err) => __Next(null, null, null, null, err));
         break;
       case 'update':
-        this.DbHelper.UpdateSQL(_FormatSQL, (data) => __Next(), (err) => __Next(err));
+        this.DbHelper.UpdateSQL(_FormatSQL,
+          (data) => __Next(RuleCollection, Options, Complete, Error),
+          (err) => __Next(null, null, null, null, err));
         break;
       case 'judge':
         this.DbHelper.QueryOne(_FormatSQL, (data) => {
-          __self.__ProcessJudge(judgeinfo, data, () => __Next(), (err) => __Next(err));
-        }, (err) => __Next(err));
+          Object.assign(Options, data.result || {});
+          __self.__ProcessRuleJudge(judgeinfo, data,
+            // 成功向下走。
+            () => __Next(RuleCollection, Options, Complete, Error),
+            // 失败，执行中断。
+            (err) => __Next(null, null, null, null, err),
+            // 执行分支规则
+            (chilrenRules) => __Next(chilrenRules, Options, Complete, Error)
+          );
+        }, (err) => __Next(null, null, null, null, err));
         break;
     }
   }
 
+  /**
+   * 结果信息
+   * 
+   * @param {any} ResultNo 第几个为真返回的内容
+   * @param {any} Options 选项信息
+   * @returns 
+   * @memberof dealbusiness
+   */
   __ResultInfo(ResultNo, Options) {
     const { Result } = Options;
     const __ResultNoInfo = Result[ResultNo];
     if (__ResultNoInfo) {
-      const __Info = __ResultNoInfo.result;
+      const __Info = __ResultNoInfo.result || {};
       if (__Info) {
         delete __Info.__name;
       }
@@ -176,68 +234,39 @@ class dealbusiness {
     return values && values.length > 0 ? values[0] : { msg: 'ok' };
   }
 
-  __ProcessJudge(judgeinfo, data, Success, Error) {
+  /**
+   * 处理规则判断。
+   * 
+   * @param {any} judgeinfo 判断条件信息
+   * @param {any} data 要判断的数据
+   * @param {any} Success 判断成功回调
+   * @param {any} Error 判断失败回调
+   * @returns 
+   * @memberof dealbusiness
+   */
+  __ProcessRuleJudge(judgeinfo, data, Success, Error, exeChilrenRules) {
     const { result } = data;
-    const { resultField, operator, datatype, contrastvalue, successMsg, failMsg, isNext } = judgeinfo || {};
-    const __ResultValue = result[resultField];
-    let _CValue = contrastvalue;
-    switch (datatype) {
-      case 'number':
-        _CValue = Number(_CValue);
-        break;
-      case 'string':
-        _CValue = String(_CValue);
-        break;
+    const { strByEval, strByThis, chilrenRules, failMsg } = judgeinfo || {};
+
+    let __ExecResult = true;
+    if (strByEval && strByEval !== '') {
+      const __newEval = queryFormat(strByEval || ' ', data.result);
+      Log.Print('执行 Eval 条件:%s', __newEval);
+      __ExecResult = eval(__newEval);
+    } else if (strByThis && strByThis !== '') {
+      Log.Print('执行 this 条件:%s', strByThis);
+      __ExecResult = new Function(strByThis).apply(data.result);
     }
-    let _ExecResult;
-    switch (operator) {
-      case '=':
-        _ExecResult = _CValue === __ResultValue;
-        break;
-      case '>':
-        _ExecResult = __ResultValue > _CValue;
-        break;
-      case '<':
-        _ExecResult = __ResultValue < _CValue;
-        break;
-      case '>=':
-        _ExecResult = __ResultValue >= _CValue;
-        break;
-      case '<=':
-        _ExecResult = __ResultValue <= _CValue;
-        break;
-    }
-    if (_ExecResult) {
-      if (isNext) {
-        if (failMsg && failMsg !== '') {
-          Error && Error({ msg: failMsg });
-        } else {
-          Success && Success();
-        }
-      } else {
-        // false 的
-        if (successMsg && successMsg !== '') {
-          Error && Error({ msg: successMsg });
-        } else {
-          Success && Success();
-        }
+    Log.Print('执行结果为：', __ExecResult);
+    if (!__ExecResult) { // 判断失败，执行失败的时候，规则集合.
+      if (chilrenRules && chilrenRules.length > 0) {
+        exeChilrenRules && exeChilrenRules(chilrenRules);
+        return;
       }
+      Error && Error({ msg: failMsg });
       return;
     }
-
-    if (isNext) {
-      if (failMsg && failMsg !== '') {
-        Error && Error({ msg: failMsg });
-      } else {
-        Success && Success();
-      }
-    } else {
-      if (successMsg && successMsg !== '') {
-        Error && Error({ msg: successMsg });
-      } else {
-        Success && Success();
-      }
-    }
+    Success && Success();
 
   }
 }
@@ -245,98 +274,3 @@ class dealbusiness {
 module.exports = dealbusiness;
 
 
-
-
-
-// update sys_rule set content = '
-// {
-//     "rules":[
-//         {
-//             "id":1,
-//             "sql":"select * from xtn_userinfo where username = \':username\' and password = \':password\'",
-//             "name":"admininfo",
-//             "type":"query",
-//             "isRows":false
-//         },
-//         {
-//           "id":10,
-//           "sql":"select count(1) as total from xtn_userinfo where username = \':username\' and password = \':password\'",
-//           "type":"judge",
-//           "judgeinfo":{
-//              "resultField":"total",
-// 			 "operator": "<=",
-//              "datatype":"number",
-//              "contrastvalue":1,
-//              "successMsg":"",
-//              "failMsg":"用户存在",
-//              "isNext":1
-//            }
-//         },
-//         {
-//             "id":2,
-//             "sql":"select * from xtn_userinfo where id> :id",
-//             "name":"userlist",
-//             "type":"query",
-//             "isRows":true
-//         },
-//         {
-//             "id":3,
-//             "type":"beginTran"
-//         },
-//         {
-//             "id":4,
-//             "sql":"update xtn_userinfo t set t.tel=\':tel\' where t.id = :id1",
-//             "name":"update_info",
-//             "type":"update",
-//             "isRows":false
-//         },
-//         {
-//             "id":5,
-//             "sql":"select * from xtn_userinfo where id = :id1",
-//             "name":"id1_info",
-//             "type":"query",
-//             "isRows":false
-//         },
-//         {
-//             "id":6,
-//             "sql":"insert into xtn_userinfo(username,password,tel,address) values(uuid_short(),md5(now()),\':tel\',\'哈哈\');",
-//             "name":"InsertNo",
-//             "type":"insert"
-//         },
-//         {
-//             "id":7,
-//             "sql":"select * from xtn_userinfo t where t.id = :InsertNo",
-//             "name":"insert_result11",
-//             "type":"query",
-//             "isRows":false
-//         },
-//         {
-//             "id":9,
-//             "sql":"select count(1) total from xtn_userinfo ",
-//             "name":"insert_total1",
-//             "type":"query",
-//             "isRows":false
-//         },
-//         {
-//             "id":10,
-//             "sql":"delete from xtn_userinfo where id = :InsertNo - 5",
-//             "name":"delete_result",
-//             "type":"delete"
-//         },
-//         {
-//             "id":11,
-//             "type":"commit"
-//         },
-//         {
-//             "id":13,
-//             "sql":"select count(1) total from xtn_userinfo ",
-//             "name":"insert_total2",
-//             "type":"query",
-//             "isRows":false
-//         }
-//     ],
-//     "fields":"username,password,id,tel,id1",
-//     "result":1
-// }
-// '
-// where id = 5

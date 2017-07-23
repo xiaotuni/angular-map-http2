@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Utility, Client } from '../Core';
 import { routeAnimation } from '../app.animations';
 import { BaseComponent } from '../base.component';
-import { ServiceHelper } from '../../service/Index';
+import { ServiceHelper } from '../../service/index';
 
 @Component({
   selector: 'app-home',

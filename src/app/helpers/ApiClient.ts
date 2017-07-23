@@ -3,13 +3,24 @@ import { Utility } from '../Common/Utility';
 
 const methods = ['get', 'post', 'put', 'patch', 'del'];
 
+/**
+ * 格式化URL
+ * 
+ * @param {any} path 
+ * @returns 
+ */
 function formatUrl(path) {
-  const adjustedPath = path[0] !== '/' ? '/' + path : path;
-  // const _ApiUrl = 'https://127.0.0.1:30080/WebApi' + adjustedPath;
-  const _ApiUrl = 'https://127.0.0.1:10001/webapi' + adjustedPath;
+  const __path = path[0] !== '/' ? '/' + path : path;
+  const _ApiUrl = 'https://127.0.0.1:10001/webapi' + __path;
   return _ApiUrl;
 }
 
+/**
+ * 访问接口类
+ * 
+ * @export
+ * @class ApiClient
+ */
 export default class ApiClient {
 
   API = {
@@ -42,7 +53,15 @@ export default class ApiClient {
     }
   }
 
+  /**
+   * Creates an instance of ApiClient.
+   * @param {any} req 
+   * @memberof ApiClient
+   */
   constructor(req) {
+    /**
+     * 循环生成五个方法
+     */
     methods.forEach((method) => {
       this[method] = (path, condition) => {
         const { params, data } = condition || { params: null, data: null };
@@ -108,7 +127,6 @@ export default class ApiClient {
           }
 
           try {
-            // 获取用户信息
             __SendRequest(request);
           } catch (ex) {
             console.log(ex);

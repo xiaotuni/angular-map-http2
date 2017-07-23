@@ -1,10 +1,6 @@
 export { Utility } from '../Common/Utility';
 export { CommonComponent } from '../components/Core'
 export { Client } from '../helpers/Core';
-// 访问接口
-// import ApiClient from '../helpers/ApiClient';
-// import clientMiddleware from '../helpers/clientMiddleware';
-// export const Client = clientMiddleware(new ApiClient(null));
 
 import { MyComponentComponent } from './my-component/my-component.component';
 import { ProductComponent } from './product/product.component';
