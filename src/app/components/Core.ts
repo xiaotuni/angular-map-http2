@@ -1,6 +1,10 @@
 import { __DefRefComponent } from './__defref/defref';
 import { NavbarComponent } from './navbar/navbar.component'
-import { ApiItemComponent } from './apiitem/apiitem'
+import { ApiItem } from './apiitem/apiitem'
+import { RuleItem } from './rule/ruleitem'
+import { RuleInfo } from './rule/RuleInfo'
 import { XtnModel } from './model/Core';
 
-export const CommonComponent = [ApiItemComponent, NavbarComponent, __DefRefComponent, XtnModel];
+export const CommonComponent = [
+  RuleItem, RuleInfo, ApiItem, NavbarComponent, __DefRefComponent, XtnModel
+];

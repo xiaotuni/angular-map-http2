@@ -123,9 +123,9 @@ class dealbusiness {
    * @memberof dealbusiness
    */
   __Rules(Rule, RuleCollection, Options, Complete, Error) {
-    const { id, type, sql, isRows, name, resultName, judgeinfo } = Rule;
+    const { id, type, sql, isRows, name, resultName, judgeinfo, isMergeOption } = Rule;
     const _t = (type || 'query').toLocaleLowerCase();
-    const _FormatSQL = queryFormat(sql || ' ', Options);
+    const _FormatSQL = queryFormat(sql || '', Options);
     Log.Print('id序号 =>%d--执行的SQL语句【%s】', id, _FormatSQL);
     const __Next = (rList, rOption, rComplete, rError, err) => {
       if (err) {
@@ -163,7 +163,12 @@ class dealbusiness {
         } else {
           this.DbHelper.QueryOne(_FormatSQL, (data) => {
             const { result } = data;
-            Options.Result[id] = { __name: name, result };
+            if (!!isMergeOption) {
+              // 将数据合并到Options里去。
+              Object.assign(Options, result || {});
+            } else {
+              Options.Result[id] = { __name: name, result };
+            }
             __Next(RuleCollection, Options, Complete, Error);
           }, (err) => __Next(null, null, null, null, err));
         }
@@ -190,17 +195,24 @@ class dealbusiness {
           (err) => __Next(null, null, null, null, err));
         break;
       case 'judge':
-        this.DbHelper.QueryOne(_FormatSQL, (data) => {
-          Object.assign(Options, data.result || {});
-          __self.__ProcessRuleJudge(judgeinfo, data,
+
+        const __JudgeOperator = (content) => {
+          __self.__ProcessRuleJudge(judgeinfo, content,
             // 成功向下走。
-            () => __Next(RuleCollection, Options, Complete, Error),
+            () => __Next(RuleCollection, content, Complete, Error),
             // 失败，执行中断。
             (err) => __Next(null, null, null, null, err),
             // 执行分支规则
-            (chilrenRules) => __Next(chilrenRules, Options, Complete, Error)
-          );
-        }, (err) => __Next(null, null, null, null, err));
+            (chilrenRules) => __Next(chilrenRules, content, Complete, Error));
+        };
+        if (_FormatSQL) {
+          this.DbHelper.QueryOne(_FormatSQL, (data) => {
+            Object.assign(Options, data.result || {});
+            __JudgeOperator(Options)
+          }, (err) => __Next(null, null, null, null, err));
+        } else {
+          __JudgeOperator(Options);
+        }
         break;
     }
   }
@@ -238,24 +250,24 @@ class dealbusiness {
    * 处理规则判断。
    * 
    * @param {any} judgeinfo 判断条件信息
-   * @param {any} data 要判断的数据
+   * @param {any} content 要判断的数据
    * @param {any} Success 判断成功回调
    * @param {any} Error 判断失败回调
    * @returns 
    * @memberof dealbusiness
    */
-  __ProcessRuleJudge(judgeinfo, data, Success, Error, exeChilrenRules) {
-    const { result } = data;
+  __ProcessRuleJudge(judgeinfo, content, Success, Error, exeChilrenRules) {
+    // const { result } = data;
     const { strByEval, strByThis, chilrenRules, failMsg } = judgeinfo || {};
 
     let __ExecResult = true;
     if (strByEval && strByEval !== '') {
-      const __newEval = queryFormat(strByEval || ' ', data.result);
+      const __newEval = queryFormat(strByEval || ' ', content);
       Log.Print('执行 Eval 条件:%s', __newEval);
       __ExecResult = eval(__newEval);
     } else if (strByThis && strByThis !== '') {
       Log.Print('执行 this 条件:%s', strByThis);
-      __ExecResult = new Function(strByThis).apply(data.result);
+      __ExecResult = new Function(strByThis).apply(content);
     }
     Log.Print('执行结果为：', __ExecResult);
     if (!__ExecResult) { // 判断失败，执行失败的时候，规则集合.

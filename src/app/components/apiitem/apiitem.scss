@@ -1,30 +1,7 @@
 .apiitemCss {
   border: 1px solid;
 
-  .btns {
-    display: flex;
-
-    .btn {
-      margin: 0 5px;
-
-      > div {
-        padding: 5px 10px;
-        border: 1px solid #f5f5f5;
-        border-radius: 5px;
-
-        &:hover {
-          background: #999;
-          color: #fff;
-        }
-      }
-    }
-  }
-
-  .btn-right {
-    justify-content: flex-end;
-  }
-
-  > div {
+  >div {
     cursor: default;
   }
 
@@ -49,93 +26,8 @@
     }
   }
 
-  .ruleList {
-    font-size: 16px;
-  }
 
-  .ruleTitle {
-    border-bottom: 1px solid;
-    padding: 10px;
-    // font-size: 16px;
-    display: flex;
-    align-items: center;
-
-    span {
-      padding-right: 5px;
-    }
-
-    .params {
-      padding-left: 5px;
-    }
-
-    .number {
-      width: 40px;
-    }
-
-    .fields {
-      flex: 1;
-    }
-  }
-
-  .rule {
-    padding: 5px 10px;
-    border: 1px solid #dea7e9;
-
-    .content {
-      display: flex;
-
-      .row {
-        padding-top: 5px;
-
-        .title {
-          padding: 5px;
-          display: flex;
-
-          .name {
-            margin-right: 5px;
-            width: 50px;
-            text-align: right;
-          }
-        }
-
-        input[type='number'] {
-          width: 30px;
-        }
-
-        input[type='text'] {
-          width: 100px;
-        }
-
-      }
-
-      .sqlInfo {
-        flex: 1;
-        height: 100%;
-
-        .oper {
-          padding: 5px 0;
-          display: flex;
-          align-items: center;
-
-          .title {
-            flex: 1;
-          }
-
-        }
-
-        textarea {
-          height: 100%;
-          padding: 5px;
-          width: calc(100% - 10px);
-          min-height: 50px;
-          font-size: 14px;
-          height: 75px;
-        }
-      }
-    }
-  }
-
-  > div:last-child {
+  >div:last-child {
     border-bottom: none;
   }
 }

@@ -1,0 +1,36 @@
+.runInfoCss {
+
+  .ruleList {
+    font-size: 16px;
+  }
+
+  .ruleTitle {
+    border-bottom: 1px solid;
+    padding: 10px; // font-size: 16px;
+    display: flex;
+    align-items: center;
+
+    span {
+      padding-right: 5px;
+    }
+
+    .params {
+      padding-left: 5px;
+    }
+
+    .number {
+      width: 60px;
+    }
+
+    .fields {
+      flex: 1;
+    }
+  }
+
+  .rule {
+    padding: 5px 10px;
+    border: 1px solid #dea7e9;
+
+   
+  }
+}

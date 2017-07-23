@@ -1,0 +1,14 @@
+<div class="runInfoCss">
+  <div class="ruleTitle">
+    <span class="index">返回结果索引</span>
+    <input class="number" type="number" [(ngModel)]="Info.result">
+    <span class="params">参数字段</span>
+    <input class="fields" type="text" [(ngModel)]="Info.fields">
+
+  </div>
+  <div class="rule" *ngFor="let rule of Info.rules; let i = index; let isFirst = first; let isLast = last; ">
+    <xtn-rule-item [Source]="rule" [Index]="i"
+     [IsFirst]="isFirst" [IsLast]="isLast" 
+     (onMoveUpOrDown)="onItemMoveUpOrDown($event,i)"></xtn-rule-item>
+  </div>
+</div>

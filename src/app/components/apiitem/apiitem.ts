@@ -5,17 +5,17 @@ import { Utility } from '../ComponentTools';
   templateUrl: './apiitem.html',
   styleUrls: ['./apiitem.scss']
 })
-export class ApiItemComponent implements OnInit {
+export class ApiItem implements OnInit {
 
   @Input('Source') ApiInfo: any;
   @Output() onDelete: EventEmitter<any> = new EventEmitter();
   public RuleInfo: any;
   public RuleType: Array<any> = [
     { key: 'query', title: '查询' },
-    { key: 'beginTran', title: '开始事务' },
     { key: 'update', title: '更新' },
     { key: 'insert', title: '插入' },
     { key: 'delete', title: '删除' },
+    { key: 'beginTran', title: '开始事务' },
     { key: 'commit', title: '提交事务' },
     { key: 'judge', title: '条件判断' },
   ];
@@ -60,5 +60,22 @@ export class ApiItemComponent implements OnInit {
       this.ApiInfo.RuleInfo.rules = [];
     }
     this.ApiInfo.RuleInfo.rules.push({});
+  }
+
+  onChange_RuleType(item) {
+    console.log(item);
+  }
+
+  __IsShowResult(ruleType) {
+    const ruleTypes = 'beginTran,commit,judge';
+    return ruleTypes.indexOf(ruleType) >= 0 ? false : true;
+  }
+
+  __ClickDeleteChilrenItem(item, index) {
+
+  }
+  __AddJudgeChilrenRule(judgeinfo) {
+
+
   }
 }

@@ -1,0 +1,88 @@
+.btns {
+  display: flex;
+
+  .btn {
+    margin: 0 5px;
+
+    >div {
+      padding: 5px 10px;
+      border: 1px solid #f5f5f5;
+      border-radius: 5px;
+
+      &:hover {
+        background: #999;
+        color: #fff;
+      }
+    }
+  }
+}
+
+.btn-right {
+  justify-content: flex-end;
+}
+
+.rulItemCss {
+  display: flex;
+
+  .row {
+    padding-top: 5px;
+
+    .title {
+      padding: 5px;
+      display: flex;
+
+      .name {
+        margin-right: 5px;
+        width: 50px;
+        text-align: right;
+      }
+    }
+
+    input[type='number'] {
+      width: 50px;
+    }
+
+    input[type='text'] {
+      width: 100px;
+    }
+  }
+  textarea {
+    height: 100%;
+    padding: 5px;
+    width: calc(100% - 10px);
+    min-height: 50px;
+    font-size: 14px;
+    height: 75px;
+  }
+  .sqlInfo {
+    flex: 1;
+    height: 100%;
+
+    .oper {
+      padding: 5px 0;
+      display: flex;
+      align-items: center;
+
+      .title {
+        flex: 1;
+      }
+    }
+  }
+  .judgeInfo {
+    @extend .sqlInfo;
+    .judgeType {
+      display: flex;
+      white-space: nowrap;
+      align-items: center;
+
+      >textarea {
+        margin-left: 5px;
+      }
+    }
+  }
+}
+
+.chilren {
+  margin-left: 15px;
+  border: 1px solid #f410f0;
+}

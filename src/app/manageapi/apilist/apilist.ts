@@ -24,6 +24,7 @@ export class ApiListComponent implements OnInit {
     const __self = this;
     this.sHelper.ApiManager.List().then(() => {
       __self.ApiList = __self.sHelper.ApiManager.ApiList;
+      __self.CurrentItem = __self.ApiList[0];
     }, (err) => {
       console.log(err);
     });
