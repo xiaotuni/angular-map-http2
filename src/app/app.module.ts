@@ -6,7 +6,7 @@ import { HttpModule } from '@angular/http';
 
 import { AppRouting } from './app.router';
 import { CommonComponent, PageComponentList } from './containers/Core';
-import { ManagerPageComponentList } from './managers/Index';
+import { ManagerPageComponentList } from './manage/Index';
 import { ManagerApiPageComponentList } from './manageapi/Index';
 
 import { AppComponent } from './app.component';
