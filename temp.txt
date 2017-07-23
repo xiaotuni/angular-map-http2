@@ -1,0 +1,70 @@
+update sys_rule set content = '
+{
+    "rules":[
+        {
+            "sql":"select * from xtn_userinfo where username = \':username\' and password = \':password\'",
+            "id":1, "name":"admininfo", "type":"query", "isRows":false
+        },
+        {
+          "sql":"select count(1) total, sex,cityname,age from xtn_userinfo where id = :id_judge",
+          "id":100,"type":"query","isRows":false,"name":"judgeInfo_100","isMergeOption":true
+        },
+        {
+          "id":10,
+          "sql":"",
+          "type":"judge",
+          "judgeinfo":{
+             "strByEval1":"(\':sex\' !== \'男\' && \':cityname\' == \'北京\' ) || (:age > 30 && \':cityname\' !== \'北京\')",
+             "strByThis":"if((this.sex === \'男\' && this.cityname == \'上海\' ) || (this.age > 30 && this.cityname !== \'北京\')){return true;}return false;",
+             "failMsg":"用户存在",
+             "chilrenRules":[
+             {"sql":"select * from xtn_userinfo where sex = \':sex\'",
+               "id":11,"name":"peoples_sex","type":"query","isRows":true
+             },
+             {
+               "id":12,"name":"peoples_sex_city","type":"query","isRows":true,
+               "sql":"select * from xtn_userinfo where sex = \':sex\' and cityname = \':cityname\' "
+             }
+             ]
+           }
+        },
+        {
+            "sql":"select * from xtn_userinfo where id> :id",
+            "id":2, "name":"userlist", "type":"query", "isRows":true
+        },
+        { "id":3, "type":"beginTran" },
+        {
+            "sql":"update xtn_userinfo t set t.tel=\':tel\' where t.id = :id1",
+            "id":4, "name":"update_info", "type":"update", "isRows":false
+        },
+        {
+            "sql":"select * from xtn_userinfo where id = :id1",
+            "id":5, "name":"id1_info","type":"query", "isRows":false
+        },
+        {
+            "sql":"insert into xtn_userinfo(username,password,tel,address) values(uuid_short(),md5(now()),\':tel\',\'哈哈\');",
+            "id":6, "name":"InsertNo", "type":"insert"
+        },
+        {
+            "sql":"select * from xtn_userinfo t where t.id = :InsertNo",
+            "id":7,"name":"insert_result11", "type":"query", "isRows":false
+        },
+        {
+            "sql":"select count(1) total from xtn_userinfo ",
+           "id":9, "name":"insert_total1", "type":"query", "isRows":false
+        },
+        {
+            "sql":"delete from xtn_userinfo where id = :InsertNo - 5",
+            "id":10,"name":"delete_result", "type":"delete"
+        },
+        {  "id":11,            "type":"commit" },
+        {
+            "sql":"select count(1) total from xtn_userinfo ",
+            "id":13,"name":"insert_total2", "type":"query", "isRows":false
+        }
+    ],
+    "fields":"username,password,id,tel,id1,id_judge",
+    "result":1
+}
+'
+where id = 1
