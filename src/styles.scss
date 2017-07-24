@@ -1,0 +1,51 @@
+/* You can add global styles to this file, and also import other style files */
+
+body {
+  margin: 0;
+}
+
+// .btns {
+//   display: flex;
+// }
+
+// .btns .btn {
+//   margin: 0 5px;
+// }
+
+// .btns .btn > div {
+//   padding: 5px 10px;
+//   border: 1px solid #f5f5f5;
+//   border-radius: 5px;
+// }
+
+// .btns .btn > div:hover {
+//   background: #999;
+//   color: #fff;
+// }
+
+// .btns .btn-right {
+//   justify-content: flex-end;
+// }
+
+.btns {
+  display: flex;
+
+  .btn {
+    margin: 0 5px;
+
+    > div {
+      padding: 5px 10px;
+      border: 1px solid #f5f5f5;
+      border-radius: 5px;
+
+      &:hover {
+        background: #999;
+        color: #fff;
+      }
+    }
+  }
+
+  .btn-right {
+    justify-content: flex-end;
+  }
+}

@@ -9,28 +9,28 @@ import * as CryptoJS from 'crypto-js';
   providers: [ServiceHelper]
 })
 export class ApiListComponent implements OnInit {
-  public UserInfo: any;
   public ApiList: any;
   public NewApiInfo: any = { RuleInfo: { rules: [] } };
   public CurrentItem: any;
   public isAddNewApiInfo: boolean = false;
 
   constructor(private sHelper: ServiceHelper) {
-
-    this.UserInfo = { username: 'admin', password: 'admin@163.com' };
   }
 
   ngOnInit() {
     const __self = this;
     this.sHelper.ApiManager.List().then(() => {
       __self.ApiList = __self.sHelper.ApiManager.ApiList;
-      __self.CurrentItem = __self.ApiList[0];
+      const { ApiList } = __self;
+      if (Array.isArray(ApiList)) {
+        __self.CurrentItem = ApiList[ApiList.length - 1];
+      }
     }, (err) => {
       console.log(err);
     });
   }
 
-  __ClickExpand(item) {
+  onClickExpand(item) {
     if (this.CurrentItem === item) {
       this.CurrentItem = null;
     } else {
@@ -38,21 +38,22 @@ export class ApiListComponent implements OnInit {
     }
   }
 
-  __ClickDeleteItem(item, b, c) {
-    console.log('__ClickDeleteItem-->', item, b, c);
-  }
-
-  __ClickAddApi() {
-    // const newApi = JSON.parse(JSON.stringify(this.ApiList[this.ApiList.length - 1]));
-    // this.ApiList.push(newApi);
-
+  btnClickAdd() {
     this.isAddNewApiInfo = !this.isAddNewApiInfo;
   }
 
-  __ClickSaveApi() {
+  btnClickSave() {
     console.log(this.NewApiInfo);
     const _a = JSON.stringify(this.NewApiInfo.RuleInfo);
     this.NewApiInfo.Content = "'" + _a.replace(/'/g, "\\'").replace(/\"/g, '\\"') + "'"
     this.sHelper.ApiManager.AddApi(this.NewApiInfo).then(() => { }, () => { });
+  }
+
+  onSaveRule(rule) {
+    console.log('rule-->', JSON.stringify(rule));
+    this.sHelper.ApiManager.Modify(rule);
+  }
+  onDeleteRule(rule) {
+    this.sHelper.ApiManager.DeleteById(rule);
   }
 }

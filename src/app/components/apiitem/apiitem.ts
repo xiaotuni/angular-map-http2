@@ -8,7 +8,10 @@ import { Utility } from '../ComponentTools';
 export class ApiItem implements OnInit {
 
   @Input('Source') ApiInfo: any;
+  @Input('Index') Index: number;
   @Output() onDelete: EventEmitter<any> = new EventEmitter();
+  @Output() onSave: EventEmitter<any> = new EventEmitter();
+
   public RuleInfo: any;
   public RuleType: Array<any> = [
     { key: 'query', title: '查询' },
@@ -29,53 +32,21 @@ export class ApiItem implements OnInit {
   }
 
   ngOnInit() {
-    // this.RuleInfo = JSON.parse(this.ApiInfo.Content);
     const { RuleInfo } = this.ApiInfo || { RuleInfo: {} };
     this.RuleInfo = RuleInfo || {};
   }
 
-  __ClickMove(type, index) {
-    const currentRule = this.RuleInfo.rules[index];
-    const __nextIndex = type + index;
-    if (__nextIndex >= 0 && __nextIndex < this.RuleInfo.rules.length) {
-      const __nextRule = this.RuleInfo.rules[__nextIndex];
-      this.RuleInfo.rules[__nextIndex] = currentRule;
-      this.RuleInfo.rules[index] = __nextRule;
-    }
-    if (this.onDelete) {
-      this.onDelete.emit({ type, index });
+  btnClickSave() {
+    const { onSave, ApiInfo } = this;
+    if (onSave) {
+      onSave.emit(ApiInfo);
     }
   }
-  __ClickDelete(item, index) {
-    this.RuleInfo.rules.splice(index, 1);
-  }
 
-  __ClickInsert(index) {
-    const NewRule = JSON.parse(JSON.stringify(this.RuleInfo.rules[index]));
-    this.RuleInfo.rules.splice(index, 0, NewRule);
-  }
-
-  __AddRule() {
-    if (!this.ApiInfo.RuleInfo.rules) {
-      this.ApiInfo.RuleInfo.rules = [];
+  btnClickDelete() {
+    const { onDelete, ApiInfo } = this;
+    if (onDelete) {
+      onDelete.emit(ApiInfo);
     }
-    this.ApiInfo.RuleInfo.rules.push({});
-  }
-
-  onChange_RuleType(item) {
-    console.log(item);
-  }
-
-  __IsShowResult(ruleType) {
-    const ruleTypes = 'beginTran,commit,judge';
-    return ruleTypes.indexOf(ruleType) >= 0 ? false : true;
-  }
-
-  __ClickDeleteChilrenItem(item, index) {
-
-  }
-  __AddJudgeChilrenRule(judgeinfo) {
-
-
   }
 }

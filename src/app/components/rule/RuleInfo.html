@@ -4,11 +4,13 @@
     <input class="number" type="number" [(ngModel)]="Info.result">
     <span class="params">参数字段</span>
     <input class="fields" type="text" [(ngModel)]="Info.fields">
-
+    <div class="btns">
+      <div class="btn">
+        <div (click)="onClickAdd()" >添加</div>
+      </div>
+    </div>
   </div>
   <div class="rule" *ngFor="let rule of Info.rules; let i = index; let isFirst = first; let isLast = last; ">
-    <xtn-rule-item [Source]="rule" [Index]="i"
-     [IsFirst]="isFirst" [IsLast]="isLast" 
-     (onMoveUpOrDown)="onItemMoveUpOrDown($event,i)"></xtn-rule-item>
+    <xtn-rule-item [Source]="rule" [Index]="i" [IsFirst]="isFirst" [IsLast]="isLast" (onMoveUpOrDown)="onItemMoveUpOrDown($event,i)"></xtn-rule-item>
   </div>
 </div>

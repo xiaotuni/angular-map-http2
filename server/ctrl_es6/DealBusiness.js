@@ -49,7 +49,7 @@ class dealbusiness {
         Response.SendError({ code: 404, msg: '【' + pathname + '】接口没有找到' });
       }
     }, (err) => {
-      Response.SendError({ code: 404, msg: '【' + pathname + '】接口没有找到' });
+      Response.SendError({ code: 404, msg: '【' + err.message || pathname + '】接口没有找到' });
     });
   }
 
@@ -123,7 +123,7 @@ class dealbusiness {
    * @memberof dealbusiness
    */
   __Rules(Rule, RuleCollection, Options, Complete, Error) {
-    const { id, type, sql, isRows, name, resultName, judgeinfo, isMergeOption } = Rule;
+    const { id, type, sql, isRows, name, resultName, judgeInfo, isMergeOption } = Rule;
     const _t = (type || 'query').toLocaleLowerCase();
     const _FormatSQL = queryFormat(sql || '', Options);
     Log.Print('id序号 =>%d--执行的SQL语句【%s】', id, _FormatSQL);
@@ -176,11 +176,10 @@ class dealbusiness {
       case 'insert':
         this.DbHelper.InsertSQL(_FormatSQL, (data) => {
           const { result } = data;
-          if (name && name !== '') {
-            const __InsertResultInfo = {};
-            __InsertResultInfo[name] = result.insertId;
-            Object.assign(Options, __InsertResultInfo);
-          }
+          let __name = (name && name !== '') ? name : 'InsertNo';
+          const __InsertResultInfo = {};
+          __InsertResultInfo[__name] = result.insertId;
+          Object.assign(Options, __InsertResultInfo);
           __Next(RuleCollection, Options, Complete, Error);
         }, (err) => __Next(null, null, null, null, err));
         break;
@@ -197,7 +196,7 @@ class dealbusiness {
       case 'judge':
 
         const __JudgeOperator = (content) => {
-          __self.__ProcessRuleJudge(judgeinfo, content,
+          __self.__ProcessRuleJudge(judgeInfo, content,
             // 成功向下走。
             () => __Next(RuleCollection, content, Complete, Error),
             // 失败，执行中断。
@@ -249,16 +248,16 @@ class dealbusiness {
   /**
    * 处理规则判断。
    * 
-   * @param {any} judgeinfo 判断条件信息
+   * @param {any} judgeInfo 判断条件信息
    * @param {any} content 要判断的数据
    * @param {any} Success 判断成功回调
    * @param {any} Error 判断失败回调
    * @returns 
    * @memberof dealbusiness
    */
-  __ProcessRuleJudge(judgeinfo, content, Success, Error, exeChilrenRules) {
+  __ProcessRuleJudge(judgeInfo, content, Success, Error, exeChilrenRules) {
     // const { result } = data;
-    const { strByEval, strByThis, chilrenRules, failMsg } = judgeinfo || {};
+    const { strByEval, strByThis, chilrenRules, failMsg } = judgeInfo || {};
 
     let __ExecResult = true;
     if (strByEval && strByEval !== '') {

@@ -19,7 +19,7 @@
       <input type="checkbox" required [(ngModel)]="Rule.isMergeOption" />
     </div>
 
-    <div class="title" *ngIf=" 'beginTran,commit,judge'.indexOf(Rule.type)<0 && Rule.isMergeOption===false">
+    <div class="title" *ngIf=" 'beginTran,commit,judge'.indexOf(Rule.type)<0">
       <div class="name"> 结果名称</div>
       <input type="text" required [(ngModel)]="Rule.name" />
     </div>
@@ -29,16 +29,16 @@
       <div class="title">规则执行的SQL语句</div>
       <div class="btns btn-right">
         <div class="btn" *ngIf="!IsFirst">
-          <div (click)="__ClickMove(OperatorType.UP,Index -1)">上移</div>
+          <div (click)="btn_Click(OperatorType.UP,Index -1)">上移</div>
         </div>
         <div class="btn" *ngIf="!IsLast">
-          <div (click)="__ClickMove(OperatorType.DOWN,Index+1)">下移</div>
+          <div (click)="btn_Click(OperatorType.DOWN,Index+1)">下移</div>
         </div>
         <div class="btn">
-          <div (click)="__ClickMove(OperatorType.INSERT,Index)">插入一条</div>
+          <div (click)="btn_Click(OperatorType.INSERT,Index)">插入一条</div>
         </div>
         <div class="btn">
-          <div (click)="__ClickMove(OperatorType.DELETE,Index)">删除</div>
+          <div (click)="btn_Click(OperatorType.DELETE,Index)">删除</div>
         </div>
       </div>
     </div>
@@ -48,24 +48,26 @@
     <h4>添加判断条件信息</h4>
     <div class="judgeType">
       this 方法:
-      <textarea [(ngModel)]="Rule.judgeinfo.strByThis" placeholder="if((this.sex === \'男\' && this.cityname == \'上海\' ) || (this.age > 30 && this.cityname !== \'北京\')){return true;}return false;"></textarea>
+      <textarea [(ngModel)]="Rule.judgeInfo.strByThis" placeholder="if((this.sex === \'男\' && this.cityname == \'上海\' ) || (this.age > 30 && this.cityname !== \'北京\')){return true;}return false;"></textarea>
     </div>
     <div class="judgeType">
       eval方法:
-      <textarea [(ngModel)]="Rule.judgeinfo.strByEval" placeholder="(\':sex\' !== \'男\' && \':cityname\' == \'北京\' ) || (:age > 30 && \':cityname\' !== \'北京\')"></textarea>
+      <textarea [(ngModel)]="Rule.judgeInfo.strByEval" placeholder="(\':sex\' !== \'男\' && \':cityname\' == \'北京\' ) || (:age > 30 && \':cityname\' !== \'北京\')"></textarea>
     </div>
   </div>
 
 </div>
 
 <div class="chilren" *ngIf="Rule.type === 'judge'">
-  <h4>添加子规则，判断失败后要处理流程:</h4>
-  <div class="btns">
-    <div class="btn">
-      <div (click)="onClickAddRule(Rule.judgeinfo)">添加规则 </div>
+  <div class="title">
+    <h4>添加子规则，判断失败后要处理流程:</h4>
+    <div class="btns">
+      <div class="btn">
+        <div (click)="onClickAddRule(Rule.judgeInfo)">添加规则 </div>
+      </div>
     </div>
   </div>
-  <div *ngFor="let item of Rule.judgeinfo.chilrenRules; let i = index; let isFirst = first; let isLast = last; ">
-    <xtn-rule-item [Source]="item" [Index]="i" [IsFirst]="isFirst" [IsLast]="isLast" (onMoveUpOrDown)="onSubItemMoveUpOrDown($event,i)"></xtn-rule-item>
+  <div *ngFor="let item of Rule.judgeInfo.chilrenRules; let i = index; let isFirst = first; let isLast = last; ">
+    <xtn-rule-item [Source]="item" [ParentId]="Rule.id" [Index]="i" [IsFirst]="isFirst" [IsLast]="isLast" (onMoveUpOrDown)="onSubItemMoveUpOrDown($event,i)"></xtn-rule-item>
   </div>
 </div>

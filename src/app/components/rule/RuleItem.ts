@@ -8,7 +8,8 @@ import { Utility } from '../ComponentTools';
 export class RuleItem implements OnInit {
 
   @Input('Source') Rule: any;
-  @Input('Index') Index: Number;
+  @Input('Index') Index: number;
+  @Input('ParentId') ParentId: number;
   @Input('IsFirst') IsFirst: Boolean;
   @Input('IsLast') IsLast: Boolean;
 
@@ -35,23 +36,40 @@ export class RuleItem implements OnInit {
   constructor() {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    if (this.Index >= 0 && !this.Rule.id) {
+      if (this.ParentId) {
+        this.Rule.id = this.ParentId * 100 + this.Index;
+      } else {
+        this.Rule.id = this.Index + 1;
+      }
+    }
 
+
+    let { type } = this.Rule;
+    const { judgeInfo } = this.Rule;
+    if (!type) {
+      this.Rule.type = 'query';
+    }
+    else if (type === 'judge') {
+      if (!judgeInfo) {
+        this.Rule.judgeInfo = {};
+      }
+    }
   }
 
-  __ClickMove(type, index) {
+  btn_Click(type, index) {
     if (this.onMoveUpOrDown) {
       this.onMoveUpOrDown.emit({ type, index, OperatorType: this.OperatorType });
     }
   }
 
-
   onChange_RuleType(item) {
     console.log(item);
-    const { type, judgeinfo } = this.Rule;
+    const { type, judgeInfo } = this.Rule;
     if (item === 'judge') {
-      if (!judgeinfo) {
-        this.Rule.judgeinfo = {};
+      if (!judgeInfo) {
+        this.Rule.judgeInfo = {};
       }
     }
   }
@@ -64,12 +82,12 @@ export class RuleItem implements OnInit {
     }
     chilrenRules = [];
     rule.chilrenRules = chilrenRules;
-    chilrenRules.push({ judgeinfo: {} });
+    chilrenRules.push({ judgeInfo: {} });
   }
 
   onSubItemMoveUpOrDown(args, currentIndex) {
     const { type, index, OperatorType } = args;
-    const rules = this.Rule.judgeinfo.chilrenRules;
+    const rules = this.Rule.judgeInfo.chilrenRules;
     switch (type) {
       case OperatorType.UP:
       case OperatorType.DOWN:
@@ -78,7 +96,6 @@ export class RuleItem implements OnInit {
         rules[index] = currentItem;
         rules[currentIndex] = newItem;
         break;
-
       case OperatorType.INSERT:
         rules.splice(currentIndex, 0, JSON.parse(JSON.stringify(rules[currentIndex])));
         break;

@@ -6,8 +6,8 @@
       <div class="path">接口地址</div>
       <div class="operator">操作</div>
     </div>
-    <div *ngFor="let item of ApiList">
-      <div class="api" (click)="__ClickExpand(item)">
+    <div *ngFor="let item of ApiList;let i = index;">
+      <div class="api" (click)="onClickExpand(item)">
         <div class="method">{{item.Method}}</div>
         <div class="statu">{{item.StatusCn}}</div>
         <div class="path">{{item.PathName}}</div>
@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="item" *ngIf=" CurrentItem && CurrentItem.Id === item.Id">
-        <xtn-api-item [Source]="CurrentItem" (onDelete)="__ClickDeleteItem($event,item)"></xtn-api-item>
+        <xtn-api-item [Source]="CurrentItem" [Index]="i" (onSave)="onSaveRule($event)" (onDelete)="onDeleteRule($event,i)"></xtn-api-item>
       </div>
     </div>
 
@@ -24,12 +24,12 @@
   <div class="addApi">
     <xtn-api-item [Source]="NewApiInfo" *ngIf="isAddNewApiInfo"></xtn-api-item>
     <div class="btns">
-      <div class="btn" (click)="__ClickAddApi()">
+      <div class="btn" (click)="btnClickAdd()">
         <div>
           添加接口
         </div>
       </div>
-      <div class="btn" (click)="__ClickSaveApi()">
+      <div class="btn" (click)="btnClickSave()">
         <div>
           保存接口
         </div>

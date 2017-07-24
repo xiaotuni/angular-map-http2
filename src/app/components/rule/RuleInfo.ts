@@ -8,6 +8,8 @@ import { Utility } from '../ComponentTools';
 export class RuleInfo implements OnInit {
 
   @Input('Source') Info: any;
+  @Input('Index') Index: number;
+
   @Output() onDelete: EventEmitter<any> = new EventEmitter();
 
   public RuleType: Array<any> = [
@@ -39,12 +41,21 @@ export class RuleInfo implements OnInit {
         break;
 
       case OperatorType.INSERT:
-        this.Info.rules.splice(currentIndex, 0, JSON.parse(JSON.stringify(this.Info.rules[currentIndex])));
+        this.Info.rules.splice(currentIndex, 0, {});
         break;
       case OperatorType.DELETE:
         this.Info.rules.splice(currentIndex, 1);
         break;
     }
+  }
+
+  onClickAdd() {
+    let { rules } = this.Info;
+    if (!rules) {
+      rules = [];
+      this.Info.rules = rules;
+    }
+    rules.push({});
   }
 
 }

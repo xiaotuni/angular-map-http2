@@ -1,11 +1,9 @@
-import { Client } from './Core';
-
 export class ApiManagerService {
-  private __Client: any;
+  private ApiClient: any;
   public ApiList: any;
 
   constructor(private client) {
-    this.__Client = client;
+    this.ApiClient = client;
   }
   List(): Promise<any> {
     const __self = this;
@@ -15,14 +13,16 @@ export class ApiManagerService {
         types: ['Loading', 'Success', 'Fail']
       },
     };
-    return this.__Client(options).then((data) => {
+    return this.ApiClient(options).then((data) => {
       __self.ApiList = data;
-      __self.ApiList.forEach(row => {
-        const { Content } = row;
-        try {
-          row.RuleInfo = JSON.parse(Content);
-        } catch (ex) { console.log(ex); }
-      });
+      if (Array.isArray(__self.ApiList)) {
+        __self.ApiList.forEach(row => {
+          const { Content } = row;
+          try {
+            row.RuleInfo = JSON.parse(Content);
+          } catch (ex) { console.log(ex); }
+        });
+      }
       return data;
     });
   }
@@ -35,14 +35,50 @@ export class ApiManagerService {
         types: ['Loading', 'Success', 'Fail']
       },
     };
-    return this.__Client(options).then((data) => {
+    return this.ApiClient(options).then((data) => {
       __self.ApiList = data;
       __self.ApiList.forEach(row => {
         const { Content } = row;
         try {
           row.RuleInfo = JSON.parse(Content);
-        } catch (ex) { console.log(ex); }
+        } catch (ex) {
+          console.log(ex);
+        }
       });
+      return data;
+    });
+  }
+
+  Modify(Info: object): Promise<any> {
+    const __self = this;
+    const options = {
+      action: {
+        promise: (client) => client.put(client.API.Api.Modify, { params: {}, data: Info }),
+        types: ['Loading', 'Success', 'Fail']
+      },
+    };
+    return this.ApiClient(options).then((data) => {
+      return data;
+    });
+  }
+
+  DeleteById(rule) {
+    const { Id } = rule;
+    const __self = this;
+    const options = {
+      action: {
+        promise: (client) => client.del(client.API.Api.Delete, { params: {}, data: { Id } }),
+        types: ['Loading', 'Success', 'Fail']
+      },
+    };
+    return this.ApiClient(options).then((data) => {
+      const { ApiList } = __self;
+      for (let i = 0; i < ApiList.length; i++) {
+        if (ApiList[i].Id === Id) {
+          ApiList.splice(i, 1);
+          break;
+        }
+      }
       return data;
     });
   }

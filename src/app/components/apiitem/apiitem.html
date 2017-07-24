@@ -10,92 +10,12 @@
     <input type="text" [(ngModel)]="ApiInfo.PathName" />
     <div class="btns">
       <div class="btn">
-        <div (click)="__AddRule()">添加一条规则</div>
+        <div (click)="btnClickSave()">保存</div>
+      </div>
+      <div class="btn">
+        <div (click)="btnClickDelete()">删除</div>
       </div>
     </div>
   </div>
   <xtn-rule-info [Source]="RuleInfo"></xtn-rule-info>
 </div>
-
-
-<!--
-    <div class="ruleTitle">
-    <span class="index">返回结果索引</span>
-    <input class="number" type="number" [(ngModel)]="RuleInfo.result">
-    <span class="params">参数字段</span>
-    <input class="fields" type="text" [(ngModel)]="RuleInfo.fields">
-
-  </div>
-
-  <div class="rule" *ngFor="let rule of RuleInfo.rules; let i = index; let isFirst = first; let isLast = last; ">
-    <div class="content">
-      <div class="row">
-        <div class="title">
-          <div class="name"> 规则号</div>
-          <input type="number" [(ngModel)]="rule.id" /></div>
-        <div class="title">
-          <div class="name"> 类型 </div>
-          <select required [(ngModel)]="rule.type" (change)="onChange_RuleType(rule.type)">
-          <option *ngFor="let item of RuleType" [value]="item.key">{{item.title}} </option>
-        </select>
-        </div>
-        <div class="title" *ngIf="rule.type === 'query'">
-          <div class="name"> 多行数据</div>
-          <input type="checkbox" [(ngModel)]="rule.isRows" />
-        </div>
-
-        <div class="title" *ngIf="rule.isRows===false">
-          <div class="name"> 合并数据</div>
-          <input type="checkbox" required [(ngModel)]="rule.isMergeOption" />
-        </div>
-
-        <div class="title" *ngIf="__IsShowResult(rule.type) === true && rule.isMergeOption===false">
-          <div class="name"> 结果名称</div>
-          <input type="text" required [(ngModel)]="rule.name" />
-        </div>
-      </div>
-      <div class="sqlInfo" *ngIf=" 'query,insert,update,delete'.indexOf(rule.type)>=0?true:false">
-        <div class="oper">
-          <div class="title">规则执行的SQL语句</div>
-          <div class="btns btn-right">
-            <div class="btn" *ngIf="!isFirst">
-              <div (click)="__ClickMove(-1,i)">上移</div>
-            </div>
-            <div class="btn" *ngIf="!isLast">
-              <div (click)="__ClickMove(1,i)">下移</div>
-            </div>
-            <div class="btn">
-              <div (click)="__ClickInsert(i)">插入一条</div>
-            </div>
-            <div class="btn">
-              <div (click)="__ClickDelete(rule,i)">删除</div>
-            </div>
-          </div>
-        </div>
-        <textarea [(ngModel)]="rule.sql"></textarea>
-      </div>
-      <div class="judgeInfo" *ngIf="rule.type === 'judge'">
-        <h4>添加判断条件信息</h4>
-        <div class="judgeType">
-          this 方法:
-          <textarea [(ngModel)]="rule.judgeinfo.strByThis" placeholder="if((this.sex === \'男\' && this.cityname == \'上海\' ) || (this.age > 30 && this.cityname !== \'北京\')){return true;}return false;"></textarea>
-        </div>
-        <div class="judgeType">
-          eval方法:
-          <textarea [(ngModel)]="rule.judgeinfo.strByEval" placeholder="(\':sex\' !== \'男\' && \':cityname\' == \'北京\' ) || (:age > 30 && \':cityname\' !== \'北京\')"></textarea>
-        </div>
-        <div>
-          <h4>添加子规则，判断失败后要处理流程:</h4>
-          <div class="btns">
-            <div class="btn">
-              <div (click)="__AddJudgeChilrenRule(rule.judgeinfo)">添加规则 </div>
-            </div>
-          </div>
-        </div>
-
-        <div *ngFor="let item of rule.judgeinfo.chilrenRules">
-          <xtn-api-item [Source]="item" (onDelete)="__ClickDeleteChilrenItem($event,item)"></xtn-api-item>
-        </div>
-      </div>
-    </div>
-  </div> -->
