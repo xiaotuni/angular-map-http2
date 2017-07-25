@@ -66,6 +66,9 @@ export class AppComponent {
       console.log(args);
       Utility.$Emit(ShowModel.onActionSheet, args);
     });
+    Utility.$On(HttpStatus[500], (args) => {
+      Utility.$Emit(ShowModel.onActionSheet, args);
+    });
     Utility.$On(ShowModel.onActionSheet, (args) => {
       _this.ActionSheetInfo = args;
     });

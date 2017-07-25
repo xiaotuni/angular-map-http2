@@ -38,10 +38,9 @@
     height: 100%;
 
     .oper {
-      padding: 5px 0;
       display: flex;
       align-items: center;
-
+      font-weight: 800;
       .title {
         flex: 1;
       }
@@ -50,13 +49,15 @@
 
   .judgeInfo {
     @extend .sqlInfo;
-
+    .bewrite {
+      font-weight: 900;
+    }
     .judgeType {
       display: flex;
       white-space: nowrap;
       align-items: center;
 
-      > textarea {
+      >textarea {
         margin-left: 5px;
       }
     }

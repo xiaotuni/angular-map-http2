@@ -22,7 +22,7 @@ export class RuleItem implements OnInit {
     INSERT: 'insert',
     DELETE: 'delete',
   }
-
+ 
   public RuleType: Array<any> = [
     { key: 'query', title: '查询' },
     { key: 'update', title: '更新' },

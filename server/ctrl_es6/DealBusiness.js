@@ -274,7 +274,7 @@ class dealbusiness {
         exeChilrenRules && exeChilrenRules(chilrenRules);
         return;
       }
-      Error && Error({ msg: failMsg });
+      Error && Error(failMsg);
       return;
     }
     Success && Success();

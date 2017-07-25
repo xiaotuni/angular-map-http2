@@ -43,9 +43,9 @@ export class ApiListComponent implements OnInit {
   }
 
   btnClickSave() {
-    console.log(this.NewApiInfo);
-    const _a = JSON.stringify(this.NewApiInfo.RuleInfo);
-    this.NewApiInfo.Content = "'" + _a.replace(/'/g, "\\'").replace(/\"/g, '\\"') + "'"
+    // console.log(this.NewApiInfo);
+    // const _a = JSON.stringify(this.NewApiInfo.RuleInfo);
+    // this.NewApiInfo.Status = !!this.NewApiInfo.Status ? 1 : 0;
     this.sHelper.ApiManager.AddApi(this.NewApiInfo).then(() => { }, () => { });
   }
 
