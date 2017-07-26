@@ -1,14 +1,16 @@
-import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter, OnChanges } from '@angular/core';
 import { Utility } from '../ComponentTools';
 @Component({
   selector: 'xtn-rule-info',
   templateUrl: './RuleInfo.html',
   styleUrls: ['./RuleInfo.scss']
 })
-export class RuleInfo implements OnInit {
+export class RuleInfo implements OnInit, OnChanges {
 
   @Input('Source') Info: any;
   @Input('Index') Index: number;
+  @Input('IsExpanded') IsExpanded: boolean;
+  stateExpression: string = 'collapsed';
 
   @Output() onDelete: EventEmitter<any> = new EventEmitter();
 
@@ -27,6 +29,9 @@ export class RuleInfo implements OnInit {
 
   ngOnInit() {
 
+  }
+  ngOnChanges(): void {
+    // this.stateExpression = !!this.IsExpanded ? 'expanded' : 'collapsed';
   }
 
   onItemMoveUpOrDown(args, currentIndex) {

@@ -9,33 +9,33 @@ class UserInfo {
     this.Utility = Utility;
   }
 
-  /**
-   * 
-   * 
-   * @param {any} request 
-   * @param {any} response 
-   * @param {any} options 
-   * @memberof UserInfo
-   */
-  post_login(request, response, options) {
+  // /**
+  //  * 
+  //  * 
+  //  * @param {any} request 
+  //  * @param {any} response 
+  //  * @param {any} options 
+  //  * @memberof UserInfo
+  //  */
+  // post_login(request, response, options) {
 
-  }
+  // }
 
-  get_user(request, response, options) {
-    response.Send({ msg: '这是一个get请求', options });
-  }
+  // get_user(request, response, options) {
+  //   response.Send({ msg: '这是一个get请求', options });
+  // }
 
-  post_user(request, response, options) {
-    response.Send({ msg: '这是一个 post 请求', options });
-  }
+  // post_user(request, response, options) {
+  //   response.Send({ msg: '这是一个 post 请求', options });
+  // }
 
-  delete_user(request, response, options) {
-    response.Send({ msg: '这是一个 delete 请求', options });
-  }
+  // delete_user(request, response, options) {
+  //   response.Send({ msg: '这是一个 delete 请求', options });
+  // }
  
-  put_user(request, response, options) {
-    response.Send({ msg: '这是一个 put 请求', options });
-  }
+  // put_user(request, response, options) {
+  //   response.Send({ msg: '这是一个 put 请求', options });
+  // }
 }
 
 module.exports = UserInfo;

@@ -15,8 +15,9 @@
           {{ CurrentItem && CurrentItem.Id === item.Id ?'收起' :'展开' }}
         </div>
       </div>
-      <div class="item" *ngIf=" CurrentItem && CurrentItem.Id === item.Id">
-        <xtn-api-item [Source]="CurrentItem" [Index]="i" (onSave)="onSaveRule($event)" (onDelete)="onDeleteRule($event,i)"></xtn-api-item>
+      <div class="item">
+        <xtn-api-item [IsExpanded]="CurrentItem && CurrentItem.Id === item.Id" [Source]="item" [Index]="i" (onSave)="onSaveRule($event)"
+          (onDelete)="onDeleteRule($event,i)"></xtn-api-item>
       </div>
     </div>
 

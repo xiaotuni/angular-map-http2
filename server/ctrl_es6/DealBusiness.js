@@ -137,7 +137,10 @@ class dealbusiness {
       }
       const nR = rList.shift();
       if (nR) {
-        this.__Rules(nR, rList, rOption, rComplete, rError);
+        const __self = this;
+        setTimeout(() => {
+          __self.__Rules(nR, rList, rOption, rComplete, rError);
+        }, 0);
       } else {
         this.DbHelper.ClosePool(() => Complete(Options), (pe) => {
           Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
@@ -194,7 +197,6 @@ class dealbusiness {
           (err) => __Next(null, null, null, null, err));
         break;
       case 'judge':
-
         const __JudgeOperator = (content) => {
           __self.__ProcessRuleJudge(judgeInfo, content,
             // 成功向下走。
@@ -256,17 +258,23 @@ class dealbusiness {
    * @memberof dealbusiness
    */
   __ProcessRuleJudge(judgeInfo, content, Success, Error, exeChilrenRules) {
-    // const { result } = data;
-    const { strByEval, strByThis, chilrenRules, failMsg } = judgeInfo || {};
+    const { strByEval, strByThis, chilrenRules } = judgeInfo || {};
+    let { failMsg } = judgeInfo || {};
 
     let __ExecResult = true;
-    if (strByEval && strByEval !== '') {
-      const __newEval = queryFormat(strByEval || ' ', content);
-      Log.Print('执行 Eval 条件:%s', __newEval);
-      __ExecResult = eval(__newEval);
-    } else if (strByThis && strByThis !== '') {
-      Log.Print('执行 this 条件:%s', strByThis);
-      __ExecResult = new Function(strByThis).apply(content);
+    try {
+      if (strByEval && strByEval !== '') {
+        const __newEval = queryFormat(strByEval || ' ', content);
+        Log.Print('执行 Eval 条件:%s', __newEval);
+        __ExecResult = eval(__newEval);
+      } else if (strByThis && strByThis !== '') {
+        Log.Print('执行 this 条件:%s', strByThis);
+        __ExecResult = new Function(strByThis).apply(content);
+      }
+    } catch (ex) {
+      failMsg = '判断条件规则内容出错了：' + ex.message;
+      Log.Print('执行判断条件时出错了：%s', ex.message);
+      __ExecResult = false;
     }
     Log.Print('执行结果为：', __ExecResult);
     if (!__ExecResult) { // 判断失败，执行失败的时候，规则集合.
