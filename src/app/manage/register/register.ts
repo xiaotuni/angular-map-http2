@@ -11,7 +11,7 @@ import * as CryptoJS from 'crypto-js';
 export class RegisterComponent implements OnInit {
   public UserInfo: any;
   constructor(private sHelper: ServiceHelper) {
-    this.UserInfo = {};// username: 'admin', password: 'admin@163.com' };
+    this.UserInfo = {};
   }
 
   ngOnInit() {
@@ -19,16 +19,9 @@ export class RegisterComponent implements OnInit {
 
   __ClickRegister() {
     const data = Object.assign({}, this.UserInfo);
-    console.log(JSON.stringify(data));
-    // const a = {
-    //   username: data.UserName,
-    //   password: CryptoJS.MD5(data.Password).toString(),
-    //   tel: data.Tel,
-    //   address: data.Address,
-    // }
     data.Password = CryptoJS.MD5(this.UserInfo.Password).toString();
     const __self = this;
-    this.sHelper.AddUser(data).then(() => {
+    this.sHelper.UserInfo.AddUser(data).then(() => {
       console.log(__self.sHelper.UserInfo);
     });
   }

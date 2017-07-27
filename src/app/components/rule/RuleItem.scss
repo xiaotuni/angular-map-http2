@@ -41,6 +41,7 @@
       display: flex;
       align-items: center;
       font-weight: 800;
+
       .title {
         flex: 1;
       }
@@ -49,15 +50,29 @@
 
   .judgeInfo {
     @extend .sqlInfo;
+
     .bewrite {
       font-weight: 900;
+      display: flex;
+      align-items: center;
+
+      .failMsg {
+        margin-left: 5px;
+        flex: 1;
+        display: flex;
+
+        input {
+          flex: 1;
+        }
+      }
     }
+
     .judgeType {
       display: flex;
       white-space: nowrap;
       align-items: center;
 
-      >textarea {
+      > textarea {
         margin-left: 5px;
       }
     }
@@ -71,5 +86,15 @@
   .title {
     display: flex;
     align-items: center;
+
+    .desc {
+      padding-right: 10px;
+    }
+
+    .resultIndex {
+      > span {
+        padding: 0 5px;
+      }
+    }
   }
 }

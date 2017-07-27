@@ -23,13 +23,13 @@ export class UserListComponent implements OnInit, AfterViewInit {
     console.log('AfterViewInit');
     const c = { pageIndex: 0, pageSize: 15 };
     const __self = this;
-    this.sHelper.Userlist(c).then(() => {
-      __self.userList = __self.sHelper.Users;
+    this.sHelper.UserInfo.Userlist(c).then(() => {
+      __self.userList = __self.sHelper.UserInfo.Users;
     });
   }
 
   __ClickDelete(item) {
-    this.sHelper.DeleteUser(item).then(() => { });
+    this.sHelper.UserInfo.DeleteUser(item).then(() => { });
   }
 
   __ClickModify(item) {

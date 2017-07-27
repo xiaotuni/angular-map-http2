@@ -50,6 +50,7 @@ export default class ApiClient {
       Add: '/userinfo/user',
       Delete: '/userinfo/user',
       Put: '/userinfo/user',
+      Login: '/userinfo/login',
     }
   }
 
@@ -79,7 +80,11 @@ export default class ApiClient {
           if (data) {
             request.send(data);
           }
+
+          const { token } = Utility.$GetContent(Utility.$ConstItem.UserInfo) || { token: null };
+
           request.header.xiaotuni = 'liaohaibing_' + new Date().getTime();
+          request.header.token = token;
 
           const { HttpStatus } = Utility.$ConstItem.Events;
           /**

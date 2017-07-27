@@ -12,21 +12,6 @@ import { Utility } from '../ComponentTools';
       state('expanded', style({ position: 'relative', background: '#fff', height: '*', borderColor: 'green', color: 'green' })),
       // transition('collapsed <=> expanded', [animate(500, style({ background: '#fff', height: '*', color: 'blue' })), animate(100)]),
       transition('collapsed <=> expanded', [animate('100ms ease-out'), animate('100ms ease-out')]),
-
-      // state('collapsed,void', style({ position: 'relative', background: '#fff', height: '0px', color: 'maroon', borderColor: 'maroon', display: 'none' })),
-      // state('expanded,*', style({ position: 'relative', background: '#fff', height: '*', borderColor: 'green', color: 'green' })),
-
-      // // transition('collapsed => void', [animate(500, style({ background: '#fff', height: '*', color: 'blue' })), animate(100)]),
-      // // transition('void => collapsed', [animate(500, style({ background: '#fff', height: '*', color: 'blue' })), animate(100)]),
-      // // transition('expanded => void', [animate(500, style({ background: '#fff', height: '*', color: 'blue' })), animate(100)]),
-      // // transition('void => expanded', [animate(500, style({ background: '#fff', height: '*', color: 'blue' })), animate(100)]),
-
-      // transition('void => collapsed', [animate(500, style({ transform: 'translateY(-100%)' })), animate('0.6s ease-in-out', style({ transform: 'translateY(0%)' }))]),
-      // transition('collapsed => void', [animate(500, style({ transform: 'translateY(0%)' })), animate('0.6s ease-in-out', style({ transform: 'translateY(100%)' }))]),
-
-      // transition('void => expanded', [animate(500, style({ transform: 'translateY(100%)' })), animate('0.5s ease-in-out', style({ transform: 'translateY(0%)' }))]),
-      // transition('expanded => void', [animate(500, style({ transform: 'translateY(0%)' })), animate('0.5s ease-in-out', style({ transform: 'translateY(-100%)' }))])
-
     ])]
 })
 export class ApiItem implements OnInit, OnChanges {
@@ -62,8 +47,20 @@ export class ApiItem implements OnInit, OnChanges {
     this.stateExpression = !!this.IsExpanded ? 'expanded' : 'collapsed';
   }
   ngOnInit() {
-    const { RuleInfo } = this.ApiInfo || { RuleInfo: {} };
-    this.RuleInfo = RuleInfo || {};
+
+    if (!this.ApiInfo) {
+      this.ApiInfo = {};
+    }
+    if (!this.ApiInfo['IsTokenAccess']) {
+      this.ApiInfo.IsTokenAccess = 1;
+    }
+    if (!this.ApiInfo['Status']) {
+      this.ApiInfo.Status = 1;
+    }
+    if (!this.ApiInfo.RuleInfo) {
+      this.ApiInfo.RuleInfo = {};
+    }
+    this.RuleInfo = this.ApiInfo.RuleInfo;
   }
 
   btnClickSave() {

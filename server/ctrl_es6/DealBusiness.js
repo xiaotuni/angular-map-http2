@@ -7,7 +7,7 @@ const queryFormat = function (query, values) {
   return query.replace(/\:(\w+)/g, function (txt, key) {
     if (values.hasOwnProperty(key)) {
       let _value = values[key];
-      if (_value.constructor.name === 'Object') {
+      if (_value && _value.constructor.name === 'Object') {
         _value = JSON.stringify(_value);
         const rValue = _value.replace(/'/g, "\\'").replace(/\"/g, '\\"');
         return rValue;
@@ -67,7 +67,8 @@ class dealbusiness {
     }
     let notExistsFields = [];
     fields.split(',').forEach((field) => {
-      if (!params[field]) {
+      const __value = params[field];
+      if (!__value && __value !== false && __value !== 0) {
         notExistsFields.push(field);
       }
     });
@@ -105,7 +106,8 @@ class dealbusiness {
     const __self = this;
     this.__Rules(__first, rules, Object.assign({}, data, params, { Result: {} }), (success) => {
       // 组织结果
-      const __Data = __self.__ResultInfo(result, success);
+      const { __ResultNo__ } = success;
+      const __Data = __self.__ResultInfo(__ResultNo__ || result, success);
       Response.Send(__Data);
     }, (err) => {
       Response.SendError({ code: 500, msg: err });
@@ -138,11 +140,9 @@ class dealbusiness {
       const nR = rList.shift();
       if (nR) {
         const __self = this;
-        setTimeout(() => {
-          __self.__Rules(nR, rList, rOption, rComplete, rError);
-        }, 0);
+        __self.__Rules(nR, rList, rOption, rComplete, rError);
       } else {
-        this.DbHelper.ClosePool(() => Complete(Options), (pe) => {
+        this.DbHelper.ClosePool(() => Complete(rOption), (pe) => {
           Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
           Complete(Options);
         });
@@ -169,9 +169,9 @@ class dealbusiness {
             if (!!isMergeOption) {
               // 将数据合并到Options里去。
               Object.assign(Options, result || {});
-            } else {
-              Options.Result[id] = { __name: name, result };
             }
+            Options.Result[id] = { __name: name, result };
+
             __Next(RuleCollection, Options, Complete, Error);
           }, (err) => __Next(null, null, null, null, err));
         }
@@ -197,22 +197,25 @@ class dealbusiness {
           (err) => __Next(null, null, null, null, err));
         break;
       case 'judge':
-        const __JudgeOperator = (content) => {
-          __self.__ProcessRuleJudge(judgeInfo, content,
+        const __JudgeOperator = (content, jInfo) => {
+          __self.__ProcessRuleJudge(jInfo, content,
             // 成功向下走。
             () => __Next(RuleCollection, content, Complete, Error),
             // 失败，执行中断。
             (err) => __Next(null, null, null, null, err),
             // 执行分支规则
-            (chilrenRules) => __Next(chilrenRules, content, Complete, Error));
+            (chilrenRules) => {
+              content.__ResultNo__ = jInfo.resultIndex;
+              __Next(chilrenRules, content, Complete, Error);
+            });
         };
         if (_FormatSQL) {
           this.DbHelper.QueryOne(_FormatSQL, (data) => {
             Object.assign(Options, data.result || {});
-            __JudgeOperator(Options)
+            __JudgeOperator(Options, judgeInfo)
           }, (err) => __Next(null, null, null, null, err));
         } else {
-          __JudgeOperator(Options);
+          __JudgeOperator(Options, judgeInfo);
         }
         break;
     }
@@ -244,7 +247,7 @@ class dealbusiness {
       return __Info;
     }
     const values = Object.values(Result);
-    return values && values.length > 0 ? values[0] : { msg: 'ok' };
+    return values && values.length > 0 ? values[0] : { code: 200, msg: 'ok' };
   }
 
   /**

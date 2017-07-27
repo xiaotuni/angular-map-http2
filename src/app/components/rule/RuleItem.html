@@ -45,8 +45,8 @@
     <textarea [(ngModel)]="Rule.sql"></textarea>
   </div>
   <div class="judgeInfo" *ngIf="Rule.type === 'judge'">
-    <div class="bewrite">添加判断条件信息
-
+    <div class="bewrite">
+      添加判断条件信息
       <div class="failMsg"> <input type="text" placeholder="判断出错返回的信息" [(ngModel)]="Rule.judgeInfo.failMsg"></div>
     </div>
     <div class="judgeType">
@@ -63,7 +63,11 @@
 
 <div class="chilren" *ngIf="Rule.type === 'judge'">
   <div class="title">
-    <h4>添加子规则，判断失败后要处理流程:</h4>
+    <div class="desc">添加子规则，判断失败后要处理流程:</div>
+    <div class="resultIndex">
+      <span>返回结果索引</span>
+      <input type="number" [(ngModel)]="Rule.judgeInfo.resultIndex">
+    </div>
     <div class="btns">
       <div class="btn">
         <div (click)="onClickAddRule(Rule.judgeInfo)">添加规则 </div>

@@ -82,7 +82,7 @@ class routes {
   initHeader() {
     this.res.setHeader("Content-Type", "application/json;charset=utf-8");
     this.res.setHeader("Access-Control-Allow-Origin", "*");
-    this.res.setHeader("access-control-allow-headers", "x-pingother, origin, x-requested-with, content-type, accept, xiaotuni,systemdate");
+    this.res.setHeader("access-control-allow-headers", "x-pingother, origin, x-requested-with, content-type, accept, token, xiaotuni,systemdate");
     this.res.setHeader("access-control-allow-methods", "GET, POST, PUT, DELETE, OPTIONS");
     this.res.setHeader("Access-Control-Expose-Headers", "date, token,systemdate");
     this.res.setHeader('systemdate', new Date().getTime());

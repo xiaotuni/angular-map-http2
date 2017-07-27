@@ -22,7 +22,7 @@ export class RuleItem implements OnInit {
     INSERT: 'insert',
     DELETE: 'delete',
   }
- 
+
   public RuleType: Array<any> = [
     { key: 'query', title: '查询' },
     { key: 'update', title: '更新' },
@@ -76,12 +76,10 @@ export class RuleItem implements OnInit {
 
   onClickAddRule(rule) {
     let { chilrenRules } = rule;
-    if (chilrenRules && chilrenRules.length > 0) {
-      rule.chilrenRules.push(JSON.parse(JSON.stringify(rule.chilrenRules[rule.chilrenRules.length - 1])));
-      return;
+    if (!Array.isArray(chilrenRules)) {
+      chilrenRules = [];
+      rule.chilrenRules = chilrenRules;
     }
-    chilrenRules = [];
-    rule.chilrenRules = chilrenRules;
     chilrenRules.push({ judgeInfo: {} });
   }
 

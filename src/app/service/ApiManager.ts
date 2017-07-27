@@ -29,22 +29,20 @@ export class ApiManagerService {
 
   AddApi(Info: object): Promise<any> {
     const __self = this;
-    const options = {
-      action: {
-        promise: (client) => client.post(client.API.Api.Add, { params: {}, data: Info }),
-        types: ['Loading', 'Success', 'Fail']
-      },
-    };
+    const options = { action: { types: ['Loading', 'Success', 'Fail'], promise: (client) => client.post(client.API.Api.Add, { params: {}, data: Info }) } };
     return this.ApiClient(options).then((data) => {
-      __self.ApiList = data;
-      __self.ApiList.forEach(row => {
-        const { Content } = row;
-        try {
-          row.RuleInfo = JSON.parse(Content);
-        } catch (ex) {
-          console.log(ex);
+      const { code, msg, Id } = data;
+      if (code && msg) {
+        // update 
+      } else { // insert
+        const _find = __self.ApiList.filter((row) => row.Id === Id);
+        if (_find.length > 0) {
+          // _find[0].RuleInfo = JSON.parse(data.Content);
+        } else {
+          data.RuleInfo = JSON.parse(data.Content);
+          __self.ApiList.push(data);
         }
-      });
+      }
       return data;
     });
   }
@@ -80,6 +78,8 @@ export class ApiManagerService {
         }
       }
       return data;
+    }, (er) => {
+      console.log(er);
     });
   }
 }

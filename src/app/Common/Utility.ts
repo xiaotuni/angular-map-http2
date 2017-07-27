@@ -29,6 +29,7 @@ export class Utility {
     AppIsGoBack: 'XTN_APP_IS_GO_BACK',
     BrowerTitle: 'XTN_BrowerTitle',
     Event: 'XTN_EVENT_INFO',
+    UserInfo: 'XTN_USER_INFO',
     Events: {
       HttpStatus: {
         400: 'XTN_HTTP_STATUS_404',

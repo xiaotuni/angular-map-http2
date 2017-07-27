@@ -48,12 +48,6 @@ export class ApiListComponent implements OnInit {
       // this.stateExpression = 'expanded';
       this.CurrentItem = item;
     }
-    // item.stateExpression = item.stateExpression === 'expanded' ? 'collapsed' : 'expanded';
-    // if (item.stateExpression === '') {
-
-    // } else {
-
-    // }
   }
 
   btnClickAdd() {
@@ -61,11 +55,12 @@ export class ApiListComponent implements OnInit {
   }
 
   btnClickSave() {
+    this.NewApiInfo.Id = -1;
     this.sHelper.ApiManager.AddApi(this.NewApiInfo).then(() => { }, () => { });
   }
 
   onSaveRule(rule) {
-    this.sHelper.ApiManager.Modify(rule);
+    this.sHelper.ApiManager.AddApi(rule);
   }
 
   onDeleteRule(rule) {

@@ -34,7 +34,13 @@ export default function ClientMiddleware(client) {
     }
     const { promise, type, ...rest } = action;
 
-    return promise(client).then((result) => result, (error) => error).catch((error) => error);
+    return new Promise((resolve, reject) => {
+      promise(client).then((result) => {
+        resolve(result);
+      }, (error) => {
+        reject(error);
+      }).catch((error) => error);
+    });
   };
   return __CallMethod;
 }
