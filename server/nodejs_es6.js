@@ -1,7 +1,7 @@
 const http = require('http2');
 const util = require('util');
 const queryString = require('querystring');
-const formidable = require('formidable');
+// const formidable = require('formidable');
 const url = require('url');
 const querystring = require('querystring');
 const path = require('path');
@@ -121,11 +121,13 @@ class routes {
       const { func, ctrl } = __self.__FindMethod(PathInfo) || {};
       const data = __ReData && __ReData !== '' ? JSON.parse(__ReData) : {};
       if (func) {
-        func.apply(ctrl, [__self.req, __self.res, { params: __self.QueryParams, data }]);
+        func.apply(ctrl, [__self.req, __self.res,
+        { params: __self.QueryParams, data, token: __self.token }]);
         return;
       }
       const _db = new DbHelper(); // 实例化一个数据库操作类
-      __self.ApiInfo.DealBusiness.Process(_db, __self.req, __self.res, { methodInfo, params: __self.QueryParams, data });
+      __self.ApiInfo.DealBusiness.Process(_db, __self.req, __self.res,
+        { methodInfo, params: __self.QueryParams, data, token: __self.token });
     });
   }
 
@@ -187,6 +189,7 @@ class routes {
     const _url = url.parse(this.req.url);
     this.UrlInfo = _url;
     const { query } = _url;
+    this.token = this.req.headers.token;
     this.QueryParams = querystring.parse(query);
   }
 
