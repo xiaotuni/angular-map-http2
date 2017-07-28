@@ -63,7 +63,14 @@ export class AppComponent {
   __ListenEmit(_this) {
     const { ShowModel, HttpStatus } = Utility.$ConstItem.Events;
     Utility.$On(HttpStatus[400], (args) => {
-      console.log(args);
+      Utility.$Emit(ShowModel.onActionSheet, args);
+    });
+    Utility.$On(HttpStatus[401], (args) => {
+      const _a = _this;
+      const ToPage = { Url: Utility.$ConstItem.UrlItem.ManagerLogin, Params: { IsGoBack: true } };
+      Utility.$Emit(ShowModel.onActionSheet, Object.assign(args, { ToPage }));
+    });
+    Utility.$On(HttpStatus[404], (args) => {
       Utility.$Emit(ShowModel.onActionSheet, args);
     });
     Utility.$On(HttpStatus[500], (args) => {

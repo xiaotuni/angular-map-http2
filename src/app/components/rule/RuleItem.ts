@@ -31,6 +31,7 @@ export class RuleItem implements OnInit {
     { key: 'beginTran', title: '开始事务' },
     { key: 'commit', title: '提交事务' },
     { key: 'judge', title: '条件判断' },
+    { key: 'cache', title: '保存到缓存' },
   ];
 
   constructor() {
@@ -65,12 +66,12 @@ export class RuleItem implements OnInit {
   }
 
   onChange_RuleType(item) {
-    console.log(item);
-    const { type, judgeInfo } = this.Rule;
-    if (item === 'judge') {
-      if (!judgeInfo) {
-        this.Rule.judgeInfo = {};
-      }
+    const { type, judgeInfo, cacheInfo } = this.Rule;
+    if (item === 'judge' && !judgeInfo) {
+      this.Rule.judgeInfo = {};
+    }
+    else if (item === 'cache' && !cacheInfo) {
+      this.Rule.cacheInfo = {};
     }
   }
 

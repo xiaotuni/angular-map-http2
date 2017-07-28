@@ -1,13 +1,19 @@
 <div class="apiitemCss" [@openClose]="stateExpression">
   <div class="master">
-    <span class="title">启用</span>
-    <input type="checkbox" [(ngModel)]="ApiInfo.Status">
-    <span class="title">Token访问</span>
-    <input type="checkbox" [(ngModel)]="ApiInfo.IsTokenAccess">
-    <span class="title">请求方式：</span>
-    <select [(ngModel)]="ApiInfo.Method">
+    <div class="status" (click)="onClickCheckbox('Status')">
+      <input type="checkbox" [(ngModel)]="ApiInfo.Status" disabled>
+      <span class="title">启用</span>
+    </div>
+    <div class="token" (click)="onClickCheckbox('IsTokenAccess')">
+      <input type="checkbox" [(ngModel)]="ApiInfo.IsTokenAccess" disabled>
+      <span class="title">Token访问</span>
+    </div>
+    <div class="requestMethod">
+      <span class="title">请求方式：</span>
+      <select [(ngModel)]="ApiInfo.Method">
       <option *ngFor="let item of MethodCollection"  [value]="item.key">{{item.title}}</option>
     </select>
+    </div>
     <span class="title">接口：</span>
     <input type="text" [(ngModel)]="ApiInfo.PathName" />
     <div class="btns">

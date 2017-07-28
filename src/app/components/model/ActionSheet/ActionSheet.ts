@@ -14,6 +14,15 @@ export class XtnActionSheet implements OnInit {
 
   ngOnInit() {
     console.log('ActionSheetInfo', this.Info);
+    const { ToPage } = this.Info;
+    if (ToPage) {
+      const { Url, Params } = ToPage;
+      if (Url) {
+        setTimeout(() => {
+          Utility.$ToPage(Url, Params);
+        }, 1500);
+      }
+    }
   }
 
   __ClickClose() {

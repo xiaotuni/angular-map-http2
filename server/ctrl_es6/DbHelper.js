@@ -1,3 +1,6 @@
+const Utility = require('../lib/commonMethod');
+const Log = Utility.Log;
+
 const mysql = require('mysql');
 
 /**
@@ -41,7 +44,7 @@ class MySqlHelper {
       // connection.query('SET SESSION auto_increment_increment=1')
     });
     this.pool.on('release', function (connection) {
-      // console.log('Connection %d released', connection.threadId);
+      // Log.Print('Connection %d released', connection.threadId);
     });
   }
 
@@ -154,7 +157,7 @@ class MySqlHelper {
     };
     const { IsBeginTrConn, BeginTrConn } = this;
     if (!!IsBeginTrConn) {
-      console.log('事务线程ID：', BeginTrConn.threadId);
+      Log.Print('事务线程ID：', BeginTrConn.threadId);
       // 事务处理
       BeginTrConn.query(Sql, (err, result, fields) => {
         if (err) {
@@ -172,6 +175,7 @@ class MySqlHelper {
       }
       const __query = poolInfo.query(Sql, (err, result, fields) => {
         if (err) {
+          Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', __query.sql);
           Error && Error(err);
           return;
         }
@@ -203,7 +207,7 @@ class MySqlHelper {
         if (btErr) {
           Error && Error(btErr);
         }
-        console.log('开始事务处理...');
+        Log.Print('开始事务处理...');
         __self.BeginTrConn = conn;
         __self.IsBeginTrConn = true;
         Success && Success();
@@ -228,9 +232,9 @@ class MySqlHelper {
       return;
     }
 
-    console.log('Rollback->事务线程ID：', BeginTrConn.threadId);
+    Log.Print('Rollback->事务线程ID：', BeginTrConn.threadId);
     BeginTrConn.rollback(() => {
-      console.log('事务回滚,回滚原因：', ErrorInfo);
+      Log.Print('事务回滚,回滚原因：', ErrorInfo);
       delete __self.IsBeginTrConn;
       delete __self.BeginTrConn;
     });
@@ -255,13 +259,12 @@ class MySqlHelper {
     }
     BeginTrConn.commit((err) => {
       if (err) {
-        console.log('事务提交失败，执行回滚操作...');
+        Log.Print('事务提交失败，执行回滚操作...');
         __self.Rollback(err);
         Error && Error(err);
         return;
       }
-      console.log('事务提交成功...');
-      console.log('Commit->事务提交成功...事务ID：', BeginTrConn.threadId);
+      Log.Print('Commit->事务提交成功...事务ID：', BeginTrConn.threadId);
       delete __self.IsBeginTrConn;
       delete __self.BeginTrConn;
       Success && Success();

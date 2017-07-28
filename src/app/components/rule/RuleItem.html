@@ -59,7 +59,19 @@
     </div>
   </div>
 
+  <!-- 缓存操作 -->
+  <div class="cacheInfo" *ngIf="Rule.type === 'cache'">
+    缓存操作
+    <div>
+      token值：<input type="text" required [(ngModel)]="Rule.cacheInfo.token" />
+    </div>
+    <div>
+      其它字段值：
+      <input type="text" required [(ngModel)]="Rule.cacheInfo.fields">
+    </div>
+  </div>
 </div>
+
 
 <div class="chilren" *ngIf="Rule.type === 'judge'">
   <div class="title">

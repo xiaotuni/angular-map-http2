@@ -1,15 +1,29 @@
 .apiitemCss {
   border: 1px solid;
 
-  >div {
+  > div {
     cursor: default;
   }
 
   .master {
-    border-bottom: 1px solid;
-    padding: 10px;
+    border-bottom: 1px solid #f0cccc;
+    // padding: 10px;
     display: flex;
     align-items: center;
+
+    .status {
+      display: flex;
+      align-items: center;
+      border: 1px solid #f4f0f0;
+    }
+
+    .token {
+      @extend .status;
+    }
+
+    .requestMethod {
+      @extend .status;
+    }
 
     .title {
       white-space: nowrap;
@@ -26,8 +40,7 @@
     }
   }
 
-
-  >div:last-child {
+  > div:last-child {
     border-bottom: none;
   }
 }

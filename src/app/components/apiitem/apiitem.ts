@@ -26,15 +26,7 @@ export class ApiItem implements OnInit, OnChanges {
   @Output() onSave: EventEmitter<any> = new EventEmitter();
 
   public RuleInfo: any;
-  public RuleType: Array<any> = [
-    { key: 'query', title: '查询' },
-    { key: 'update', title: '更新' },
-    { key: 'insert', title: '插入' },
-    { key: 'delete', title: '删除' },
-    { key: 'beginTran', title: '开始事务' },
-    { key: 'commit', title: '提交事务' },
-    { key: 'judge', title: '条件判断' },
-  ];
+
   public MethodCollection: Array<any> = [
     { key: 'get', title: 'get' },
     { key: 'delete', title: 'delete' },
@@ -51,12 +43,12 @@ export class ApiItem implements OnInit, OnChanges {
     if (!this.ApiInfo) {
       this.ApiInfo = {};
     }
-    if (!this.ApiInfo['IsTokenAccess']) {
-      this.ApiInfo.IsTokenAccess = 1;
-    }
-    if (!this.ApiInfo['Status']) {
-      this.ApiInfo.Status = 1;
-    }
+    // if (!this.ApiInfo['IsTokenAccess'] ) {
+    //   this.ApiInfo.IsTokenAccess = 1;
+    // }
+    // if (!this.ApiInfo['Status']) {
+    //   this.ApiInfo.Status = 1;
+    // }
     if (!this.ApiInfo.RuleInfo) {
       this.ApiInfo.RuleInfo = {};
     }
@@ -75,5 +67,9 @@ export class ApiItem implements OnInit, OnChanges {
     if (onDelete) {
       onDelete.emit(ApiInfo);
     }
+  }
+
+  onClickCheckbox(type) {
+    this.ApiInfo[type] = !this.ApiInfo[type];
   }
 }

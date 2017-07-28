@@ -1,4 +1,5 @@
 const Utility = require('../lib/commonMethod');
+const MySqlHelper = require('../ctrl_es6/DbHelper');
 const Comm = Utility.Comm;
 const Log = Utility.Log;
 
@@ -22,26 +23,26 @@ const queryFormat = function (query, values) {
 
 class dealbusiness {
   constructor() {
-    // this.DbHelper = DbHelper;
+    // this.DbAccess = DbAccess;
   }
 
   /**
    * 处理操作
    * 
-   * @param {any} DbHelper 数据库访问类
+   * @param {any} DbAccess 数据库访问类
    * @param {any} Request 请求
    * @param {any} Response 响应
    * @param {any} Options 参数选择信息
    * @memberof dealbusiness
    */
-  Process(DbHelper, Request, Response, Options) {
-    this.DbHelper = DbHelper;
+  Process(DbAccess, Request, Response, Options) {
+    this.DbAccess = DbAccess;
     const { methodInfo } = Options;
     const { pathname, method } = methodInfo;
     const sql = Comm.format("select * from sys_rule t where t.status = 1 and t.PathName = '{0}' and t.Method = '{1}'",
       pathname, method);
     const __self = this;
-    this.DbHelper.QueryOne(sql, (data) => {
+    this.DbAccess.QueryOne(sql, (data) => {
       const { result } = data;
       if (result) {
         __self.__ProcessRule(Request, Response, Options, result);
@@ -91,12 +92,16 @@ class dealbusiness {
    */
   __ProcessRule(Request, Response, Options, RuleInfo) {
     // 开始处理规则
-    const { Content } = RuleInfo;
+    const { Content, Method, PathName } = RuleInfo;
     const RuleContent = JSON.parse(Content);
-    console.log(JSON.stringify(RuleContent));
     const { rules, fields, result } = RuleContent;
     const { data, params } = Options;
     const __CheckedParams = Object.assign({}, data, params);
+    // 接口 token 判断
+    if (!this.__ProcessApiTokenRight(RuleInfo, Options, Response)) {
+      return;
+    }
+    // 查询参数
     if (!this.__CheckFields(fields, __CheckedParams)) {
       Response.SendError({ code: 400, msg: '参数错误,少传[' + this.__NotExistsFields.join(',') + ' ]字段' });
       return;
@@ -104,14 +109,28 @@ class dealbusiness {
 
     const __first = rules.shift();
     const __self = this;
+    // 规则集合
     this.__Rules(__first, rules, Object.assign({}, data, params, { Result: {} }), (success) => {
       // 组织结果
       const { __ResultNo__ } = success;
       const __Data = __self.__ResultInfo(__ResultNo__ || result, success);
       Response.Send(__Data);
     }, (err) => {
-      Response.SendError({ code: 500, msg: err });
+      Log.Print('调用此接口出错:方法名称->【%s】,接口:【%s】', Method, PathName);
+      Response.SendError({ code: 500, msg: err && err.message ? message : err });
     });
+  }
+
+  __ProcessApiTokenRight(RuleInfo, Options, Response) {
+    const { IsTokenAccess, Method, PathName } = RuleInfo;
+    const { token } = Options || {}
+    const { __TokenCollection__ } = this.DbAccess;
+    if (IsTokenAccess !== 1 || (token && __TokenCollection__ && __TokenCollection__[token])) {
+      return true;
+    }
+    Log.Print('调用【%s】-->【%s】，需要Token', Method, PathName);
+    Response.Send401('未没有权限');
+    return false;
   }
 
   /**
@@ -128,12 +147,18 @@ class dealbusiness {
     const { id, type, sql, isRows, name, resultName, judgeInfo, isMergeOption } = Rule;
     const _t = (type || 'query').toLocaleLowerCase();
     const _FormatSQL = queryFormat(sql || '', Options);
-    Log.Print('id序号 =>%d--执行的SQL语句【%s】', id, _FormatSQL);
+    if (_FormatSQL) {
+      Log.Print('id序号 =>%d--执行的SQL语句【%s】', id, _FormatSQL);
+    }
+    /**
+     * 处理下一条规则
+     */
     const __Next = (rList, rOption, rComplete, rError, err) => {
       if (err) {
-        this.DbHelper.ClosePool(() => Error && Error(err), (pe) => {
+        Log.Print('执行此规则出错了:【%s】', JSON.stringify(Rule));
+        this.DbAccess.ClosePool(() => Error && Error(err.message || err), (pe) => {
           Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
-          Error && Error(err);
+          Error && Error(err.message || err);
         });
         return;
       }
@@ -142,7 +167,7 @@ class dealbusiness {
         const __self = this;
         __self.__Rules(nR, rList, rOption, rComplete, rError);
       } else {
-        this.DbHelper.ClosePool(() => Complete(rOption), (pe) => {
+        this.DbAccess.ClosePool(() => Complete(rOption), (pe) => {
           Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
           Complete(Options);
         });
@@ -150,34 +175,33 @@ class dealbusiness {
     };
     const __self = this;
     switch (_t) {
-      case 'begintran':
-        this.DbHelper.BeginTransaction(() => __Next(RuleCollection, Options, Complete, Error), (error) => __Next(null, null, null, null, error));
+      case 'begintran':  // 事务
+        this.DbAccess.BeginTransaction(() => __Next(RuleCollection, Options, Complete, Error), (error) => __Next(null, null, null, null, error));
         break;
-      case 'commit':
-        this.DbHelper.Commit(() => __Next(RuleCollection, Options, Complete, Error), (err) => __Next(null, null, null, null, err));
+      case 'commit':     // 提交事务
+        this.DbAccess.Commit(() => __Next(RuleCollection, Options, Complete, Error), (err) => __Next(null, null, null, null, err));
         break;
-      case 'query':
-        if (isRows) {
-          this.DbHelper.Query(_FormatSQL, (data) => {
+      case 'query':      // 查询
+        if (isRows) {         // 返回多行
+          this.DbAccess.Query(_FormatSQL, (data) => {
             const { result } = data;
             Options.Result[id] = { __name: name, result };
             __Next(RuleCollection, Options, Complete, Error);
           }, (err) => __Next(null, null, null, null, err));
-        } else {
-          this.DbHelper.QueryOne(_FormatSQL, (data) => {
+        } else {            // 返回单选
+          this.DbAccess.QueryOne(_FormatSQL, (data) => {
             const { result } = data;
+            // 将数据合并到Options里去。
             if (!!isMergeOption) {
-              // 将数据合并到Options里去。
               Object.assign(Options, result || {});
             }
             Options.Result[id] = { __name: name, result };
-
             __Next(RuleCollection, Options, Complete, Error);
           }, (err) => __Next(null, null, null, null, err));
         }
         break;
-      case 'insert':
-        this.DbHelper.InsertSQL(_FormatSQL, (data) => {
+      case 'insert':        // 插入
+        this.DbAccess.InsertSQL(_FormatSQL, (data) => {
           const { result } = data;
           let __name = (name && name !== '') ? name : 'InsertNo';
           const __InsertResultInfo = {};
@@ -186,17 +210,17 @@ class dealbusiness {
           __Next(RuleCollection, Options, Complete, Error);
         }, (err) => __Next(null, null, null, null, err));
         break;
-      case 'delete':
-        this.DbHelper.DeleteSQL(_FormatSQL,
+      case 'delete':       // 删除
+        this.DbAccess.DeleteSQL(_FormatSQL,
           (data) => __Next(RuleCollection, Options, Complete, Error),
           (err) => __Next(null, null, null, null, err));
         break;
-      case 'update':
-        this.DbHelper.UpdateSQL(_FormatSQL,
+      case 'update':      // 更新
+        this.DbAccess.UpdateSQL(_FormatSQL,
           (data) => __Next(RuleCollection, Options, Complete, Error),
           (err) => __Next(null, null, null, null, err));
         break;
-      case 'judge':
+      case 'judge':       // 判断
         const __JudgeOperator = (content, jInfo) => {
           __self.__ProcessRuleJudge(jInfo, content,
             // 成功向下走。
@@ -210,7 +234,7 @@ class dealbusiness {
             });
         };
         if (_FormatSQL) {
-          this.DbHelper.QueryOne(_FormatSQL, (data) => {
+          this.DbAccess.QueryOne(_FormatSQL, (data) => {
             Object.assign(Options, data.result || {});
             __JudgeOperator(Options, judgeInfo)
           }, (err) => __Next(null, null, null, null, err));
@@ -218,7 +242,86 @@ class dealbusiness {
           __JudgeOperator(Options, judgeInfo);
         }
         break;
+      case 'cache':
+        const { cacheInfo } = Rule;
+        this.__ProcessRuleCache(cacheInfo, Options, () => __Next(RuleCollection, Options, Complete, Error, null), (err) => __Next(null, null, null, null, err))
+        break;
+      default:
+        __Next(RuleCollection, Options, Complete, Error, null);
+        break;
     }
+  }
+
+  /**
+   * 这里以后可以用将数据保存到redis里面去，现在就保存当前内存中就可以
+   * 
+   * @param {any} cacheInfo 
+   * @param {any} content 
+   * @param {any} Success 
+   * @param {any} Error 
+   * @memberof dealbusiness
+   */
+  __ProcessRuleCache(cacheInfo, content, Success, Error) {
+    try {
+      const { token, fields } = cacheInfo;
+      const __cache = {};
+      if (token) {
+        __cache.token = content[token];
+      }
+      if (fields) {
+        fields.split(',').forEach((field) => {
+          const __key = Comm.$trim(field);
+          __cache[__key] = content[__key];
+        });
+      }
+      const { __TokenCollection__ } = this.DbAccess;
+      if (__TokenCollection__) {
+        __TokenCollection__[__cache.token] = __cache;
+      }
+      Success && Success();
+    } catch (ex) {
+      Error && Error(ex.message);
+    }
+  }
+
+  /**
+   * 处理规则判断。
+   * 
+   * @param {any} judgeInfo 判断条件信息
+   * @param {any} content 要判断的数据
+   * @param {any} Success 判断成功回调
+   * @param {any} Error 判断失败回调
+   * @returns 
+   * @memberof dealbusiness
+   */
+  __ProcessRuleJudge(judgeInfo, content, Success, Error, exeChilrenRules) {
+    const { strByEval, strByThis, chilrenRules } = judgeInfo || {};
+    let { failMsg } = judgeInfo || {};
+    let __ExecResult = true;
+    try {
+      if (strByEval && strByEval !== '') {
+        const __newEval = queryFormat(strByEval || ' ', content);
+        Log.Print('执行 Eval 条件:%s', __newEval);
+        __ExecResult = eval(__newEval);
+      } else if (strByThis && strByThis !== '') {
+        Log.Print('执行 this 条件:%s', strByThis);
+        __ExecResult = new Function(strByThis).apply(content);
+      }
+    } catch (ex) {
+      failMsg = '判断条件规则内容出错了：' + ex.message;
+      Log.Print('执行判断条件时出错了：%s', ex.message);
+      __ExecResult = false;
+    }
+    Log.Print('执行结果为：', __ExecResult);
+    if (!__ExecResult) { // 判断失败，执行失败的时候，规则集合.
+      if (chilrenRules && chilrenRules.length > 0) {
+        exeChilrenRules && exeChilrenRules(chilrenRules);
+        return;
+      }
+      Error && Error(failMsg);
+      return;
+    }
+    Success && Success();
   }
 
   /**
@@ -250,47 +353,6 @@ class dealbusiness {
     return values && values.length > 0 ? values[0] : { code: 200, msg: 'ok' };
   }
 
-  /**
-   * 处理规则判断。
-   * 
-   * @param {any} judgeInfo 判断条件信息
-   * @param {any} content 要判断的数据
-   * @param {any} Success 判断成功回调
-   * @param {any} Error 判断失败回调
-   * @returns 
-   * @memberof dealbusiness
-   */
-  __ProcessRuleJudge(judgeInfo, content, Success, Error, exeChilrenRules) {
-    const { strByEval, strByThis, chilrenRules } = judgeInfo || {};
-    let { failMsg } = judgeInfo || {};
-
-    let __ExecResult = true;
-    try {
-      if (strByEval && strByEval !== '') {
-        const __newEval = queryFormat(strByEval || ' ', content);
-        Log.Print('执行 Eval 条件:%s', __newEval);
-        __ExecResult = eval(__newEval);
-      } else if (strByThis && strByThis !== '') {
-        Log.Print('执行 this 条件:%s', strByThis);
-        __ExecResult = new Function(strByThis).apply(content);
-      }
-    } catch (ex) {
-      failMsg = '判断条件规则内容出错了：' + ex.message;
-      Log.Print('执行判断条件时出错了：%s', ex.message);
-      __ExecResult = false;
-    }
-    Log.Print('执行结果为：', __ExecResult);
-    if (!__ExecResult) { // 判断失败，执行失败的时候，规则集合.
-      if (chilrenRules && chilrenRules.length > 0) {
-        exeChilrenRules && exeChilrenRules(chilrenRules);
-        return;
-      }
-      Error && Error(failMsg);
-      return;
-    }
-    Success && Success();
-
-  }
 }
 
 module.exports = dealbusiness;

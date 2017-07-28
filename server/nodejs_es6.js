@@ -7,7 +7,7 @@ const querystring = require('querystring');
 const path = require('path');
 const fs = require('fs');
 const api = require('./ctrl_es6/index');
-const DbHelper = require('./ctrl_es6/DbHelper');
+const MySqlHelper = require('./ctrl_es6/DbHelper');
 
 /**
  * 发送内容到界面上去.
@@ -23,6 +23,10 @@ http.ServerResponse.prototype.SendOk = function () {
 http.ServerResponse.prototype.Send_404 = function (data) {
   this.statusCode = 404;
   this.Send(data);
+};
+http.ServerResponse.prototype.Send401 = function (data) {
+  this.statusCode = 401;
+  this.Send({ msg: data });
 };
 http.ServerResponse.prototype.Send_500 = function (data) {
   this.statusCode = 500;
@@ -102,8 +106,26 @@ class routes {
     }
     this.Method = method.toLocaleLowerCase();
     this.parseUrlParams();
-
-    this.__ProcessApi(PathInfo);
+    //读取数据库里的token信息
+    let { TokenCollection } = MySqlHelper;
+    if (!TokenCollection || TokenCollection.length || TokenCollection.length === 0) {
+      TokenCollection = {};
+      const DbAccess = new MySqlHelper();
+      const __self = this;
+      DbAccess.Query('select * from sys_session', (data) => {
+        const { result } = data;
+        if (Array.isArray(result)) {
+          result.forEach((item) => {
+            TokenCollection[item.token] = item;
+          });
+        }
+        MySqlHelper.TokenCollection = TokenCollection;
+        __self.__ProcessApi(PathInfo);
+      }, (err) => { });
+    }
+    else {
+      this.__ProcessApi(PathInfo);
+    }
   }
 
   __ProcessApi(PathInfo) {
@@ -125,7 +147,9 @@ class routes {
         { params: __self.QueryParams, data, token: __self.token }]);
         return;
       }
-      const _db = new DbHelper(); // 实例化一个数据库操作类
+      const { TokenCollection } = MySqlHelper;
+      const _db = new MySqlHelper(); // 实例化一个数据库操作类
+      _db.__TokenCollection__ = TokenCollection;
       __self.ApiInfo.DealBusiness.Process(_db, __self.req, __self.res,
         { methodInfo, params: __self.QueryParams, data, token: __self.token });
     });

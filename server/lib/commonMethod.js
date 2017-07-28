@@ -33,6 +33,17 @@ var Comm = {
 		});
 	},
 	/**
+	 * 去空格
+	 * @param value
+	 * @returns {*}
+	 */
+	$trim: function (value) {
+		if (typeof value !== 'undefined') {
+			return value.replace(/(^\s*)|(\s*$)/g, '');
+		}
+		return '';
+	},
+	/**
 	 * 获取当前时间
 	 * @returns {*}
 	 * @constructor
