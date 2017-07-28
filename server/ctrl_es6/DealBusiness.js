@@ -109,15 +109,21 @@ class dealbusiness {
 
     const __first = rules.shift();
     const __self = this;
+    const __CurrentDate = new Date().getTime();
+    Log.Print('--开始---------%s', new Date().Format("yyyy-MM-dd hh:mm:ss.S"));
     // 规则集合
     this.__Rules(__first, rules, Object.assign({}, data, params, { Result: {} }), (success) => {
       // 组织结果
       const { __ResultNo__ } = success;
       const __Data = __self.__ResultInfo(__ResultNo__ || result, success);
       Response.Send(__Data);
+      Log.Print('--结束-------【%s】--用时:【%d】', new Date().Format("yyyy-MM-dd hh:mm:ss.S"),
+       new Date().getTime() - __CurrentDate);
     }, (err) => {
       Log.Print('调用此接口出错:方法名称->【%s】,接口:【%s】', Method, PathName);
       Response.SendError({ code: 500, msg: err && err.message ? message : err });
+      Log.Print('--结束-------【%s】--用时:【%d】', new Date().Format("yyyy-MM-dd hh:mm:ss.S"),
+       new Date().getTime() - __CurrentDate);
     });
   }
 
