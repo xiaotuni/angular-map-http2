@@ -31,6 +31,8 @@ export class Utility {
     Event: 'XTN_EVENT_INFO',
     UserInfo: 'XTN_USER_INFO',
     QueryParams: 'XTN_QUERY_PARAMS',
+    UrlPathInfo: 'XTN_URL_PATH_INFO',
+
     Events: {
       HttpStatus: {
         400: 'XTN_HTTP_STATUS_404',

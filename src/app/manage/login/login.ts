@@ -28,8 +28,13 @@ export class LoginComponent implements OnInit {
     const data = Object.assign({}, this.UserInfo);
     data.password = CryptoJS.MD5(data.password).toString();
     const __self = this;
+    // console.log(Utility.$GetContent(Utility.$ConstItem.UrlPathInfo));
     this.sHelper.UserInfo.Login(data).then(() => {
-
+      const { Params } = Utility.$GetContent(Utility.$ConstItem.UrlPathInfo) || { Params: {} };
+      const { IsGoBack } = Params || { IsGoBack: 0 };
+      if (!!Number(IsGoBack)) {
+        Utility.$GoBack();
+      }
     }, () => { });
   }
 

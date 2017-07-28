@@ -22,7 +22,7 @@ export class AppComponent {
     private location: Location,
     private activatedRoute: ActivatedRoute,
     private titleService: Title,
-    private serviceHelper: ServiceHelper) {
+    private sHelper: ServiceHelper) {
     this.__Location = location;
     this.__RouterListen(router);
     this.__ListenEmit(this);
@@ -47,9 +47,9 @@ export class AppComponent {
       if (obj instanceof RoutesRecognized) {
         const state = obj.state;
         const root = state.root;
-
         const queryParams = root.queryParams;
-        __self.serviceHelper.Common.CurrentRouterQueryParams = queryParams;
+        // __self.sHelper.Common.CurrentRouterPathInfo = { queryParams, Url: obj.url };
+        Utility.$SetContent(Utility.$ConstItem.UrlPathInfo, { Params: queryParams, Url: obj.url }, false);
         const firstChild = _FindFirstChild(root.firstChild);
         const routeConfig = firstChild.routeConfig;
         const { path, data } = routeConfig;
@@ -73,7 +73,7 @@ export class AppComponent {
     });
     Utility.$On(HttpStatus[401], (args) => {
       const _a = _this;
-      const ToPage = { Url: Utility.$ConstItem.UrlItem.ManagerLogin, Params: { IsGoBack: true } };
+      const ToPage = { Url: Utility.$ConstItem.UrlItem.ManagerLogin, Params: { IsGoBack: 1 } };
       Utility.$Emit(ShowModel.onActionSheet, Object.assign(args, { ToPage }));
     });
     Utility.$On(HttpStatus[404], (args) => {

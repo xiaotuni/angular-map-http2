@@ -153,12 +153,12 @@ class dealbusiness {
     /**
      * 处理下一条规则
      */
-    const __Next = (rList, rOption, rComplete, rError, err) => {
-      if (err) {
+    const __Next = (rList, rOption, rComplete, rError, errInfo) => {
+      if (errInfo) {
         Log.Print('执行此规则出错了:【%s】', JSON.stringify(Rule));
-        this.DbAccess.ClosePool(() => Error && Error(err.message || err), (pe) => {
+        this.DbAccess.ClosePool(() => rError && rError(errInfo && errInfo.message ? err.message : errInfo), (pe) => {
           Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
-          Error && Error(err.message || err);
+          rError && rError(errInfo && errInfo.message ? err.message : errInfo);
         });
         return;
       }
@@ -167,19 +167,19 @@ class dealbusiness {
         const __self = this;
         __self.__Rules(nR, rList, rOption, rComplete, rError);
       } else {
-        this.DbAccess.ClosePool(() => Complete(rOption), (pe) => {
+        this.DbAccess.ClosePool(() => rComplete(rOption), (pe) => {
           Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
-          Complete(Options);
+          rComplete(rOption);
         });
       }
     };
     const __self = this;
     switch (_t) {
       case 'begintran':  // 事务
-        this.DbAccess.BeginTransaction(() => __Next(RuleCollection, Options, Complete, Error), (error) => __Next(null, null, null, null, error));
+        this.DbAccess.BeginTransaction(() => __Next(RuleCollection, Options, Complete, Error), (error) => __Next(null, null, Error, null, error));
         break;
       case 'commit':     // 提交事务
-        this.DbAccess.Commit(() => __Next(RuleCollection, Options, Complete, Error), (err) => __Next(null, null, null, null, err));
+        this.DbAccess.Commit(() => __Next(RuleCollection, Options, Complete, Error), (err) => __Next(null, null, null, Error, err));
         break;
       case 'query':      // 查询
         if (isRows) {         // 返回多行
@@ -208,17 +208,17 @@ class dealbusiness {
           __InsertResultInfo[__name] = result.insertId;
           Object.assign(Options, __InsertResultInfo);
           __Next(RuleCollection, Options, Complete, Error);
-        }, (err) => __Next(null, null, null, null, err));
+        }, (err) => __Next(null, null, null, Error, err));
         break;
       case 'delete':       // 删除
         this.DbAccess.DeleteSQL(_FormatSQL,
           (data) => __Next(RuleCollection, Options, Complete, Error),
-          (err) => __Next(null, null, null, null, err));
+          (err) => __Next(null, null, null, Error, err));
         break;
       case 'update':      // 更新
         this.DbAccess.UpdateSQL(_FormatSQL,
           (data) => __Next(RuleCollection, Options, Complete, Error),
-          (err) => __Next(null, null, null, null, err));
+          (err) => __Next(null, null, null, Error, err));
         break;
       case 'judge':       // 判断
         const __JudgeOperator = (content, jInfo) => {
@@ -226,7 +226,7 @@ class dealbusiness {
             // 成功向下走。
             () => __Next(RuleCollection, content, Complete, Error),
             // 失败，执行中断。
-            (err) => __Next(null, null, null, null, err),
+            (err) => __Next(null, null, null, Error, err),
             // 执行分支规则
             (chilrenRules) => {
               content.__ResultNo__ = jInfo.resultIndex;
@@ -244,7 +244,7 @@ class dealbusiness {
         break;
       case 'cache':
         const { cacheInfo } = Rule;
-        this.__ProcessRuleCache(cacheInfo, Options, () => __Next(RuleCollection, Options, Complete, Error, null), (err) => __Next(null, null, null, null, err))
+        this.__ProcessRuleCache(cacheInfo, Options, () => __Next(RuleCollection, Options, Complete, Error, null), (err) => __Next(null, null, null, Error, err))
         break;
       default:
         __Next(RuleCollection, Options, Complete, Error, null);
