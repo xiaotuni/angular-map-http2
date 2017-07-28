@@ -148,7 +148,7 @@ class dealbusiness {
     const _t = (type || 'query').toLocaleLowerCase();
     const _FormatSQL = queryFormat(sql || '', Options);
     if (_FormatSQL) {
-      Log.Print('id序号 =>%d--执行的SQL语句【%s】', id, _FormatSQL);
+      Log.Print('id序号 =>【%d】--执行的SQL语句【%s】', id, _FormatSQL);
     }
     /**
      * 处理下一条规则

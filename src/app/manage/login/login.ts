@@ -10,11 +10,18 @@ import * as CryptoJS from 'crypto-js';
 })
 export class LoginComponent implements OnInit {
   public UserInfo: any;
+  QueryParams: any;
+
   constructor(private sHelper: ServiceHelper) {
     this.UserInfo = { username: 'admin', password: 'admin@163.com' };
+
   }
 
   ngOnInit() {
+    const __self = this;
+    Utility.$On(Utility.$ConstItem.QueryParams, (params) => {
+      __self.QueryParams = params;
+    });
   }
 
   submit() {
@@ -22,8 +29,8 @@ export class LoginComponent implements OnInit {
     data.password = CryptoJS.MD5(data.password).toString();
     const __self = this;
     this.sHelper.UserInfo.Login(data).then(() => {
-      // console.log(__self.sHelper.UserInfo.UserInfo);
-    });
+
+    }, () => { });
   }
 
   forgetPassword() {

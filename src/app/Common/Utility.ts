@@ -30,6 +30,7 @@ export class Utility {
     BrowerTitle: 'XTN_BrowerTitle',
     Event: 'XTN_EVENT_INFO',
     UserInfo: 'XTN_USER_INFO',
+    QueryParams: 'XTN_QUERY_PARAMS',
     Events: {
       HttpStatus: {
         400: 'XTN_HTTP_STATUS_404',

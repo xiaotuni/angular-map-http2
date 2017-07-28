@@ -14,7 +14,11 @@ export default function ClientMiddleware(client) {
       const { promise } = item;
       __APIList.push(promise(client));
     });
-    return Promise.all(__APIList).then((results) => results, (err) => err).catch((error) => error);
+    return new Promise((resolve, reject) => {
+      Promise.all(__APIList)
+        .then((results) => resolve(results), (err) => reject(err))
+        .catch((error) => reject(error));
+    });
   };
 
   /**

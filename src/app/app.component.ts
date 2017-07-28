@@ -3,6 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { Router, RoutesRecognized, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Utility } from './containers/Core';
+import { ServiceHelper } from './service/index'
 import { EventEmitter } from 'events';
 
 
@@ -10,14 +11,18 @@ import { EventEmitter } from 'events';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  providers: [ServiceHelper]
 })
 export class AppComponent {
   __Title111 = 'app works!';
   private __Location: Location;
   public ActionSheetInfo: any;
 
-  constructor(private router: Router, private location: Location, private activatedRoute: ActivatedRoute,
-    private titleService: Title) {
+  constructor(private router: Router,
+    private location: Location,
+    private activatedRoute: ActivatedRoute,
+    private titleService: Title,
+    private serviceHelper: ServiceHelper) {
     this.__Location = location;
     this.__RouterListen(router);
     this.__ListenEmit(this);
@@ -44,6 +49,7 @@ export class AppComponent {
         const root = state.root;
 
         const queryParams = root.queryParams;
+        __self.serviceHelper.Common.CurrentRouterQueryParams = queryParams;
         const firstChild = _FindFirstChild(root.firstChild);
         const routeConfig = firstChild.routeConfig;
         const { path, data } = routeConfig;

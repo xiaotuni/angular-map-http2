@@ -1,11 +1,19 @@
 import { Utility } from './Core';
 
 export class UserInfoService {
+  public UserInfo: any;
+  public Users: any[];
+
   constructor(private Client) {
   }
 
-  public UserInfo: any;
-  public Users: any[];
+  /**
+   * 用户登录
+   * 
+   * @param {*} obj 
+   * @returns {Promise<any>} 
+   * @memberof UserInfoService
+   */
   Login(obj: any): Promise<any> {
     const __List = { actions: { list: [], loading: 'Load', fail: 'Fail', complete: 'Complete' } };
     __List.actions.list.push({
@@ -17,11 +25,17 @@ export class UserInfoService {
       __self.UserInfo = result && result[0] ? result[0] : [];
       // 将token保存下来。
       Utility.$SetContent(Utility.$ConstItem.UserInfo, __self.UserInfo, true);
-      console.log(JSON.stringify(__self.UserInfo));
       return result;
     });
   }
 
+  /**
+   * 添加用户
+   * 
+   * @param {*} obj 
+   * @returns {Promise<any>} 
+   * @memberof UserInfoService
+   */
   AddUser(obj: any): Promise<any> {
     const __List = { actions: { list: [], loading: 'Load', fail: 'Fail', complete: 'Complete' } };
     __List.actions.list.push({
@@ -36,6 +50,13 @@ export class UserInfoService {
     });
   }
 
+  /**
+   * 用户列表
+   * 
+   * @param {*} cnd 
+   * @returns {Promise<any>} 
+   * @memberof UserInfoService
+   */
   Userlist(cnd: any): Promise<any> {
     const __List = { actions: { list: [], loading: 'Load', fail: 'Fail', complete: 'Complete' } };
     __List.actions.list.push({
@@ -49,6 +70,13 @@ export class UserInfoService {
     });
   }
 
+  /**
+   * 删除用户操作
+   * 
+   * @param {*} item 
+   * @returns {Promise<any>} 
+   * @memberof UserInfoService
+   */
   DeleteUser(item: any): Promise<any> {
     const action = {
       StateName: 'StateName', types: ['Loading', 'Success', 'Fail'], Condition: item,
