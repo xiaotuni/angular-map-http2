@@ -1,5 +1,5 @@
-const Utility = require('../lib/commonMethod');
-const Log = Utility.Log;
+const Utility = require('../lib/Utility');
+// const Log = Utility.Log;
 
 const mysql = require('mysql');
 

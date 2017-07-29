@@ -1,7 +1,6 @@
-const Utility = require('../lib/commonMethod');
+const Utility = require('../lib/Utility');
 const MySqlHelper = require('../ctrl_es6/DbHelper');
-const Comm = Utility.Comm;
-const Log = Utility.Log;
+const Log = new Utility().Log;
 
 const queryFormat = function (query, values) {
   if (!values) return query;
@@ -42,7 +41,7 @@ class dealbusiness {
     this.DbAccess = DbAccess;
     const { methodInfo } = Options;
     const { pathname, method } = methodInfo;
-    const sql = Comm.format("select * from sys_rule t where t.status = 1 and t.PathName = '{0}' and t.Method = '{1}'",
+    const sql = Utility.format("select * from sys_rule t where t.status = 1 and t.PathName = '{0}' and t.Method = '{1}'",
       pathname, method);
     const __self = this;
     this.DbAccess.QueryOne(sql, (data) => {
@@ -278,7 +277,7 @@ class dealbusiness {
       }
       if (fields) {
         fields.split(',').forEach((field) => {
-          const __key = Comm.$trim(field);
+          const __key = Utility.$trim(field);
           __cache[__key] = content[__key];
         });
       }

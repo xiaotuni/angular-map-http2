@@ -1,4 +1,4 @@
-import { LoginComponent } from './login/Login';
+import { LoginComponent } from './login/login';
 import { DashboardComponent } from './dashboard/dashboard';
 import { RegisterComponent } from './register/register';
 import { UserListComponent } from './userlist/userlist';
