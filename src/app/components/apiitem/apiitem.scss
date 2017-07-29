@@ -1,13 +1,12 @@
 .apiitemCss {
   border: 1px solid;
 
-  > div {
+  >div {
     cursor: default;
   }
 
   .master {
-    border-bottom: 1px solid #f0cccc;
-    // padding: 10px;
+    border-bottom: 1px solid #f0cccc; // padding: 10px;
     display: flex;
     align-items: center;
 
@@ -39,8 +38,14 @@
       flex: 1;
     }
   }
+  .bewrite {
+    display: flex;
+    input {
+      flex: 1;
+    }
+  }
 
-  > div:last-child {
+  >div:last-child {
     border-bottom: none;
   }
 }

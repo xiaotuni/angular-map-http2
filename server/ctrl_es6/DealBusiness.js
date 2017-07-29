@@ -10,7 +10,10 @@ const queryFormat = function (query, values) {
       let _value = values[key];
       if (_value && _value.constructor.name === 'Object') {
         _value = JSON.stringify(_value);
-        const rValue = _value.replace(/'/g, "\\'").replace(/\"/g, '\\"');
+        // 将所有 ' 转为 \';  将所有 " 转为 \"; 
+        let rValue = _value.replace(/'/g, "\\'").replace(/\"/g, '\\"');
+        // 将所有换行\n 转为 \\n 要不能在保存 json的时候，会有问题。
+        rValue = rValue.replace(/\\n/g, "\\\\n");
         return rValue;
       }
       // return this.escape(_value);
@@ -110,20 +113,19 @@ class dealbusiness {
     const __first = rules.shift();
     const __self = this;
     const __CurrentDate = new Date().getTime();
-    Log.Print('--开始---------%s', new Date().Format("yyyy-MM-dd hh:mm:ss.S"));
+    Log.Print('--开始-->%s', new Date().Format("yyyy-MM-dd hh:mm:ss.S"));
     // 规则集合
     this.__Rules(__first, rules, Object.assign({}, data, params, { Result: {} }), (success) => {
       // 组织结果
       const { __ResultNo__ } = success;
       const __Data = __self.__ResultInfo(__ResultNo__ || result, success);
       Response.Send(__Data);
-      Log.Print('--结束-------【%s】--用时:【%d】', new Date().Format("yyyy-MM-dd hh:mm:ss.S"),
-       new Date().getTime() - __CurrentDate);
+      Log.Print('--结束-->【%s】--用时:【%d】', new Date().Format("yyyy-MM-dd hh:mm:ss.S"),
+        new Date().getTime() - __CurrentDate);
     }, (err) => {
       Log.Print('调用此接口出错:方法名称->【%s】,接口:【%s】', Method, PathName);
       Response.SendError({ code: 500, msg: err && err.message ? message : err });
-      Log.Print('--结束-------【%s】--用时:【%d】', new Date().Format("yyyy-MM-dd hh:mm:ss.S"),
-       new Date().getTime() - __CurrentDate);
+      Log.Print('--结束-->【%s】--用时:【%d】', new Date().Format("yyyy-MM-dd hh:mm:ss.S"), new Date().getTime() - __CurrentDate);
     });
   }
 
