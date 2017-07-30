@@ -43,6 +43,7 @@ class dealbusiness {
     const { pathname, method } = methodInfo;
     const sql = Utility.format("select * from sys_rule t where t.status = 1 and t.PathName = '{0}' and t.Method = '{1}'",
       pathname, method);
+    Log.Print('查询接口SQL【 %s 】',sql);
     const __self = this;
     this.DbAccess.QueryOne(sql, (data) => {
       const { result } = data;
@@ -65,7 +66,7 @@ class dealbusiness {
    * @memberof dealbusiness
    */
   __CheckFields(fields, params) {
-    if (fields === "") {
+    if (!fields || fields === "") {
       return true;
     }
     let notExistsFields = [];
@@ -136,7 +137,7 @@ class dealbusiness {
       return true;
     }
     Log.Print('调用【%s】-->【%s】，需要Token', Method, PathName);
-    Response.Send401('未没有权限');
+    Response.Send401('没有权限');
     return false;
   }
 

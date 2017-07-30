@@ -1,5 +1,17 @@
 # TravelTogether
 
+## ！！注意！！
+由于用的是http2请求，证书是在一个网站 https://csr.chinassl.net/index.html 里申请的。因此，如果用IE进行调试的话，后台NodeJs服务器会报异常,google浏览器没有发现问题。所有写的prototype.的方法在IE10下找不到，服务器就报异常了；
+``` code
+http.ServerResponse.prototype.Send = function (data) {
+  this.write(JSON.stringify(data));
+  this.end();
+};
+
+--
+其实他地方调用的方法时如： Response.Send({}); IE10来的请求就报说找不到 Send()这个方法，google浏览器就可以正常使用。
+```
+
 项目的依赖安装
 ```bash
 npm install
@@ -49,6 +61,7 @@ npm run start-dev
 
  ```
  
+
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.3.
 

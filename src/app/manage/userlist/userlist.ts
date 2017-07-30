@@ -1,17 +1,19 @@
 import { Component, OnInit, Output, Input, AfterViewInit } from '@angular/core';
-import { Utility, ServiceHelper } from '../Core';
+import { Utility, ServiceHelper, BaseComponent, routeAnimation } from '../Core';
 import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'xtn-manage-userlist',
   templateUrl: './userlist.html',
   styleUrls: ['./userlist.scss'],
+  animations: [routeAnimation],
   providers: [ServiceHelper]
 })
-export class UserListComponent implements OnInit, AfterViewInit {
+export class UserList extends BaseComponent implements OnInit, AfterViewInit {
   public UserInfo: any;
   public userList: any;
   constructor(private sHelper: ServiceHelper) {
+    super();
     this.UserInfo = {};
   }
 

@@ -11,7 +11,7 @@ const methods = ['get', 'post', 'put', 'patch', 'del'];
  */
 function formatUrl(path) {
   const __path = path[0] !== '/' ? '/' + path : path;
-  const _ApiUrl = 'https://127.0.0.1:10001/webapi' + __path;
+  const _ApiUrl = 'https://127.0.0.1:30001/webapi' + __path;
   return _ApiUrl;
 }
 
@@ -38,6 +38,11 @@ export default class ApiClient {
       AddUser: '/userinfo/register',
       Userlist: '/userinfo/users',
       DeleteUser: '/userinfo/user',
+      Area: '/base/area',
+      /**
+       * get 根据Id获取信息
+       */
+      AreaById: '/base/AreaById',
     },
     Api: {
       List: '/manager/api/list',

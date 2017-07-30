@@ -1,4 +1,5 @@
 const http = require('http2');
+// const http = require('http');
 const util = require('util');
 const queryString = require('querystring');
 const url = require('url');
@@ -87,15 +88,16 @@ class server {
       cert: fs.readFileSync(extCrt[0]) //读取crt
     };
     http.createServer(options, (req, res) => {
-      res.setHeader("Content-Type", "text/html;charset=utf-8");
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      res.setHeader("access-control-allow-headers", "x-pingother, origin, x-requested-with, content-type, accept");
-      res.setHeader("access-control-allow-methods", "GET, POST, PUT, DELETE, OPTIONS");
-
       const r = new routes(req, res);
       r.initHeader();
     }).listen(port || 10000);
     console.log('https://127.0.0.1:%d', port || 10000)
+    
+    // http.createServer((req, res) => {
+    //   const r = new routes(req, res);
+    //   r.initHeader();
+    // }).listen(port || 10000);
+    // console.log('http://127.0.0.1:%d', port || 10000)
   }
 }
 

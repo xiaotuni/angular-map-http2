@@ -10,7 +10,7 @@ import { BaseComponent } from '../base.component';
   styleUrls: ['./members.component.scss'],
   animations: [routeAnimation]
 })
-export class MembersComponent extends BaseComponent implements OnInit {
+export class Members extends BaseComponent implements OnInit {
   title = "成员组件";
 
 

@@ -61,7 +61,7 @@ export class Utility {
       MyComponent: 'mycomponent',
       Product: 'product',
       ManagerLogin: 'manager/login',
-      ManagerDashboard: 'manager/Dashboard',
+      ManagerDashboard: 'manager/dashboard',
       ManagerRegister: 'manager/register',
       ManagerUserlist: 'manager/userlist',
       ApiList: 'api/list',

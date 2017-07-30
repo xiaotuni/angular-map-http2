@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BaiduMapComponent } from './baidu-map';
+import { BaiduMap } from './baidu-map';
 
-describe('BaiduMapComponent', () => {
-  let component: BaiduMapComponent;
-  let fixture: ComponentFixture<BaiduMapComponent>;
+describe('BaiduMap', () => {
+  let component: BaiduMap;
+  let fixture: ComponentFixture<BaiduMap>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BaiduMapComponent ]
+      declarations: [ BaiduMap ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BaiduMapComponent);
+    fixture = TestBed.createComponent(BaiduMap);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

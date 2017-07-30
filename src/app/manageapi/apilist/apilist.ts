@@ -17,7 +17,7 @@ import * as CryptoJS from 'crypto-js';
         'collapsed <=> expanded', [animate(500, style({ height: '250px' })), animate(500)])
     ])]
 })
-export class ApiListComponent implements OnInit {
+export class ApiList implements OnInit {
   public ApiList: any;
   public NewApiInfo: any = { RuleInfo: { rules: [] } };
   public CurrentItem: any;

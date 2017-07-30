@@ -10,7 +10,7 @@ import { BaseComponent } from '../base.component';
   styleUrls: ['baidu-map.scss'],
   animations: [routeAnimation]
 })
-export class BaiduMapComponent extends BaseComponent implements OnInit, AfterContentInit {
+export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit {
   @ViewChild('baidumapRef') baidumapRef: ElementRef;
   BMap: any;
   __Map: any;

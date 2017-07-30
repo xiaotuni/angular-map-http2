@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
-import { Utility } from '../Core';
+import { Utility, routeAnimation, BaseComponent } from '../Core';
 
 @Component({
   moduleId: module.id,
   selector: 'app-manage-Dashboard',
   templateUrl: 'Dashboard.html',
   styleUrls: ['./Dashboard.scss'],
+  animations: [routeAnimation],
 })
-export class DashboardComponent {
-  constructor() {
+export class Dashboard extends BaseComponent {
 
+  constructor() {
+    super();
   }
 }

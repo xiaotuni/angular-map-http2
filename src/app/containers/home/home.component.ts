@@ -11,7 +11,7 @@ import { ServiceHelper } from '../../service/index';
   animations: [routeAnimation],
   providers: [ServiceHelper]
 })
-export class HomeComponent extends BaseComponent implements OnInit {
+export class Home extends BaseComponent implements OnInit {
 
   public DataList: Array<any>;
 

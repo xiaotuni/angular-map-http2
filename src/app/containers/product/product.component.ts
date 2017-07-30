@@ -5,10 +5,10 @@ import { BaseComponent } from '../base.component';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
-  styleUrls: ['./product.component.css'],
+  styleUrls: ['./product.component.scss'],
   animations: [routeAnimation]
 })
-export class ProductComponent extends BaseComponent implements OnInit {
+export class Product extends BaseComponent implements OnInit {
 
   title = "page 2";
 

@@ -1,11 +1,13 @@
 .navbarCss {
+  position: fixed;
+  width: 100%;
+  top: 0px;
+  z-index: 1000;
   padding: 5px;
-  // border: 1px solid #41f1ff;
   background: blue;
   color: #fff;
   font-size: 20px;
   display: flex;
-
   .left,
   .right {
     width: 30px;
@@ -15,5 +17,3 @@
     text-align: center;
   }
 }
-
-

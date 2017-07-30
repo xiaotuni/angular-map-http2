@@ -1,16 +1,18 @@
 import { Component, OnInit, Output, Input } from '@angular/core';
-import { Utility, ServiceHelper } from '../Core';
+import { Utility, ServiceHelper, routeAnimation, BaseComponent } from '../Core';
 import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'xtn-manage-register',
   templateUrl: './register.html',
+  animations: [routeAnimation],
   styleUrls: ['./register.scss'],
   providers: [ServiceHelper]
 })
-export class RegisterComponent implements OnInit {
+export class Register extends BaseComponent implements OnInit {
   public UserInfo: any;
   constructor(private sHelper: ServiceHelper) {
+    super();
     this.UserInfo = {};
   }
 
