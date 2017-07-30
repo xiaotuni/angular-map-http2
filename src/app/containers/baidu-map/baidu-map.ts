@@ -17,6 +17,7 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
   __CurrentPosition: any;
   __ZoomControl: Object = new Object();
   __Driving: any;
+  __Geocoder: any;
 
   IsShowMarker: boolean;
 
@@ -41,7 +42,7 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
       this.BMap = (<any>window)['BMap'];
       const self = this;
       const __init = () => {
-        const gc = new self.BMap.Geocoder();
+        self.__Geocoder = new self.BMap.Geocoder();
         self.__Map = new self.BMap.Map(self.baidumapRef.nativeElement);                 // 创建Map实例
         self.__Map.centerAndZoom(new self.BMap.Point(116.40387397, 39.91488908), 14);   // 初始化地图,设置中心点坐标和地图级别
         self.__Map.addControl(new self.BMap.MapTypeControl());                          //添加地图类型控件
@@ -49,19 +50,11 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
         self.__Map.enableScrollWheelZoom(true);                                         //开启鼠标滚轮缩放
         // 移动地图的时候，将当前的信息
         self.__Map.addEventListener("dragend", (e) => {
-          const center = self.__Map.getCenter();
-          // 根据当前的位置获取省市区街道等信息
-          gc.getLocation(center, (gcResult) => {
-            self.__CurrentPosition = gcResult;
-          })
+          self.__GetLocation(null);
         });
         // 放大缩小事件
         self.__Map.addEventListener('zoomend', (e) => {
-          const center = self.__Map.getCenter();
-          // 根据当前的位置获取省市区街道等信息
-          gc.getLocation(center, (gcResult) => {
-            self.__CurrentPosition = gcResult;
-          })
+          self.__GetLocation(null);
         });
       };
 
@@ -78,6 +71,19 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
         clearInterval(__Interval);
       }
     }
+  }
+
+  /**
+   * 根据当前的位置获取省市区街道等信息
+   *  
+   * @memberof BaiduMap
+   */
+  __GetLocation(point) {
+    const center = point || this.__Map.getCenter();
+    const self = this;
+    this.__Geocoder.getLocation(center, (gcResult) => {
+      self.__CurrentPosition = gcResult;
+    })
   }
 
   GetCurrentPosition() {
@@ -321,6 +327,10 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
 
   onUpdateCurrentPosition(position) {
     console.log(position);
+    // this.__Map.setCenter(position.point);
+    // 中心点平滑过渡。
+    this.__Map.panTo(position.point);
+    // this.__GetLocation(position.point);
   }
 }
 

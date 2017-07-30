@@ -19,7 +19,7 @@
       "command": "ng serve",
       "env": {
         "NODE_PATH": "./src",
-        "NODE_ENV": "production",
+        "NODE_ENV": "development ",
         "PORT": 30000,
         "APIPORT": 30001
       }
@@ -28,7 +28,7 @@
       "command": "supervisor ./server/index.js",
       "env": {
         "NODE_PATH": "./server",
-        "NODE_ENV": "production",
+        "NODE_ENV": "development ",
         "PORT": 30000,
         "DEVPORT": 30080,
         "APIPORT": 30081

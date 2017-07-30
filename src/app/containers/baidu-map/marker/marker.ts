@@ -15,6 +15,8 @@ export class BaiduMapMarker implements OnInit, OnChanges {
 
   __Marker: any;
 
+  BaiduAnimation: any = { BMAP_ANIMATION_BOUNCE: 2, BMAP_ANIMATION_DROP: 1 };
+
   constructor() {
   }
 
@@ -24,11 +26,13 @@ export class BaiduMapMarker implements OnInit, OnChanges {
   ngOnChanges(): void {
     const { point, address } = this.__CurrentPosition;
     console.log('marker-->', address);
+    // const { BMAP_ANIMATION_BOUNCE } = <any>window
     if (this.__Marker) {
-      this.__Marker.setPosition(this.__CurrentPosition.point);
-    } else {
-      this.AddMarker(this.__CurrentPosition);
+      this.__Map.removeOverlay(this.__Marker);
+      // this.__Marker.setPosition(this.__CurrentPosition.point);
     }
+    this.__Marker = null;
+    this.AddMarker(this.__CurrentPosition);
   }
 
   AddMarker(position) {
@@ -53,6 +57,9 @@ export class BaiduMapMarker implements OnInit, OnChanges {
       });
     // 创建标注对象并添加到地图   
     const marker = new this.BMap.Marker(point, { icon: myIcon });
+    const { BMAP_ANIMATION_BOUNCE, BMAP_ANIMATION_DROP } = <any>window
+    this.__Map.addOverlay(marker);
+    marker.setAnimation(BMAP_ANIMATION_BOUNCE);
 
     // 点击图标事件
     marker.addEventListener("click", function (e) {
@@ -62,14 +69,14 @@ export class BaiduMapMarker implements OnInit, OnChanges {
     // 让图标可以进行拖拽。
     marker.enableDragging();
     marker.addEventListener("dragend", function (e) {
-      self.__Map.removeOverlay(marker);
-      self.AddMarker(e);
+      // self.__Map.removeOverlay(marker);
+      // self.AddMarker(e);
       console.log("当前位置：" + e.point.lng + ", " + e.point.lat);
       if (onUpdatePosition) {
         onUpdatePosition.emit(e);
       }
     })
-    this.__Map.addOverlay(marker);
+
     this.__Marker = marker;
   }
 }
