@@ -2,7 +2,7 @@ import { Component, OnInit, ElementRef, ViewChild, AfterContentInit } from '@ang
 import { Utility, Client } from '../Core';
 import { routeAnimation } from '../app.animations';
 import { BaseComponent } from '../base.component';
-
+import { BaiduMapMarker } from './marker/marker';
 
 @Component({
   selector: 'app-baidu-map',
@@ -18,20 +18,51 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
   __ZoomControl: Object = new Object();
   __Driving: any;
 
+  IsShowMarker: boolean;
+
   constructor(private el: ElementRef) {
     super();
+  }
+
+
+  ngOnInit() {
+    this.__InitMap();
+  }
+
+  ngAfterContentInit(): void {
+    setTimeout(() => {
+      this.GetCurrentPosition();
+    }, 1000);
   }
 
   __InitMap() {
     let __Interval;
     try {
       this.BMap = (<any>window)['BMap'];
+      const self = this;
       const __init = () => {
-        this.__Map = new this.BMap.Map(this.baidumapRef.nativeElement);                 // 创建Map实例
-        this.__Map.centerAndZoom(new this.BMap.Point(116.40387397, 39.91488908), 14);   // 初始化地图,设置中心点坐标和地图级别
-        this.__Map.addControl(new this.BMap.MapTypeControl());                          //添加地图类型控件
-        this.__Map.setCurrentCity("北京");                                              // 设置地图显示的城市 此项是必须设置的
-        this.__Map.enableScrollWheelZoom(true);                                         //开启鼠标滚轮缩放
+        const gc = new self.BMap.Geocoder();
+        self.__Map = new self.BMap.Map(self.baidumapRef.nativeElement);                 // 创建Map实例
+        self.__Map.centerAndZoom(new self.BMap.Point(116.40387397, 39.91488908), 14);   // 初始化地图,设置中心点坐标和地图级别
+        self.__Map.addControl(new self.BMap.MapTypeControl());                          //添加地图类型控件
+        self.__Map.setCurrentCity("北京");                                              // 设置地图显示的城市 此项是必须设置的
+        self.__Map.enableScrollWheelZoom(true);                                         //开启鼠标滚轮缩放
+        // 移动地图的时候，将当前的信息
+        self.__Map.addEventListener("dragend", (e) => {
+          const center = self.__Map.getCenter();
+          // 根据当前的位置获取省市区街道等信息
+          gc.getLocation(center, (gcResult) => {
+            self.__CurrentPosition = gcResult;
+          })
+        });
+        // 放大缩小事件
+        self.__Map.addEventListener('zoomend', (e) => {
+          const center = self.__Map.getCenter();
+          // 根据当前的位置获取省市区街道等信息
+          gc.getLocation(center, (gcResult) => {
+            self.__CurrentPosition = gcResult;
+          })
+        });
       };
 
       __Interval = setInterval(() => {
@@ -47,16 +78,6 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
         clearInterval(__Interval);
       }
     }
-  }
-
-  ngOnInit() {
-    this.__InitMap();
-  }
-
-  ngAfterContentInit(): void {
-    setTimeout(() => {
-      this.GetCurrentPosition();
-    }, 1000);
   }
 
   GetCurrentPosition() {
@@ -88,6 +109,8 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
         const { city } = address;
         self.__Map.panTo(point);          // 移动到当前定位的位置
         self.__Map.setCurrentCity(city);
+
+        self.IsShowMarker = true;
       }
     }, { enableHighAccuracy: true });
   }
@@ -107,45 +130,6 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
   }
   CreateTravel() {
 
-  }
-
-  AddMarker() {
-    if (!this.BMap || !this.__CurrentPosition) {
-      return;
-    }
-    const { point } = this.__CurrentPosition;
-    // const marker = new this.BMap.Marker(point);        // 创建标注    
-    // this.__Map.addOverlay(marker);                     // 将标注添加到地图中
-    const self = this;
-
-    const __AddMarker = (point, index) => {  // 创建图标对象   
-      const myIcon = new self.BMap.Icon("/assets/img/car-icon.png", new self.BMap.Size(32, 32), {
-        // 指定定位位置。   
-        // 当标注显示在地图上时，其所指向的地理位置距离图标左上    
-        // 角各偏移10像素和25像素。您可以看到在本例中该位置即是   
-        // 图标中央下端的尖角位置。    
-        offset: new self.BMap.Size(32, 32),
-        // 设置图片偏移。   
-        // 当您需要从一幅较大的图片中截取某部分作为标注图标时，您   
-        // 需要指定大图的偏移位置，此做法与css sprites技术类似。    
-        imageOffset: new self.BMap.Size(0, 0 - index * 32)   // 设置图片偏移    
-      });
-      // 创建标注对象并添加到地图   
-      const marker = new self.BMap.Marker(point, { icon: myIcon });
-
-      // 点击图标事件
-      marker.addEventListener("click", function (e) {
-        console.log('点击图标啦', e);
-      });
-
-      // 让图标可以进行拖拽。
-      marker.enableDragging();
-      marker.addEventListener("dragend", function (e) {
-        console.log("当前位置：" + e.point.lng + ", " + e.point.lat);
-      })
-      self.__Map.addOverlay(marker);
-    }
-    __AddMarker(point, 0);
   }
 
   AddInfomation() {
@@ -333,6 +317,10 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
     }
     mySquare.addEventListener('click', function (e) { console.log('22222222'); });
     mySquare.V.addEventListener('click', function (e) { console.log('3333333333'); });
+  }
+
+  onUpdateCurrentPosition(position) {
+    console.log(position);
   }
 }
 

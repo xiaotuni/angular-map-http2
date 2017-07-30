@@ -2,6 +2,8 @@
   <xtn-navbar [(Title)]="__Title"></xtn-navbar>
   <div class="allMap">
     <div #baidumapRef></div>
+    <xtn-baidu-map-marker *ngIf="IsShowMarker" (onUpdatePosition)="onUpdateCurrentPosition($event)" [BMap]="BMap" [Map]="__Map"
+      [(Position)]="__CurrentPosition"></xtn-baidu-map-marker>
   </div>
 
   <div class="groupBtn">
