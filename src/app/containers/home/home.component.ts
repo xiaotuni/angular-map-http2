@@ -20,6 +20,9 @@ export class Home extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
+    setTimeout(() => {
+      this.__ShowDialog();
+    }, 500);
   }
 
   __UserInfo(methodType) {
@@ -31,30 +34,21 @@ export class Home extends BaseComponent implements OnInit {
     console.log('test event-->', args);
   }
   __ShowDialog() {
-    const __Html = `<div class="testDemo">
-      <div>组件开始</div>
-      <xtn-navbar [(Title)]="__Title"></xtn-navbar>
-      <div class="homeComCssEnd">组件结束</div>
-     </div>`;
-    const __Options = {
-      html: __Html,
-      IsLoadingComponent: true,
-      ComponentName: 'XtnMapPlaceItem',
-      Params: {
-        Inputs: {
-          Place: { address: '就在这里啦', },
-          Params: { __Title: '里面的参数了' },
-          Params2: { Params2: 'Params-->里的信息啦' },
-          Params123: { Params123: 'Params123-->里的信息啦' },
-          __Title: this.tempData, parma2: '12431243',
+
+    Utility.$ShowDialogComponent('XtnMapPlaceItem', {
+      Place: { address: '就在这里啦', },
+      Params: { __Title: '里面的参数了' },
+      Params2: { Params2: 'Params-->里的信息啦' },
+      Params123: { Params123: 'Params123-->里的信息啦' },
+      __Title: this.tempData, parma2: '12431243',
+    }, {
+        onSave: (ee) => {
+          console.log(ee);
+          Utility.$ShowMessage('标题', '这是弹出来的内容');
         },
-        Outputs: {
-          onSave: this.TestEvent.bind(this),
-          onDelete: this.TestEvent.bind(this),
-          onModify: this.TestEvent.bind(this),
-        }
-      },
-    };
-    Utility.$Emit(Utility.$ConstItem.Events.ShowModel.onDialog, __Options);
+        onDelete: this.TestEvent.bind(this),
+        onModify: this.TestEvent.bind(this),
+      });
+
   }
 }

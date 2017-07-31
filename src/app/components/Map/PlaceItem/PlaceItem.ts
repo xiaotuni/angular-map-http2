@@ -30,11 +30,21 @@ export class XtnMapPlaceItem implements OnInit {
         this._onSave.emit({ type: 'save', value: type, place: this.place });
         break;
       case 2:
-        this._onSave.emit({ type: 'delete', value: type, place: this.place });
+        this._onDelete.emit({ type: 'delete', value: type, place: this.place });
         break;
       case 3:
-        this._onSave.emit({ type: 'modify', value: type, place: this.place });
+        this._onModify.emit({ type: 'modify', value: type, place: this.place });
         break;
     }
+  }
+  onConfirm() {
+    if (this._onSave) {
+      this._onSave.emit(this.place);
+    }
+  }
+  onCancel() {
+    setTimeout(() => {
+      Utility.$ShowDialogHide();
+    }, 100);
   }
 }

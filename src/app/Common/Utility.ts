@@ -228,4 +228,35 @@ export class Utility {
         ? args[number] : match;
     });
   }
+
+  /**
+   * 弹出动态创建组件
+   * 
+   * @static
+   * @param {any} ComponentName 组件名称 XtnMapPlaceItem
+   * @param {any} Inputs 输入的参数 {Field:'哈哈',Params1:{},...}
+   * @param {any} Outputs 输入出一的参数 { onSave: ()=>{},onConfirm:()=>{},onCancel:()=>{} ...}
+   * @memberof Utility
+   */
+  static $ShowDialogComponent(ComponentName, Inputs, Outputs) {
+    const __Options = {
+      IsLoadingComponent: true,
+      IsShowCancel: true,
+      IsShowConfirm: true,
+      ComponentName: ComponentName,
+      Params: { Inputs, Outputs },
+    };
+    this.$Emit(this.$ConstItem.Events.ShowModel.onDialog, __Options);
+  }
+
+  static $ShowMessage(Title, Msg) {
+    this.$Emit(this.$ConstItem.Events.ShowModel.onDialog, {
+      IsLoadingComponent: false,
+      IsShowCancel: false,
+      IsShowConfirm: true,
+      IsShowTitle: true,
+      Title: Title,
+      Msg: Msg,
+    });
+  }
 }

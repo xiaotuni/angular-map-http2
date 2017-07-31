@@ -43,7 +43,7 @@ class dealbusiness {
     const { pathname, method } = methodInfo;
     const sql = Utility.format("select * from sys_rule t where t.status = 1 and t.PathName = '{0}' and t.Method = '{1}'",
       pathname, method);
-    Log.Print('查询接口SQL【 %s 】',sql);
+    Log.Print('查询接口SQL【 %s 】', sql);
     const __self = this;
     this.DbAccess.QueryOne(sql, (data) => {
       const { result } = data;
@@ -99,11 +99,11 @@ class dealbusiness {
     const RuleContent = JSON.parse(Content);
     const { rules, fields, result } = RuleContent;
     const { data, params } = Options;
-    const __CheckedParams = Object.assign({}, data, params);
     // 接口 token 判断
     if (!this.__ProcessApiTokenRight(RuleInfo, Options, Response)) {
       return;
     }
+    const __CheckedParams = Object.assign({}, Options, data, params);
     // 查询参数
     if (!this.__CheckFields(fields, __CheckedParams)) {
       Response.SendError({ code: 400, msg: '参数错误,少传[' + this.__NotExistsFields.join(',') + ' ]字段' });
@@ -115,7 +115,7 @@ class dealbusiness {
     const __CurrentDate = new Date().getTime();
     Log.Print('--开始-->%s', new Date().Format("yyyy-MM-dd hh:mm:ss.S"));
     // 规则集合
-    this.__Rules(__first, rules, Object.assign({}, data, params, { Result: {} }), (success) => {
+    this.__Rules(__first, rules, Object.assign({}, __CheckedParams, { Result: {} }), (success) => {
       // 组织结果
       const { __ResultNo__ } = success;
       const __Data = __self.__ResultInfo(__ResultNo__ || result, success);
@@ -133,9 +133,15 @@ class dealbusiness {
     const { IsTokenAccess, Method, PathName } = RuleInfo;
     const { token } = Options || {}
     const { __TokenCollection__ } = this.DbAccess;
-    if (IsTokenAccess !== 1 || (token && __TokenCollection__ && __TokenCollection__[token])) {
+    if (IsTokenAccess !== 1) {
       return true;
     }
+    if (token && __TokenCollection__ && __TokenCollection__[token]) {
+      const __tokenInfo = __TokenCollection__[token];
+      Object.assign(Options, __tokenInfo || {});
+      return true;
+    }
+
     Log.Print('调用【%s】-->【%s】，需要Token', Method, PathName);
     Response.Send401('没有权限');
     return false;
@@ -164,7 +170,7 @@ class dealbusiness {
     const __Next = (rList, rOption, rComplete, rError, errInfo) => {
       if (errInfo) {
         Log.Print('执行此规则出错了:【%s】', JSON.stringify(Rule));
-        this.DbAccess.ClosePool(() => rError && rError(errInfo && errInfo.message ? err.message : errInfo), (pe) => {
+        this.DbAccess.ClosePool(() => rError && rError(errInfo && errInfo.message ? errInfo.message : errInfo), (pe) => {
           Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
           rError && rError(errInfo && errInfo.message ? err.message : errInfo);
         });

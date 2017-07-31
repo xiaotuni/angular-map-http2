@@ -1,5 +1,6 @@
 export { Utility } from '../Common/Utility';
 export { CommonComponent } from '../components/Core'
+export { ServiceHelper } from '../manage/Core'
 export { Client } from '../helpers/Core';
 
 import { MyComponent } from './my-component/my-component.component';

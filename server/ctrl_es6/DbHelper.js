@@ -1,5 +1,5 @@
 const Utility = require('../lib/Utility');
-// const Log = Utility.Log;
+const Log = new Utility().Log;
 
 const mysql = require('mysql');
 

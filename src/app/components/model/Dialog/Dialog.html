@@ -3,9 +3,17 @@
 
   </div>
   <div class="content">
-    <div *ngIf="!DialogInfo.IsLoadingComponent" [innerHTML]="DialogInfo.html">
+    <div *ngIf="!!DialogInfo.IsShowTitle" class="title">
+      <div>{{DialogInfo.Title}}</div>
     </div>
-
-    <ng-template #container></ng-template>
+    <div class="data">
+      <div *ngIf="!DialogInfo.IsLoadingComponent" [innerHTML]="DialogInfo.Msg">
+      </div>
+      <ng-template #container></ng-template>
+    </div>
+    <div class="btns">
+      <div *ngIf="!!DialogInfo.IsShowConfirm" class="confirm" (click)="btnClickConfirm()">确定</div>
+      <div *ngIf="!!DialogInfo.IsShowCancel" class="cancel" (click)="btnClickCancel()">取消</div>
+    </div>
   </div>
 </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterContentInit } from '@angular/core';
-import { Utility, Client } from '../Core';
+import { Utility, Client, ServiceHelper } from '../Core';
 import { routeAnimation } from '../app.animations';
 import { BaseComponent } from '../base.component';
 import { BaiduMapMarker } from './marker/marker';
@@ -8,7 +8,8 @@ import { BaiduMapMarker } from './marker/marker';
   selector: 'app-baidu-map',
   templateUrl: 'baidu-map.html',
   styleUrls: ['baidu-map.scss'],
-  animations: [routeAnimation]
+  animations: [routeAnimation],
+  providers: [ServiceHelper]
 })
 export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit {
   @ViewChild('baidumapRef') baidumapRef: ElementRef;
@@ -21,7 +22,7 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
 
   IsShowMarker: boolean;
 
-  constructor(private el: ElementRef) {
+  constructor(private el: ElementRef, private sHelper: ServiceHelper) {
     super();
   }
 
@@ -331,6 +332,25 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
     // 中心点平滑过渡。
     this.__Map.panTo(position.point);
     // this.__GetLocation(position.point);
+  }
+
+  __SavePlace(placeInfo) {
+    console.log(placeInfo);
+    Utility.$ShowMessage('标题', '这是弹出来的内容');
+    this.sHelper.BaiduMap.AddPlace(placeInfo).then((data) => {
+      console.log(data);
+    }, (ee) => {
+      console.log(ee);
+    });
+  }
+  AddPlace() {
+    const { address, point } = this.__CurrentPosition;
+    const { lat, lng } = point;
+    Utility.$ShowDialogComponent('XtnMapPlaceItem', {
+      Place: { Address: address, Latitude: lat, Longitude: lng, },
+    }, {
+        onSave: this.__SavePlace.bind(this)
+      });
   }
 }
 

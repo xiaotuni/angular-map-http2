@@ -56,6 +56,12 @@ export default class ApiClient {
       Delete: '/userinfo/user',
       Put: '/userinfo/user',
       Login: '/userinfo/login',
+    },
+    Map: {
+      /**
+       * post 
+       */
+      AddPlace: '/map/place',
     }
   }
 

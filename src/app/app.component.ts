@@ -17,6 +17,7 @@ export class AppComponent {
   __Title111 = 'app works!';
   private __Location: Location;
   public ActionSheetInfo: any;
+  public DialogList: Array<any> = new Array();
 
   constructor(private router: Router,
     private location: Location,
@@ -90,10 +91,13 @@ export class AppComponent {
     });
 
     Utility.$On(ShowModel.onDialog, (args) => {
-      _this.DialogInfo = args;
+      _this.DialogList.push(args);
+      // _this.DialogInfo = args;
     });
     Utility.$On(ShowModel.onDialogHide, () => {
-      delete _this.DialogInfo;
+      setTimeout(() => {
+        _this.DialogList.pop();
+      }, 100);
     });
   }
 }

@@ -2,4 +2,8 @@
 
 <xtn-mode-action-sheet *ngIf="ActionSheetInfo" [ActionSheetInfo]="ActionSheetInfo">
 </xtn-mode-action-sheet>
-<xtn-mode-dialog *ngIf="DialogInfo" [(DialogInfo)]="DialogInfo"></xtn-mode-dialog>
+<div *ngIf="DialogList.length>0">
+  <div *ngFor="let item of DialogList;let i = index;">
+    <xtn-mode-dialog [(DialogInfo)]="DialogList[i]"></xtn-mode-dialog>
+  </div>
+</div>

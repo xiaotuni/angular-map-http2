@@ -105,4 +105,20 @@ export class XtnDialog implements OnInit, OnDestroy, AfterContentInit {
   onClickClose() {
     Utility.$ShowDialogHide();
   }
+
+  btnClickCancel() {
+    if (this.compRef.instance.onCancel) {
+      this.compRef.instance.onCancel();
+    }
+  }
+
+  btnClickConfirm() {
+    if (this.compRef) {
+      if (this.compRef.instance.onConfirm) {
+        this.compRef.instance.onConfirm();
+      }
+    } else {
+      Utility.$ShowDialogHide();
+    }
+  }
 }
