@@ -9,15 +9,11 @@
       <div class="btn" (click)="__UserInfo('post')">post request</div>
       <div class="btn" (click)="__UserInfo('del')">delete request</div>
       <div class="btn" (click)="__UserInfo('put')">put request</div>
+      <div class="btn" (click)="__ShowDialog()">
+        弹出信息
+      </div>
     </div>
-  </div>
 
-  <div class="apiResult">
-    <div class="row" *ngFor="let item of DataList">
-      <div class="id">{{item.Id}}</div>
-      <div class="guid">{{item.Guid}}</div>
-      <div class="datetime">{{item.DateTime| date:'yyyy-MM-dd HH:mm:ss'}}</div>
-    </div>
-    <div></div>
   </div>
+  <input type="text" required [(ngModel)]="tempData">
 </div>

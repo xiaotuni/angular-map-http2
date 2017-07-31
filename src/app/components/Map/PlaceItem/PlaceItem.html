@@ -1,0 +1,22 @@
+<div class="placeItem">
+  <div class="title">
+    聚会点：
+  </div>
+  <div class="address">
+    <input disabled type="text" required [(ngModel)]="place.address">
+  </div>
+  <div class="date">
+    <div class="title">开始时间：</div>
+    <input type="date" required [(ngModel)]="place.begin">
+  </div>
+  <div class="date">
+    <div class="title">结束时间：</div>
+    <input type="date" required [(ngModel)]="place.end">
+  </div>
+  <div>
+
+  </div>
+  <button (click)="onClickBtn(1)">保存</button>
+  <button (click)="onClickBtn(2)">删除</button>
+  <button (click)="onClickBtn(3)">修改</button>
+</div>

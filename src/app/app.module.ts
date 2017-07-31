@@ -14,11 +14,10 @@ const Routers = AppRouting.Router();
 
 @NgModule({
   declarations: [AppComponent, PageComponentList, ManagerPageComponentList, ManagerApiPageComponentList, CommonComponent],
-  imports: [
-    BrowserAnimationsModule, BrowserModule, FormsModule, HttpModule, Routers
-  ],
+  imports: [BrowserAnimationsModule, BrowserModule, FormsModule, HttpModule, Routers],
   providers: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  entryComponents: [CommonComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

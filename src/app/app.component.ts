@@ -88,5 +88,12 @@ export class AppComponent {
     Utility.$On(ShowModel.onActionSheetHide, (args) => {
       delete _this.ActionSheetInfo;
     });
+
+    Utility.$On(ShowModel.onDialog, (args) => {
+      _this.DialogInfo = args;
+    });
+    Utility.$On(ShowModel.onDialogHide, () => {
+      delete _this.DialogInfo;
+    });
   }
 }

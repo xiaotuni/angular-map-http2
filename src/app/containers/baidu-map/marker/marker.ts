@@ -60,6 +60,9 @@ export class BaiduMapMarker implements OnInit, OnChanges {
     const { BMAP_ANIMATION_BOUNCE, BMAP_ANIMATION_DROP } = <any>window
     this.__Map.addOverlay(marker);
     marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+    setTimeout(() => {
+      marker.setAnimation(null);
+    }, 2000);
 
     // 点击图标事件
     marker.addEventListener("click", function (e) {
@@ -69,8 +72,6 @@ export class BaiduMapMarker implements OnInit, OnChanges {
     // 让图标可以进行拖拽。
     marker.enableDragging();
     marker.addEventListener("dragend", function (e) {
-      // self.__Map.removeOverlay(marker);
-      // self.AddMarker(e);
       console.log("当前位置：" + e.point.lng + ", " + e.point.lat);
       if (onUpdatePosition) {
         onUpdatePosition.emit(e);

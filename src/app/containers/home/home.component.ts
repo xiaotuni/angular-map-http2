@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Utility, Client } from '../Core';
+import { Utility, Client, CommonComponent } from '../Core';
 import { routeAnimation } from '../app.animations';
 import { BaseComponent } from '../base.component';
 import { ServiceHelper } from '../../service/index';
@@ -20,27 +20,41 @@ export class Home extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    setTimeout(() => {
-      // this.__CallApi();
-    }, 2000);
-  }
-
-  __CallApi() {
-    const __params = { parentId: 10000000, pageIndex: 0, pageSize: 10 };
-    const __List = { actions: { list: [], loading: 'Load', fail: 'Fail', complete: 'Complete', } };
-    __List.actions.list.push({
-      StateName: 'StateName',
-      promise: (client) => client.get(client.API.Common.Organization, { params: __params, data: __params }),
-      Condition: __params
-    });
-    const __self = this;
-    Client(__List).then((result) => {
-      __self.DataList = result && result[0] ? result[0] : [];
-      console.log(JSON.stringify(__self.DataList));
-    });
   }
 
   __UserInfo(methodType) {
     this.sHelper.DemoService.UserInfo(methodType);
+  }
+  tempData: any = '哈哈';
+
+  TestEvent(args) {
+    console.log('test event-->', args);
+  }
+  __ShowDialog() {
+    const __Html = `<div class="testDemo">
+      <div>组件开始</div>
+      <xtn-navbar [(Title)]="__Title"></xtn-navbar>
+      <div class="homeComCssEnd">组件结束</div>
+     </div>`;
+    const __Options = {
+      html: __Html,
+      IsLoadingComponent: true,
+      ComponentName: 'XtnMapPlaceItem',
+      Params: {
+        Inputs: {
+          Place: { address: '就在这里啦', },
+          Params: { __Title: '里面的参数了' },
+          Params2: { Params2: 'Params-->里的信息啦' },
+          Params123: { Params123: 'Params123-->里的信息啦' },
+          __Title: this.tempData, parma2: '12431243',
+        },
+        Outputs: {
+          onSave: this.TestEvent.bind(this),
+          onDelete: this.TestEvent.bind(this),
+          onModify: this.TestEvent.bind(this),
+        }
+      },
+    };
+    Utility.$Emit(Utility.$ConstItem.Events.ShowModel.onDialog, __Options);
   }
 }

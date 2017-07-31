@@ -1,0 +1,11 @@
+<div class="dialogCss">
+  <div class="bgInfo" (click)="onClickClose()">
+
+  </div>
+  <div class="content">
+    <div *ngIf="!DialogInfo.IsLoadingComponent" [innerHTML]="DialogInfo.html">
+    </div>
+
+    <ng-template #container></ng-template>
+  </div>
+</div>
