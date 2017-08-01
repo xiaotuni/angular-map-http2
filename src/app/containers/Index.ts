@@ -1,5 +1,4 @@
 export { CommonComponent } from '../components/Index'
-
 import { MyComponent } from './my-component/my-component.component';
 import { Product } from './product/product.component';
 import { Members } from './members/members.component';

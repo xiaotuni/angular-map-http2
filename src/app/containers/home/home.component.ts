@@ -32,20 +32,20 @@ export class Home extends BaseComponent implements OnInit {
   }
   __ShowDialog() {
 
-    Utility.$ShowDialogComponent('XtnMapPlaceItem', {
-      Place: { address: '就在这里啦', },
-      Params: { __Title: '里面的参数了' },
-      Params2: { Params2: 'Params-->里的信息啦' },
-      Params123: { Params123: 'Params123-->里的信息啦' },
-      __Title: this.tempData, parma2: '12431243',
-    }, {
-        onSave: (ee) => {
-          console.log(ee);
-          Utility.$ShowMessage('标题', '这是弹出来的内容');
-        },
-        onDelete: this.TestEvent.bind(this),
-        onModify: this.TestEvent.bind(this),
-      });
+    // Utility.$ShowDialogComponent('XtnMapPlaceItem', {
+    //   Place: { address: '就在这里啦', },
+    //   Params: { __Title: '里面的参数了' },
+    //   Params2: { Params2: 'Params-->里的信息啦' },
+    //   Params123: { Params123: 'Params123-->里的信息啦' },
+    //   __Title: this.tempData, parma2: '12431243',
+    // }, {
+    //     onSave: (ee) => {
+    //       console.log(ee);
+    //       Utility.$ShowMessage('标题', '这是弹出来的内容');
+    //     },
+    //     onDelete: this.TestEvent.bind(this),
+    //     onModify: this.TestEvent.bind(this),
+    //   });
 
   }
 }

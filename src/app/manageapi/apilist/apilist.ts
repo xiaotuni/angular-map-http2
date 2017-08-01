@@ -62,9 +62,12 @@ export class ApiList implements OnInit {
   }
 
   onSaveRule(rule) {
-    this.sHelper.ApiManager.AddApi(rule).then(() => {
+    this.sHelper.ApiManager.AddApi(rule).then((data) => {
+      console.log(data);
       Utility.$ShowMessage('接口列表', '添加或修改成功。');
-    }, () => { });
+    }, (ee) => {
+      console.log(ee);
+    });
   }
 
   onDeleteRule(rule) {

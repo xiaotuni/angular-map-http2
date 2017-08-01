@@ -14,21 +14,20 @@
       padding: 5px;
 
       &:hover {
-        border: 1px solid c0c0e6;
-        background: aliceblue;
+        border: 1px solid #c0c0e6;
+        background: rgba(208, 223, 234, 0.44)
       }
 
       &:active {
-        background: rgba(208, 223, 234, 0.44);
+        background: aliceblue;
       }
 
       .nameInviteCode {
-        padding: 5px 0;
-        // display: flex;
+        padding: 5px 0; // display: flex;
         align-items: center;
 
         .name {
-          > span {
+          >span {
             font-size: 120%;
             color: #222;
             font-weight: 600;
@@ -38,7 +37,7 @@
         .invite {
           margin-top: 5px;
 
-          > span {
+          >span {
             color: Red;
             font-size: 120%;
           }
@@ -55,7 +54,6 @@
 
       .bewrite {
         @extend .nameInviteCode;
-
       }
     }
   }

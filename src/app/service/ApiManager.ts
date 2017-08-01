@@ -29,22 +29,26 @@ export class ApiManagerService {
 
   AddApi(Info: object): Promise<any> {
     const __self = this;
-    const options = { action: { types: ['Loading', 'Success', 'Fail'], promise: (client) => client.post(client.API.Api.Add, { params: {}, data: Info }) } };
-    return this.ApiClient(options).then((data) => {
-      const { code, msg, Id } = data;
-      if (code && msg) {
-        // update 
-      } else { // insert
-        const _find = __self.ApiList.filter((row) => row.Id === Id);
-        if (_find.length > 0) {
-          // _find[0].RuleInfo = JSON.parse(data.Content);
-        } else {
-          data.RuleInfo = JSON.parse(data.Content);
-          __self.ApiList.push(data);
+    return new Promise((resolve, reject) => {
+      const options = { action: { types: ['Loading', 'Success', 'Fail'], promise: (client) => client.post(client.API.Api.Add, { params: {}, data: Info }) } };
+      __self.ApiClient(options).then((data) => {
+        const { code, msg, Id } = data;
+        if (code && msg) {
+          // update 
+        } else { // insert
+          const _find = __self.ApiList.filter((row) => row.Id === Id);
+          if (_find.length > 0) {
+            // _find[0].RuleInfo = JSON.parse(data.Content);
+          } else {
+            data.RuleInfo = JSON.parse(data.Content);
+            __self.ApiList.push(data);
+          }
         }
-      }
-      return data;
-    }, () => { });
+        resolve(data);
+      }, (ee) => {
+        reject(ee);
+      });
+    });
   }
 
   Modify(Info: object): Promise<any> {

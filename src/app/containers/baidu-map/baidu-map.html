@@ -5,7 +5,6 @@
     <xtn-baidu-map-marker *ngIf="IsShowMarker" (onUpdatePosition)="onUpdateCurrentPosition($event)" [BMap]="BMap" [Map]="__Map"
       [(Position)]="__CurrentPosition"></xtn-baidu-map-marker>
   </div>
-
   <div class="groupBtn">
     <!-- <div class="btn" (click)="CreateTravel()">创建</div>
     <div class="btn" (click)="GetCurrentPosition()">获取位置</div>
