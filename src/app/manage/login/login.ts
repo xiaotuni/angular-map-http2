@@ -6,25 +6,30 @@ import * as CryptoJS from 'crypto-js';
   selector: 'xtn-manage-login',
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
-  animations: [routeAnimation],
-  providers: [ServiceHelper]
+  animations: [routeAnimation],   // 页面切换动画
+  providers: [ServiceHelper]      // 注入一个service
 })
 export class Login extends BaseComponent implements OnInit {
   public UserInfo: any;
-  QueryParams: any;
 
+  /**
+   * Creates an instance of Login.
+   * @param {ServiceHelper} sHelper service用于接口调用等
+   * @memberof Login
+   */
   constructor(private sHelper: ServiceHelper) {
     super();
     this.UserInfo = { username: 'admin', password: 'admin@163.com' };
   }
 
   ngOnInit() {
-    const __self = this;
-    Utility.$On(Utility.$ConstItem.QueryParams, (params) => {
-      __self.QueryParams = params;
-    });
   }
 
+  /**
+   * 点击登录按钮
+   * 
+   * @memberof Login
+   */
   submit() {
     const data = Object.assign({}, this.UserInfo);
     data.password = CryptoJS.MD5(data.password).toString();

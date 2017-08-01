@@ -20,6 +20,4 @@ export class ServiceHelper {
     this.BaiduMap = new BaiduMapService(Client);
     this.Common = new CommonService();
   }
-
-
 }
