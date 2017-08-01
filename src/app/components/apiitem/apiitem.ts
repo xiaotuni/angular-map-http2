@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Output, Input, EventEmitter } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Utility } from '../ComponentTools';
+import { Utility } from '../Core';
 @Component({
   selector: 'xtn-api-item',
   templateUrl: './apiitem.html',
@@ -14,7 +14,7 @@ import { Utility } from '../ComponentTools';
       transition('collapsed <=> expanded', [animate('100ms ease-out'), animate('100ms ease-out')]),
     ])]
 })
-export class ApiItem implements OnInit, OnChanges {
+export class XtnApiItem implements OnInit, OnChanges {
 
   @Input('Source') ApiInfo: any;
   @Input('Index') Index: number;

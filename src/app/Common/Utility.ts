@@ -259,4 +259,102 @@ export class Utility {
       Msg: Msg,
     });
   }
+
+
+  /**
+   * 判断是否是日期类型
+   *
+   * @static
+   * @param {any} obj  判断对象
+   * @returns {boolean} true: 是日期，false:不是日期。
+   * @example
+   *        Utility.$IsDate('abcadfa')  ---> false
+   *        Utility.$IsDate(new Date()) ---> true
+   *        Utility.$IsDate('2013年10月10日') ---> true
+   * @memberOf Utility
+   */
+  static $IsDate(obj) {
+    if (typeof obj === 'undefined' || obj === null || obj === '') {   // 判断是不是 undefined,或 null
+      return false;
+    }
+    const __isDate = obj.constructor.name === 'Date';  // 如果传入的就是日期
+    if (__isDate) {
+      return true;
+    }
+    try {
+      return (new Date(obj.replace('年', '-').replace('月', '-').replace('日', ''))).constructor.name === 'Date';
+    } catch (ex) {
+      return false;
+    }
+  }
+  /**
+   * 将日期转为时间戳
+   *
+   * @static    * @param {any} date
+   * @returns
+   *
+   * @memberOf Utility
+   */
+  static $ConvertToTimestamp(date) {
+    if (typeof date === 'undefined' || date === null || date === '') {
+      return 0;
+    }
+    if (this.$IsDate(date)) {
+      return date.constructor.name === 'Date' ? date.getTime() : new Date(date.replace('年', '-').replace('月', '-').replace('日', '').replace(/-/g, '/')).getTime();
+    }
+    return 0;
+  }
+
+  /**
+ * 对Date的扩展，将 Date 转化为指定格式的String
+ * 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符，
+ * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字)
+ * @method __FormatDate
+ * @param fmt
+ * @param date
+ * @return {*}
+ * @example
+ *  Utility.FormatDate('yyyy-MM-dd hh:mm:ss.S',new Date());
+ * @constructor
+ */
+  static $FormatDate(date, fmt) {
+    if (!date) {
+      return '';
+    }
+    let __this = new Date();
+    let _fmt = fmt || 'yyyy-MM-dd HH:mm:ss.S';
+    if (date !== null) {
+      if (Date.parse(date)) {
+        __this = date;
+      } else {
+        try {
+          __this = new Date(date);
+        } catch (ex) {
+          __this = new Date();
+        }
+      }
+    }
+    const oo = {
+      'M+': __this.getMonth() + 1,                    // 月份
+      'd+': __this.getDate(),                         // 日
+      'D+': __this.getDate(),                         // 日
+      'H+': __this.getHours(),                        // 小时
+      'h+': __this.getHours(),                        // 小时
+      'm+': __this.getMinutes(),                      // 分
+      's+': __this.getSeconds(),                      // 秒
+      'q+': Math.floor((__this.getMonth() + 3) / 3),  // 季度
+      'S': __this.getMilliseconds() // 毫秒
+    };
+    if (/(y+)/.test(_fmt)) {
+      /(y+)/.exec(_fmt);
+      const fmt1 = _fmt.replace(RegExp.$1, (__this.getFullYear() + '').substr(4 - RegExp.$1.length));
+      _fmt = fmt1;
+    }
+    for (const kk in oo) {
+      if (new RegExp('(' + kk + ')').test(fmt)) {
+        _fmt = _fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (oo[kk]) : (('00' + oo[kk]).substr(('' + oo[kk]).length)));
+      }
+    }
+    return _fmt;
+  }
 }

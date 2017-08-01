@@ -1,5 +1,5 @@
 import { RouterModule } from '@angular/router';
-import { RouterComponent } from './containers/Core';
+import { RouterComponent } from './containers/Index';
 import { ManagerRouter } from './manage/Index';
 import { ManagerApiRouter } from './manageapi/Index';
 export const AppRouting = {

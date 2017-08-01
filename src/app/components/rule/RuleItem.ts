@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
-import { Utility } from '../ComponentTools';
+import { Utility } from '../Core';
 @Component({
   selector: 'xtn-rule-item',
   templateUrl: './RuleItem.html',

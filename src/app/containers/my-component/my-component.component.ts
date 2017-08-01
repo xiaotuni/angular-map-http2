@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { routeAnimation } from '../app.animations';
-import { BaseComponent } from '../base.component';
+import { BaseComponent, Utility, routeAnimation } from '../Core';
 
 @Component({
   selector: 'app-my-component',

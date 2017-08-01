@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Utility, Client, CommonComponent } from '../Core';
-import { routeAnimation } from '../app.animations';
-import { BaseComponent } from '../base.component';
-import { ServiceHelper } from '../../service/index';
+import { ServiceHelper, BaseComponent, routeAnimation, Utility, Client, } from '../Core';
 
 @Component({
   selector: 'app-home',

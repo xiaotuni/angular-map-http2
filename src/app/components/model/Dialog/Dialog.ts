@@ -2,7 +2,7 @@ import {
   EventEmitter, Component, OnInit, Output, Input, ViewChild, ReflectiveInjector,
   ViewContainerRef, ComponentFactoryResolver, ComponentRef, OnDestroy, AfterContentInit
 } from '@angular/core';
-import { Utility } from '../../ComponentTools';
+import { Utility } from '../../Core';
 
 @Component({
   selector: 'xtn-mode-dialog',

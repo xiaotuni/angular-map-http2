@@ -1,9 +1,11 @@
 .placeItem {
   position: relative;
   width: 80vw; // calc(100vw - 100px);
+
   .title {
     padding: 10px 5px;
   }
+
   .address {
     padding: 5px;
     position: relative;
@@ -11,10 +13,24 @@
     input {
       position: relative;
       width: 100%;
-      padding: 5px 0px;
+      padding: 5px 0;
       border: 1px solid #c4c4ea;
       border-radius: 5px;
       padding-left: 5px;
+    }
+  }
+
+  .bewrite {
+    padding: 5px;
+    position: relative;
+
+    textarea {
+      position: relative;
+      width: 100%;
+      padding: 5px 0;
+      border: 1px solid #c4c4ea;
+      border-radius: 5px;
+      height: 50px;
     }
   }
 
@@ -22,9 +38,10 @@
     position: relative;
     display: flex;
     align-items: center;
+
     input {
       flex: 1;
-      padding: 2px 0px;
+      padding: 2px 0;
       border: 1px solid #c4c4ea;
       border-radius: 5px;
       padding-left: 5px;

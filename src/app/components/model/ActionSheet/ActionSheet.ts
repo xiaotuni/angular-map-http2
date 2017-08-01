@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, Input } from '@angular/core';
-import { Utility } from '../../ComponentTools';
+import { Utility } from '../../Core';
 
 @Component({
   selector: 'xtn-mode-action-sheet',
@@ -8,7 +8,6 @@ import { Utility } from '../../ComponentTools';
 })
 export class XtnActionSheet implements OnInit {
   @Input('ActionSheetInfo') Info: any;
-  // @Input('Source') ApiInfo: any;
 
   constructor() { }
 

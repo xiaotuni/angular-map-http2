@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, Output, OnChanges, AfterContentInit, EventEmitter } from '@angular/core';
-import { Utility, Client } from '../../Core';
+import { Utility } from '../../Core';
 
 @Component({
   selector: 'xtn-baidu-map-marker',
   templateUrl: 'marker.html',
   styleUrls: ['marker.scss']
 })
-export class BaiduMapMarker implements OnInit, OnChanges {
+export class XtnBaiduMapMarker implements OnInit, OnChanges {
   @Input('BMap') BMap: any;
   @Input('Map') __Map: any;
   @Input('Position') __CurrentPosition: any;

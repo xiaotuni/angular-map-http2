@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppRouting } from './app.router';
-import { CommonComponent, PageComponentList } from './containers/Core';
+import { CommonComponent, PageComponentList } from './containers/Index';
 import { ManagerPageComponentList } from './manage/Index';
 import { ManagerApiPageComponentList } from './manageapi/Index';
 

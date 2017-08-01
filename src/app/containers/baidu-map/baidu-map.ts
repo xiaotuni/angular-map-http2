@@ -1,8 +1,5 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterContentInit } from '@angular/core';
-import { Utility, Client, ServiceHelper } from '../Core';
-import { routeAnimation } from '../app.animations';
-import { BaseComponent } from '../base.component';
-import { BaiduMapMarker } from './marker/marker';
+import { Utility, Client, ServiceHelper, routeAnimation, BaseComponent } from '../Core';
 
 @Component({
   selector: 'app-baidu-map',
@@ -14,10 +11,37 @@ import { BaiduMapMarker } from './marker/marker';
 export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit {
   @ViewChild('baidumapRef') baidumapRef: ElementRef;
   BMap: any;
+  
+  /**
+   * 地图实例
+   * 
+   * @type {*}
+   * @memberof BaiduMap
+   */
   __Map: any;
+
+  /**
+   * 当前位置
+   * 
+   * @type {*}
+   * @memberof BaiduMap
+   */
   __CurrentPosition: any;
+  /**
+   * 
+   * 
+   * @type {Object}
+   * @memberof BaiduMap
+   */
   __ZoomControl: Object = new Object();
   __Driving: any;
+  
+  /**
+   * 根据当前经/纬度获取位置信息
+   * 
+   * @type {*}
+   * @memberof BaiduMap
+   */
   __Geocoder: any;
 
   IsShowMarker: boolean;
@@ -118,6 +142,8 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
         self.__Map.setCurrentCity(city);
 
         self.IsShowMarker = true;
+
+        self.__GetLocation(null);
       }
     }, { enableHighAccuracy: true });
   }
@@ -328,26 +354,41 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
 
   onUpdateCurrentPosition(position) {
     console.log(position);
-    // this.__Map.setCenter(position.point);
     // 中心点平滑过渡。
     this.__Map.panTo(position.point);
-    // this.__GetLocation(position.point);
+    this.__GetLocation(position.point);
   }
 
   __SavePlace(placeInfo) {
     console.log(placeInfo);
-    Utility.$ShowMessage('标题', '这是弹出来的内容');
+    placeInfo.BeginTime = Utility.$ConvertToTimestamp(placeInfo.BeginDate + ' 08:00');
+    placeInfo.EndTime = Utility.$ConvertToTimestamp(placeInfo.EndDate + ' 18:00');
     this.sHelper.BaiduMap.AddPlace(placeInfo).then((data) => {
-      console.log(data);
+      Utility.$ShowMessage('聚会地点', '添加聚会地点成功啦！！');
+      Utility.$ShowDialogHide();
+      Utility.$ShowDialogHide();
     }, (ee) => {
       console.log(ee);
     });
   }
+  /**
+   * 添加活动点
+   * 
+   * @memberof BaiduMap
+   */
   AddPlace() {
     const { address, point } = this.__CurrentPosition;
     const { lat, lng } = point;
+    const CurrentDate = new Date();
+    const EndDate = new Date();
+    EndDate.setDate(CurrentDate.getDate() + 1)
+
     Utility.$ShowDialogComponent('XtnMapPlaceItem', {
-      Place: { Address: address, Latitude: lat, Longitude: lng, },
+      Place: {
+        Address: address, Latitude: lat, Longitude: lng,
+        BeginDate: Utility.$FormatDate(CurrentDate, 'yyyy-MM-dd'),
+        EndDate: Utility.$FormatDate(EndDate, 'yyyy-MM-dd'),
+      },
     }, {
         onSave: this.__SavePlace.bind(this)
       });

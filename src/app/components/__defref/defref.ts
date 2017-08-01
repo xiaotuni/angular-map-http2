@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Utility } from '../ComponentTools';
+import { Utility } from '../Core';
 
 @Component({
   moduleId: module.id,
@@ -7,7 +7,7 @@ import { Utility } from '../ComponentTools';
   templateUrl: 'defref.html',
   styleUrls: ['./defref.scss']
 })
-export class __DefRefComponent implements OnInit {
+export class __XtnDefRefComponent implements OnInit {
   collection: Array<any> = new Array<any>();
   constructor() { }
 
