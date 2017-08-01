@@ -1,0 +1,62 @@
+.myPlaceListCss {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  font-size: 12px;
+
+  .place {
+    padding: 10px;
+
+    .row {
+      border: 1px solid #f1f1f1;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      padding: 5px;
+
+      &:hover {
+        border: 1px solid c0c0e6;
+        background: aliceblue;
+      }
+
+      &:active {
+        background: rgba(208, 223, 234, 0.44);
+      }
+
+      .nameInviteCode {
+        padding: 5px 0;
+        // display: flex;
+        align-items: center;
+
+        .name {
+          > span {
+            font-size: 120%;
+            color: #222;
+            font-weight: 600;
+          }
+        }
+
+        .invite {
+          margin-top: 5px;
+
+          > span {
+            color: Red;
+            font-size: 120%;
+          }
+        }
+      }
+
+      .address {
+        @extend .nameInviteCode;
+      }
+
+      .time {
+        @extend .nameInviteCode;
+      }
+
+      .bewrite {
+        @extend .nameInviteCode;
+
+      }
+    }
+  }
+}

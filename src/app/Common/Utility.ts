@@ -69,8 +69,8 @@ export class Utility {
     },
     UrlTitle: {
       '/home': { Title: '首页', },
-      '/baidumap': { Title: '百度地图', },
-      '/baidumap/myplace': { Title: '百度地图', },
+      '/baidumap': { Title: '地图', },
+      '/baidumap/myplace': { Title: '我发起的活动', },
       '/member': { Title: '成员', },
       '/mycomponent': { Title: '我的组件', },
       '/product': { Title: '产品', },

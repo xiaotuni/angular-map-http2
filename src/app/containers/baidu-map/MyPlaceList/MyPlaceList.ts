@@ -11,7 +11,7 @@ import { Utility, ServiceHelper, routeAnimation, BaseComponent } from '../../Cor
 })
 export class BaiduMyPlaceList extends BaseComponent implements OnInit {
 
-  PlaceList: Array<any>;
+  PlaceList: any;
 
   constructor(private sHelper: ServiceHelper) {
     super();
@@ -23,8 +23,9 @@ export class BaiduMyPlaceList extends BaseComponent implements OnInit {
 
   __InitMyPlacePlist() {
 
-    this.sHelper.BaiduMap.MyPlaceList().then(() => {
-      
+    const self = this;
+    this.sHelper.BaiduMap.MyPlaceList({ PageIndex: 0, PageSize: 10 }).then(() => {
+      self.PlaceList = self.sHelper.BaiduMap.PlaceListInfo;
     }, () => {
 
     });

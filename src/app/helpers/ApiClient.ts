@@ -133,6 +133,23 @@ export default class ApiClient {
             }
           }
 
+          const __PageTurning = (body) => {
+            const { PageIndex, PageSize } = params || { PageSize: null, PageIndex: null };
+            if (PageIndex >= 0) {
+              if (Array.isArray(body)) {
+                const __Size = body.length;
+                const Condition = Object.assign({}, params);
+                Condition.IsNextData = __Size === PageSize ? true : false;
+                Condition.PageIndex++;
+                return {
+                  List: body,
+                  Condition
+                };
+              }
+            }
+            return body;
+          }
+
           function __SendRequest(_request) {
             _request.end((err, Response) => {
               const { body } = Response || { body: {} };
@@ -143,7 +160,7 @@ export default class ApiClient {
                 if (!body) {
                   Utility.$Emit(HttpStatus[Response.status], { status: Response.status, msg: '处理成功', Response });
                 }
-                resolve(body);
+                resolve(__PageTurning(body));
               }
             });
           }

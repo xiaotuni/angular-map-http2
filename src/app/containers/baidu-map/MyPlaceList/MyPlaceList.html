@@ -1,6 +1,20 @@
 <xtn-navbar [(Title)]="__Title"></xtn-navbar>
 <div class="myPlaceListCss">
-  <div>
-    <button (click)="onBtnQuery()">刷新列表</button>
+
+  <button (click)="onBtnQuery()">刷新列表</button>
+
+
+  <div class="place" *ngIf="PlaceList && PlaceList.List && PlaceList.List.length>0 ">
+    <div class="row" *ngFor="let item of PlaceList.List">
+      <div class="nameInviteCode">
+        <div class="name">活动名称：<span> {{item.Name}}</span></div>
+        <div class="invite">邀请码：<span class="InviteCode">{{item.InviteCode}}</span> </div>
+      </div>
+      <div class="address">地点：<span> {{item.Address}}</span></div>
+      <div class="time">时间：{{item.BeginDate|date:'yyyy-MM-dd HH:mm'}} ~ {{item.EndDate|date:'yyyy-MM-dd HH:mm'}}</div>
+      <div class="bewrite">
+        描述：<span>{{item.Bewrite}}</span>
+      </div>
+    </div>
   </div>
 </div>

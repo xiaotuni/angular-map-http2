@@ -1,10 +1,17 @@
 import { animate, AnimationEntryMetadata, state, style, transition, trigger } from '@angular/core';
 
+
+
+const __style = {
+    position: 'fixed', width: '100%', left: '0px', top: '0px', paddingTop: '40px',
+    height: '100%',
+    overflow: 'auto'
+};
 export const routeAnimation: AnimationEntryMetadata = [
 
     trigger('routing', [ // paddingTop 添加这个是为了导航长的高度。 
-        state('void', style({ position: 'fixed', width: '100%', left: '0px', top: '0px', paddingTop: '40px' })),
-        state('*', style({ position: 'fixed', width: '100%', left: '0px', top: '0px', paddingTop: '40px' })),
+        state('void', style(__style)),
+        state('*', style(__style)),
         // state('void', style({ position: 'fixed', width: '100%', left: '0px', })),
         // state('*', style({ position: 'fixed', width: '100%', left: '0px', })),
         // 上一页

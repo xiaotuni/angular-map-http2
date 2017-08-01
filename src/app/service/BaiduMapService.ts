@@ -1,5 +1,6 @@
 export class BaiduMapService {
   private ApiClient: any;
+  public PlaceListInfo: any;
 
   constructor(private client) {
     this.ApiClient = client;
@@ -29,16 +30,26 @@ export class BaiduMapService {
     });
   }
 
-  MyPlaceList(): Promise<any> {
+  MyPlaceList(Condition: any): Promise<any> {
+    const { PageSize, PageIndex } = Condition;
     const __self = this;
     const options = {
       action: {
-        types: ['Loading', 'Success', 'Fail'],
-        promise: (client) => client.get(client.API.Map.MyPlaceList, {}),
+        types: ['Loading', 'Success', 'Fail'], promise: (client) => client.get(client.API.Map.MyPlaceList, { params: Condition || {} }),
       },
     };
+
     return this.ApiClient(options).then((data) => {
       console.log(data);
+      const { List, Condition } = data;
+      const { PlaceListInfo } = __self;
+      if (!__self.PlaceListInfo || PageIndex === 0) {
+        __self.PlaceListInfo = data;
+      } else {
+        __self.PlaceListInfo.List = __self.PlaceListInfo.List.concat(List)
+        __self.PlaceListInfo.Condition = Condition;
+      }
+
       return data;
     });
   }
