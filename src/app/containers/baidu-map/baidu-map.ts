@@ -11,7 +11,7 @@ import { Utility, Client, ServiceHelper, routeAnimation, BaseComponent } from '.
 export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit {
   @ViewChild('baidumapRef') baidumapRef: ElementRef;
   BMap: any;
-  
+
   /**
    * 地图实例
    * 
@@ -35,7 +35,7 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
    */
   __ZoomControl: Object = new Object();
   __Driving: any;
-  
+
   /**
    * 根据当前经/纬度获取位置信息
    * 
@@ -392,6 +392,11 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
     }, {
         onSave: this.__SavePlace.bind(this)
       });
+  }
+
+  onClickMyPlaceList() {
+    console.log(this);
+    this.NextPage(Utility.$ConstItem.UrlItem.BaiduMapMyPlace)
   }
 }
 

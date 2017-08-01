@@ -1,6 +1,12 @@
 <div class="placeItem">
   <div class="title">
-    聚会点
+    聚会名称
+  </div>
+  <div class="address">
+    <input type="text" placeholder="爬山" maxlength="50" required [(ngModel)]="place.Name">
+  </div>
+  <div class="title">
+    聚会地点
   </div>
   <div class="address">
     <input disabled type="text" required [(ngModel)]="place.Address">

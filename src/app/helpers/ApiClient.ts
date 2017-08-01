@@ -59,9 +59,15 @@ export default class ApiClient {
     },
     Map: {
       /**
-       * post 
+       * post header token 添加活动起点
+       * -------------------------------------- 
        */
       AddPlace: '/map/place',
+      /**
+       * get header token 获取我的活动点列表
+       * --------------------------------------
+       */
+      MyPlaceList: '/map/placelist',
     }
   }
 

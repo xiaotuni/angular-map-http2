@@ -44,7 +44,7 @@ export class ApiManagerService {
         }
       }
       return data;
-    });
+    }, () => { });
   }
 
   Modify(Info: object): Promise<any> {

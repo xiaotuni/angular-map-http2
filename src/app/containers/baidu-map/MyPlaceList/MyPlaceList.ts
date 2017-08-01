@@ -23,6 +23,15 @@ export class BaiduMyPlaceList extends BaseComponent implements OnInit {
 
   __InitMyPlacePlist() {
 
+    this.sHelper.BaiduMap.MyPlaceList().then(() => {
+      
+    }, () => {
+
+    });
+
+  }
+  onBtnQuery() {
+    this.__InitMyPlacePlist();
   }
 
 

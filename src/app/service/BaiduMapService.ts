@@ -20,11 +20,25 @@ export class BaiduMapService {
     const __self = this;
     const options = {
       action: {
+        types: ['Loading', 'Success', 'Fail'],
         promise: (client) => client.post(client.API.Map.AddPlace, { data: OldPI }),
-        types: ['Loading', 'Success', 'Fail']
       },
     };
     return this.ApiClient(options).then((data) => {
+      return data;
+    });
+  }
+
+  MyPlaceList(): Promise<any> {
+    const __self = this;
+    const options = {
+      action: {
+        types: ['Loading', 'Success', 'Fail'],
+        promise: (client) => client.get(client.API.Map.MyPlaceList, {}),
+      },
+    };
+    return this.ApiClient(options).then((data) => {
+      console.log(data);
       return data;
     });
   }

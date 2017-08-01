@@ -56,11 +56,15 @@ export class ApiList implements OnInit {
 
   btnClickSave() {
     this.NewApiInfo.Id = -1;
-    this.sHelper.ApiManager.AddApi(this.NewApiInfo).then(() => { }, () => { });
+    this.sHelper.ApiManager.AddApi(this.NewApiInfo).then(() => {
+
+    }, () => { });
   }
 
   onSaveRule(rule) {
-    this.sHelper.ApiManager.AddApi(rule);
+    this.sHelper.ApiManager.AddApi(rule).then(() => {
+      Utility.$ShowMessage('接口列表', '添加或修改成功。');
+    }, () => { });
   }
 
   onDeleteRule(rule) {

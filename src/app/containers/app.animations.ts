@@ -3,8 +3,8 @@ import { animate, AnimationEntryMetadata, state, style, transition, trigger } fr
 export const routeAnimation: AnimationEntryMetadata = [
 
     trigger('routing', [ // paddingTop 添加这个是为了导航长的高度。 
-        state('void', style({ position: 'fixed', width: '100%', left: '0px', top: '0px', paddingTop: '30px' })),
-        state('*', style({ position: 'fixed', width: '100%', left: '0px', top: '0px', paddingTop: '30px' })),
+        state('void', style({ position: 'fixed', width: '100%', left: '0px', top: '0px', paddingTop: '40px' })),
+        state('*', style({ position: 'fixed', width: '100%', left: '0px', top: '0px', paddingTop: '40px' })),
         // state('void', style({ position: 'fixed', width: '100%', left: '0px', })),
         // state('*', style({ position: 'fixed', width: '100%', left: '0px', })),
         // 上一页
