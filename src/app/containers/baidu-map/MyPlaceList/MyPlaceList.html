@@ -9,6 +9,10 @@
       <div class="nameInviteCode">
         <div class="name">活动名称：<span> {{item.Name}}</span></div>
         <div class="invite">邀请码：<span class="InviteCode">{{item.InviteCode}}</span> </div>
+
+        <div class="toMap">
+          <div (click)="onClickToMap(item)">查看位置</div>
+        </div>
       </div>
       <div class="address">地点：<span> {{item.Address}}</span></div>
       <div class="time">时间：{{item.BeginDate|date:'yyyy-MM-dd HH:mm'}} ~ {{item.EndDate|date:'yyyy-MM-dd HH:mm'}}</div>

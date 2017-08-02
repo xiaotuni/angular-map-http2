@@ -53,7 +53,15 @@ class dealbusiness {
         Response.SendError({ code: 404, msg: '【' + pathname + '】接口没有找到' });
       }
     }, (err) => {
-      Response.SendError({ code: 404, msg: '【' + err.message || pathname + '】接口没有找到' });
+      let __msg = err;
+      if (err) {
+        if (err.message) {
+          __msg = err.message;
+        }
+      } else {
+        __msg = pathname;
+      }
+      Response.SendError({ code: 404, msg: '【' + __msg + '】接口没有找到' });
     });
   }
 

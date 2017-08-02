@@ -35,6 +35,7 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
    */
   __ZoomControl: Object = new Object();
   __Driving: any;
+  IsTilesloaded: boolean;
 
   /**
    * 根据当前经/纬度获取位置信息
@@ -52,13 +53,10 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
 
 
   ngOnInit() {
-    this.__InitMap();
   }
 
   ngAfterContentInit(): void {
-    setTimeout(() => {
-      this.GetCurrentPosition();
-    }, 1000);
+    this.__InitMap();
   }
 
   __InitMap() {
@@ -73,6 +71,7 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
         self.__Map.addControl(new self.BMap.MapTypeControl());                          //添加地图类型控件
         self.__Map.setCurrentCity("北京");                                              // 设置地图显示的城市 此项是必须设置的
         self.__Map.enableScrollWheelZoom(true);                                         //开启鼠标滚轮缩放
+        self.NavigationControl();
         // 移动地图的时候，将当前的信息
         self.__Map.addEventListener("dragend", (e) => {
           self.__GetLocation(null);
@@ -80,6 +79,34 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
         // 放大缩小事件
         self.__Map.addEventListener('zoomend', (e) => {
           self.__GetLocation(null);
+        });
+        self.__Map.addEventListener('tilesloaded', (e) => {
+          if (!!self.IsTilesloaded) {
+            return;
+          }
+          self.IsTilesloaded = true;
+          const UrlParmas = Utility.$GetContent(Utility.$ConstItem.UrlPathInfo);
+          let IsCall = false;
+          if (!UrlParmas) {
+            self.GetCurrentPosition();
+            return;
+          }
+          const { Params } = UrlParmas;
+          if (!Params) {
+            self.GetCurrentPosition();
+            return;
+          }
+          const { Name, Longitude, Latitude } = Params;
+          if (!Longitude || Longitude === '' || !Latitude || Latitude === '') {
+            self.GetCurrentPosition();
+            return;
+          }
+          const __point = new self.BMap.Point(Number(Longitude), Number(Latitude));
+          self.__Map.panTo(__point);          // 移动到当前定位的位置
+          self.__Geocoder.getLocation(__point, (gcResult) => {
+            self.__CurrentPosition = gcResult;
+            self.IsShowMarker = true;
+          })
         });
       };
 
@@ -149,7 +176,7 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
   }
 
   NavigationControl() {
-    if (!this.BMap || !this.__CurrentPosition) {
+    if (!this.BMap) {
       return;
     }
     const { BMAP_NAVIGATION_CONTROL_SMALL } = <any>window
@@ -158,8 +185,9 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
     this.__Map.addControl(new this.BMap.OverviewMapControl());                                          // 地图右下方那个小前头
     // 下面两个是在地图上显示出的：地图、卫星、三维。
     this.__Map.addControl(new this.BMap.MapTypeControl());
-    this.__Map.setCurrentCity(this.__CurrentPosition.address.city);
-
+    if (this.__CurrentPosition) {
+      this.__Map.setCurrentCity(this.__CurrentPosition.address.city);
+    }
   }
   CreateTravel() {
 

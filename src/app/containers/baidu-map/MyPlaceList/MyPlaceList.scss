@@ -15,7 +15,7 @@
 
       &:hover {
         border: 1px solid #c0c0e6;
-        background: rgba(208, 223, 234, 0.44)
+        background: rgba(208, 223, 234, 0.44);
       }
 
       &:active {
@@ -23,11 +23,12 @@
       }
 
       .nameInviteCode {
-        padding: 5px 0; // display: flex;
+        padding: 5px 0;
         align-items: center;
+        position: relative;
 
         .name {
-          >span {
+          > span {
             font-size: 120%;
             color: #222;
             font-weight: 600;
@@ -37,9 +38,24 @@
         .invite {
           margin-top: 5px;
 
-          >span {
+          > span {
             color: Red;
             font-size: 120%;
+          }
+        }
+
+        .toMap {
+          position: absolute;
+          top: 0;
+          right: 0;
+
+          > div {
+            padding: 5px 15px;
+            border-radius: 5px;
+            border: 1px solid #868689;
+            font-size: 110%;
+            background: #222;
+            color: #fff;
           }
         }
       }
