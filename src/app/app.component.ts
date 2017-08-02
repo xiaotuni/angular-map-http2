@@ -17,6 +17,7 @@ export class AppComponent {
   __Title111 = 'app works!';
   private __Location: Location;
   public ActionSheetInfo: any;
+  public ActionSheetList: Array<any> = new Array();
   public DialogList: Array<any> = new Array();
 
   constructor(private router: Router,
@@ -84,10 +85,19 @@ export class AppComponent {
       Utility.$Emit(ShowModel.onActionSheet, args);
     });
     Utility.$On(ShowModel.onActionSheet, (args) => {
-      _this.ActionSheetInfo = args;
+      _this.ActionSheetList.push(args);
     });
-    Utility.$On(ShowModel.onActionSheetHide, (args) => {
-      delete _this.ActionSheetInfo;
+    Utility.$On(ShowModel.onActionSheetHide, (index) => {
+      if (index >= 0) {
+        _this.ActionSheetList[index].IsClose = true;
+      }
+      setTimeout(() => {
+        if (index >= 0) {
+          _this.ActionSheetList.splice(index, 1);
+        } else {
+          _this.ActionSheetList.pop();
+        }
+      }, 100);
     });
 
     Utility.$On(ShowModel.onDialog, (args) => {

@@ -1,7 +1,11 @@
 <router-outlet></router-outlet>
 
-<xtn-mode-action-sheet *ngIf="ActionSheetInfo" [ActionSheetInfo]="ActionSheetInfo">
-</xtn-mode-action-sheet>
+<div *ngIf="ActionSheetList.length>0">
+  <div *ngFor="let item of ActionSheetList;let i = index;">
+    <xtn-mode-action-sheet [(ActionSheetInfo)]="ActionSheetList[i]" [Index]="i">
+    </xtn-mode-action-sheet>
+  </div>
+</div>
 <div *ngIf="DialogList.length>0">
   <div *ngFor="let item of DialogList;let i = index; let a = item;">
     <xtn-mode-dialog [(DialogInfo)]="DialogList[i]" [Index]="i"></xtn-mode-dialog>

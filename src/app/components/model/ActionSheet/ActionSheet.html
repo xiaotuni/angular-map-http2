@@ -1,6 +1,7 @@
 <div class="actionSheetCss">
   <div class="bgInfo" (click)="__ClickClose()"></div>
-  <div class="info">
+
+  <div class="info" [@TriggerState]="TriggerStateName">
     <div class="title">标题</div>
     <div class="splitline"></div>
     <div class="content">

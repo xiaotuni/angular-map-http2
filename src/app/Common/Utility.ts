@@ -35,7 +35,7 @@ export class Utility {
 
     Events: {
       HttpStatus: {
-        400: 'XTN_HTTP_STATUS_404',
+        400: 'XTN_HTTP_STATUS_400',
         401: 'XTN_HTTP_STATUS_401',
         402: 'XTN_HTTP_STATUS_402',
         403: 'XTN_HTTP_STATUS_403',
@@ -114,8 +114,8 @@ export class Utility {
     this.$Emit(this.$ConstItem.Events.ShowModel.onActionSheet, { msg });
   }
 
-  static $ActionSheetHide() {
-    this.$Emit(this.$ConstItem.Events.ShowModel.onActionSheetHide, null);
+  static $ActionSheetHide(actionIndex = -1) {
+    this.$Emit(this.$ConstItem.Events.ShowModel.onActionSheetHide, actionIndex);
   }
 
   static $ShowDialog(Title, Msg, OkBtn, CancelBtn, Options) {

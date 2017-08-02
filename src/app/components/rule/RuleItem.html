@@ -53,7 +53,7 @@
       this 方法:
       <textarea [(ngModel)]="Rule.judgeInfo.strByThis" placeholder="if((this.sex === \'男\' && this.cityname == \'上海\' ) || (this.age > 30 && this.cityname !== \'北京\')){return true;}return false;"></textarea>
     </div>
-    <div class="judgeType">
+    <div class="judgeType eveal">
       eval方法:
       <textarea [(ngModel)]="Rule.judgeInfo.strByEval" placeholder="(\':sex\' !== \'男\' && \':cityname\' == \'北京\' ) || (:age > 30 && \':cityname\' !== \'北京\')"></textarea>
     </div>

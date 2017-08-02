@@ -41,7 +41,16 @@ export class Login extends BaseComponent implements OnInit {
       } else {
         Utility.$ToPage(Utility.$ConstItem.UrlItem.ManagerDashboard, {});
       }
-    }, () => { });
+    }, () => {
+      // const __actionSheet = (i) => {
+      //   setTimeout(() => {
+      //     Utility.$ActionSheet('出错啦__' + i);
+      //   }, 500 * (i + 1));
+      // };
+      // for (let i = 0; i < 3; i++) {
+      //   __actionSheet(i);
+      // }
+    });
   }
 
   forgetPassword() {
