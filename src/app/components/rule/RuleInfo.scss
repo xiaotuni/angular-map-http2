@@ -6,7 +6,7 @@
 
   .ruleTitle {
     border-bottom: 1px solid;
-    padding: 10px; // font-size: 16px;
+    padding: 1px 10px; // font-size: 16px;
     display: flex;
     align-items: center;
 
@@ -28,9 +28,7 @@
   }
 
   .rule {
-    padding: 5px 10px;
+    padding: 0px 10px;
     border: 1px solid #dea7e9;
-
-   
   }
 }
