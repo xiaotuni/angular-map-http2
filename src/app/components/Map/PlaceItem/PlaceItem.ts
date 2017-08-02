@@ -1,12 +1,12 @@
 import { Component, OnInit, Output, Input, AfterContentInit, EventEmitter } from '@angular/core';
-import { Utility } from '../../Core';
+import { Utility, OnDialog } from '../../Core';
 
 @Component({
   selector: 'xtn-map-place-item',
   templateUrl: './PlaceItem.html',
   styleUrls: ['./PlaceItem.scss']
 })
-export class XtnMapPlaceItem implements OnInit {
+export class XtnMapPlaceItem implements OnInit, OnDialog {
 
   @Input('Place') place: any;
   @Input() Params: any;
@@ -37,14 +37,17 @@ export class XtnMapPlaceItem implements OnInit {
         break;
     }
   }
-  onConfirm() {
+
+
+  onDialogConfirm(dialog) {
     if (this._onSave) {
-      this._onSave.emit(this.place);
+      this._onSave.emit({ dialog, args: this.place });
+    } else {
+      dialog.onClose();
     }
   }
-  onCancel() {
-    setTimeout(() => {
-      Utility.$ShowDialogHide();
-    }, 100);
+
+  onDialogCancel(dialog) {
+    dialog.onClose();
   }
 }

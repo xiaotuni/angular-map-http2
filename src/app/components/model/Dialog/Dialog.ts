@@ -1,16 +1,17 @@
 import {
-  EventEmitter, Component, OnInit, Output, Input, ViewChild, ReflectiveInjector,
+  EventEmitter, Component, OnInit, Output, OnChanges, Input, ViewChild, ReflectiveInjector,
   ViewContainerRef, ComponentFactoryResolver, ComponentRef, OnDestroy, AfterContentInit,
+  DoCheck, AfterContentChecked,
   trigger, state, style, transition, animate
 } from '@angular/core';
-import { Utility } from '../../Core';
+import { Utility, OnDialog } from '../../Core';
 
 @Component({
   selector: 'xtn-mode-dialog',
   templateUrl: './Dialog.html',
   styleUrls: ['./Dialog.scss'],
   animations: [
-    trigger('heroState', [
+    trigger('TriggerState', [
       state('inactive', style({ transform: 'scale(0.1)' })),
       state('active', style({ transform: 'scale(1)' })),
       transition('inactive => active', animate('150ms ease-in')),
@@ -18,8 +19,9 @@ import { Utility } from '../../Core';
     ])
   ]
 })
-export class XtnDialog implements OnInit, OnDestroy, AfterContentInit {
+export class XtnDialog implements OnInit, OnDestroy, OnChanges, AfterContentChecked, AfterContentInit {
   @Input('DialogInfo') DialogInfo: any;                                            // 对话框信息
+  @Input('Index') __Index: number;
   @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef; // 组件要存放的地方
   compRef: ComponentRef<any>;                                                      //  加载的组件实例
 
@@ -31,6 +33,19 @@ export class XtnDialog implements OnInit, OnDestroy, AfterContentInit {
   ngOnInit() {
   }
 
+  ngOnChanges(): void {
+    // console.log('-----ngOnChanges----', this.__Index);
+  }
+
+  ngAfterContentChecked(): void {
+    // console.log('----ngAfterContentChecked---', this.__Index, '---', this.TriggerStateName);
+    const { IsClose } = this.DialogInfo;
+
+    if (!!IsClose && this.TriggerStateName !== 'inactive') {
+      // console.log('--改变活画从 index= %d active -> inactive', this.__Index);
+      this.TriggerStateName = 'inactive';
+    }
+  }
   ngOnDestroy(): void {
     if (this.compRef) {
       this.compRef.destroy();
@@ -115,24 +130,32 @@ export class XtnDialog implements OnInit, OnDestroy, AfterContentInit {
     this.container.insert(this.compRef.hostView);
   }
 
+  onClose() {
+    // this.TriggerStateName = 'inactive';
+    Utility.$ShowDialogHide(this.__Index);
+  }
+
   onClickClose() {
-    this.TriggerStateName = 'inactive';
-    Utility.$ShowDialogHide();
+    this.onClose();
   }
 
   btnClickCancel() {
-    if (this.compRef.instance.onCancel) {
-      this.compRef.instance.onCancel();
+    if (this.compRef) {
+      if (this.compRef.instance.onDialogCancel) {
+        this.compRef.instance.onDialogCancel(this);
+      }
+    } else {
+      this.onClickClose();
     }
   }
 
   btnClickConfirm() {
     if (this.compRef) {
-      if (this.compRef.instance.onConfirm) {
-        this.compRef.instance.onConfirm();
+      if (this.compRef.instance.onDialogConfirm) {
+        this.compRef.instance.onDialogConfirm(this);
       }
     } else {
-      this.onClickClose()
+      this.onClickClose();
     }
   }
 }

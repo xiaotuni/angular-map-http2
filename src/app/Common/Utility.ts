@@ -122,10 +122,9 @@ export class Utility {
     this.$Emit(this.$ConstItem.Events.ShowModel.onDialog, { Title, Msg, OkBtn, CancelBtn, Options });
   }
 
-  static $ShowDialogHide() {
-    this.$Emit(this.$ConstItem.Events.ShowModel.onDialogHide, null);
+  static $ShowDialogHide(dialogIndex = -1) {
+    this.$Emit(this.$ConstItem.Events.ShowModel.onDialogHide, dialogIndex);
   }
-
 
   /**
    * 保存内容
