@@ -2,7 +2,7 @@
   <div class="bgInfo" (click)="onClickClose()">
 
   </div>
-  <div class="content">
+  <div class="content" [@heroState]="TriggerStateName">
     <div *ngIf="!!DialogInfo.IsShowTitle" class="title">
       <div>{{DialogInfo.Title}}</div>
     </div>

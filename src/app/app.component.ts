@@ -92,12 +92,11 @@ export class AppComponent {
 
     Utility.$On(ShowModel.onDialog, (args) => {
       _this.DialogList.push(args);
-      // _this.DialogInfo = args;
     });
     Utility.$On(ShowModel.onDialogHide, () => {
       setTimeout(() => {
         _this.DialogList.pop();
-      }, 100);
+      }, 200);
     });
   }
 }

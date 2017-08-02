@@ -42,26 +42,29 @@
         text-align: center;
       }
 
-      .action {
-        color: #1d1c1c;
-        border: 1px solid #c4c4d4;
-        padding: 9px;
-        background: #c4c4d4;
-      }
-
       .confirm {
         &:active {
           border-bottom-left-radius: 5px;
-          @extend .action;
+          background: aliceblue;
+          color: #222;
+        }
+
+        &:hover {
+          background: rgba(208, 223, 234, 0.44);
         }
       }
 
       .cancel {
         border-left: 1px solid #f5dfdf;
 
+        &:hover {
+          background: rgba(208, 223, 234, 0.44);
+        }
+
         &:active {
           border-bottom-right-radius: 5px;
-          @extend .action;
+          background: aliceblue;
+          color: #222;
         }
       }
     }

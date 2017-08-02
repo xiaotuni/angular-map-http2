@@ -1,25 +1,34 @@
 import {
   EventEmitter, Component, OnInit, Output, Input, ViewChild, ReflectiveInjector,
-  ViewContainerRef, ComponentFactoryResolver, ComponentRef, OnDestroy, AfterContentInit
+  ViewContainerRef, ComponentFactoryResolver, ComponentRef, OnDestroy, AfterContentInit,
+  trigger, state, style, transition, animate
 } from '@angular/core';
 import { Utility } from '../../Core';
 
 @Component({
   selector: 'xtn-mode-dialog',
   templateUrl: './Dialog.html',
-  styleUrls: ['./Dialog.scss']
+  styleUrls: ['./Dialog.scss'],
+  animations: [
+    trigger('heroState', [
+      state('inactive', style({ transform: 'scale(0.1)' })),
+      state('active', style({ transform: 'scale(1)' })),
+      transition('inactive => active', animate('150ms ease-in')),
+      transition('active => inactive', animate('150ms ease-out')),
+    ])
+  ]
 })
 export class XtnDialog implements OnInit, OnDestroy, AfterContentInit {
   @Input('DialogInfo') DialogInfo: any;                                            // 对话框信息
   @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef; // 组件要存放的地方
   compRef: ComponentRef<any>;                                                      //  加载的组件实例
 
-  constructor(private resolver: ComponentFactoryResolver) {
+  TriggerStateName: any;
 
+  constructor(private resolver: ComponentFactoryResolver) {
   }
 
   ngOnInit() {
-
   }
 
   ngOnDestroy(): void {
@@ -33,6 +42,10 @@ export class XtnDialog implements OnInit, OnDestroy, AfterContentInit {
     if (!!IsLoadingComponent) {
       this.LoadComponent(this);
     }
+    this.TriggerStateName = 'inactive';
+    setTimeout(() => {
+      this.TriggerStateName = 'active';
+    }, 5);
   }
 
   /**
@@ -103,6 +116,7 @@ export class XtnDialog implements OnInit, OnDestroy, AfterContentInit {
   }
 
   onClickClose() {
+    this.TriggerStateName = 'inactive';
     Utility.$ShowDialogHide();
   }
 
@@ -118,7 +132,7 @@ export class XtnDialog implements OnInit, OnDestroy, AfterContentInit {
         this.compRef.instance.onConfirm();
       }
     } else {
-      Utility.$ShowDialogHide();
+      this.onClickClose()
     }
   }
 }

@@ -9,7 +9,7 @@ import { ServiceHelper, BaseComponent, routeAnimation, Utility, Client, } from '
   providers: [ServiceHelper]
 })
 export class Home extends BaseComponent implements OnInit {
-
+  tempData: any = '哈哈';
   public DataList: Array<any>;
 
   constructor(private sHelper: ServiceHelper) {
@@ -17,20 +17,22 @@ export class Home extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    setTimeout(() => {
-      this.__ShowDialog();
-    }, 500);
   }
 
   __UserInfo(methodType) {
-    this.sHelper.DemoService.UserInfo(methodType);
+    this.sHelper.DemoService.UserInfo(methodType).then((result) => {
+      console.log('result', result);
+    }, (a) => {
+      console.log(a);
+    });
   }
-  tempData: any = '哈哈';
 
   TestEvent(args) {
     console.log('test event-->', args);
   }
+
   __ShowDialog() {
+    Utility.$ShowMessage('这是一个标题', '这里是内容了，随便写的东西，看看出来的情况吧。');
 
     // Utility.$ShowDialogComponent('XtnMapPlaceItem', {
     //   Place: { address: '就在这里啦', },
