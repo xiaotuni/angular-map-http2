@@ -15,5 +15,13 @@
     </div>
 
   </div>
-  <input type="text" required [(ngModel)]="tempData">
+  <xtn-scroll [IsNextPageFinish]="ScrollInfo.IsNextPageFinish" [IsRefreshFinish]="ScrollInfo.IsRefreshFinish" (onRefresh)="onScrollRefresh()"
+    (onNextPage)="onScrollNextPage()" (onSlideLeft)="onSlideLeft()" (onSlideRight)="onSlideRight()">
+    <div *ngIf="AreaInfo && AreaInfo.List && AreaInfo.List.length>0">
+      <div class="areaInfo" *ngFor="let item of AreaInfo.List">
+        <div class="id">{{item.AreaId}}</div>
+        <div class="name">{{item.AreaName}}</div>
+      </div>
+    </div>
+  </xtn-scroll>
 </div>

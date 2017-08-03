@@ -10,10 +10,13 @@ import { ServiceHelper, BaseComponent, routeAnimation, Utility, Client, } from '
 })
 export class Home extends BaseComponent implements OnInit {
   tempData: any = '哈哈';
+  ScrollInfo: any;
   public DataList: Array<any>;
+  AreaInfo: any;
 
   constructor(private sHelper: ServiceHelper) {
     super();
+    this.ScrollInfo = {};
   }
 
   ngOnInit() {
@@ -53,5 +56,37 @@ export class Home extends BaseComponent implements OnInit {
         onModify: this.TestEvent.bind(this),
       });
 
+  }
+
+  __GetArearData(Condition) {
+    const { ScrollInfo } = this;
+    // const { Condition } = this.sHelper.Common.AreaInfo || { Condition: null };
+    const { Common } = this.sHelper;
+    const self = this;
+    Common.GetArea(Condition).then(() => {
+      ScrollInfo.IsRefreshFinish = true;
+      ScrollInfo.IsNextPageFinish = true;
+      self.AreaInfo = Common.AreaInfo;
+    }, () => {
+      ScrollInfo.IsRefreshFinish = true;
+      ScrollInfo.IsNextPageFinish = true;
+    });
+  }
+
+  onScrollRefresh() {
+    console.log('刷新操作');
+    this.ScrollInfo.IsRefreshFinish = false;
+    this.__GetArearData(null);
+  }
+  onScrollNextPage() {
+    console.log('下一页数据');
+    this.ScrollInfo.IsNextPageFinish = false;
+    this.__GetArearData(this.sHelper.Common.AreaInfo.Condition);
+  }
+  onSlideLeft() {
+    console.log('向左边滑动啦...');
+  }
+  onSlideRight() {
+    console.log('向左边滑动..');
   }
 }

@@ -1,0 +1,10 @@
+<div class="scrollCss" (touchstart)="OnTouchStart($event)" (touchmove)="OnTouchMove($event)" (touchend)="OnTouchEnd($event)">
+  <div #divTop class="top" [@Top50]="Top50Name">
+    <div class="title">{{Info.TitleTop}}</div>
+  </div>
+  <ng-content #divContent></ng-content>
+  <div #divBottom class="bottom">
+    <div>Info.TitleBottom</div>
+  </div>
+
+</div>

@@ -268,9 +268,28 @@ class dealbusiness {
         const { cacheInfo } = Rule;
         this.__ProcessRuleCache(cacheInfo, Options, () => __Next(RuleCollection, Options, Complete, Error, null), (err) => __Next(null, null, null, Error, err))
         break;
+      case 'setvalue':
+        const { setValues } = Rule;
+        this.__ProcessSetValue(Options, setValues);
+        __Next(RuleCollection, Options, Complete, Error, null);
+        break;
       default:
         __Next(RuleCollection, Options, Complete, Error, null);
         break;
+    }
+  }
+
+  __ProcessSetValue(Options, setValues) {
+    if (setValues) {
+      setValues.forEach((item) => {
+        const { fieldName, setValue } = item;
+        if (setValue) {
+          const __newEval = queryFormat(setValue, Options);
+          const __ExecResult = eval(__newEval);
+          Options[fieldName] = __ExecResult;
+          Log.Print('执行 Eval 条件:%s--->新值为：%s', __newEval, __ExecResult);
+        }
+      });
     }
   }
 

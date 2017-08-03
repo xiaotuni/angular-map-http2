@@ -5,8 +5,9 @@ import { RuleItem } from './rule/ruleitem'
 import { RuleInfo } from './rule/RuleInfo'
 import { XtnModel } from './model/Core';
 import { MapComponent } from './Map/Index';
+import { XtnScroll } from './Scroll/Scroll';
 
 export const CommonComponent = [
   NavbarComponent, __XtnDefRefComponent, RuleItem, RuleInfo, XtnApiItem, XtnModel,
-  MapComponent
+  MapComponent, XtnScroll
 ];

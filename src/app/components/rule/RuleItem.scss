@@ -81,6 +81,34 @@
       display: none;
     }
   }
+
+  .setValue {
+    flex: 1;
+
+    .item {
+      display: flex;
+
+      input {
+        flex: 1;
+        width: 100%;
+        margin-left: 5px;
+      }
+
+      .new {
+        display: flex;
+        white-space: nowrap;
+        align-items: center;
+      }
+
+      .set {
+        flex: 1;
+        margin-left: 5px;
+        align-items: center;
+        display: flex;
+        white-space: nowrap;
+      }
+    }
+  }
 }
 
 .chilren {

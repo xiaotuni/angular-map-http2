@@ -18,6 +18,6 @@ export class ServiceHelper {
     this.UserInfo = new UserInfoService(Client);
     this.DemoService = new DemoService(Client);
     this.BaiduMap = new BaiduMapService(Client);
-    this.Common = new CommonService();
+    this.Common = new CommonService(Client);
   }
 }

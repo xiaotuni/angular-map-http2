@@ -70,6 +70,22 @@
       <input type="text" required [(ngModel)]="Rule.cacheInfo.fields">
     </div>
   </div>
+
+  <div class="setValue" *ngIf="Rule.type ==='setvalue'">
+    <div>
+      <div class="btns">
+        <div class="btn" (click)="onClickAddSetvalue()">添加</div>
+      </div>
+    </div>
+    <div class="item" *ngFor="let item of Rule.setValues">
+      <div class="new">
+        新值名称: <input type="text" required [(ngModel)]="item.fieldName" />
+      </div>
+      <div class="set">
+        赋值操作: <input type="text" required [(ngModel)]="item.setValue" />
+      </div>
+    </div>
+  </div>
 </div>
 
 

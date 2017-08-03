@@ -38,7 +38,7 @@ export default class ApiClient {
       AddUser: '/userinfo/register',
       Userlist: '/userinfo/users',
       DeleteUser: '/userinfo/user',
-      Area: '/base/area',
+      Area: '/common/area',
       /**
        * get 根据Id获取信息
        */

@@ -32,6 +32,7 @@ export class RuleItem implements OnInit {
     { key: 'commit', title: '提交事务' },
     { key: 'judge', title: '条件判断' },
     { key: 'cache', title: '保存到缓存' },
+    { key: 'setvalue', title: '赋值操作' },
   ];
 
   constructor() {
@@ -48,13 +49,17 @@ export class RuleItem implements OnInit {
 
 
     let { type } = this.Rule;
-    const { judgeInfo } = this.Rule;
+    const { judgeInfo, setValues } = this.Rule;
     if (!type) {
       this.Rule.type = 'query';
     }
     else if (type === 'judge') {
       if (!judgeInfo) {
         this.Rule.judgeInfo = {};
+      }
+    } else if (type === 'setvalue') {
+      if (!setValues) {
+        this.Rule.setValues = [];
       }
     }
   }
@@ -66,12 +71,14 @@ export class RuleItem implements OnInit {
   }
 
   onChange_RuleType(item) {
-    const { type, judgeInfo, cacheInfo } = this.Rule;
+    const { type, judgeInfo, cacheInfo, setValues } = this.Rule;
     if (item === 'judge' && !judgeInfo) {
       this.Rule.judgeInfo = {};
     }
     else if (item === 'cache' && !cacheInfo) {
       this.Rule.cacheInfo = {};
+    } else if (item === 'setvalue' && !setValues) {
+      this.Rule.setValues = [];
     }
   }
 
@@ -104,4 +111,8 @@ export class RuleItem implements OnInit {
     }
   }
 
+  onClickAddSetvalue() {
+    const { judgeInfo, setValues } = this.Rule;
+    setValues.push({});
+  }
 }
