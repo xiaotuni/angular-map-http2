@@ -58,7 +58,6 @@ export class AppComponent {
         const { title } = data || { title: '空' };
         this.titleService.setTitle(title);
         __self.__Title111 = title;
-        // console.log(path, queryParams);
       }
     });
 
@@ -105,11 +104,9 @@ export class AppComponent {
     });
     Utility.$On(ShowModel.onDialogHide, (index) => {
       if (index >= 0) {
-        // console.log('--->关闭 %s 弹窗。', index)
         _this.DialogList[index].IsClose = true;
       }
       setTimeout(() => {
-        // console.log('---> 开始从数组删除弹窗...%d', index);
         if (index >= 0) {
           _this.DialogList.splice(index, 1);
         } else {

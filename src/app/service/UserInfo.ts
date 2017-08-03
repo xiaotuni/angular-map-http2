@@ -45,7 +45,6 @@ export class UserInfoService {
     const __self = this;
     return this.Client(__List).then((result) => {
       __self.UserInfo = result && result[0] ? result[0] : [];
-      console.log(JSON.stringify(__self.UserInfo));
       return result;
     });
   }

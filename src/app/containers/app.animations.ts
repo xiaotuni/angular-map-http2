@@ -1,11 +1,11 @@
 import { animate, AnimationEntryMetadata, state, style, transition, trigger } from '@angular/core';
 
-
+const { height } = screen;
+const __height = (height - 40) / height * 100;
 
 const __style = {
     position: 'fixed', width: '100%', left: '0px', top: '0px', paddingTop: '40px',
-    height: '100%',
-    overflow: 'auto'
+    height: __height + '%', overflow: 'auto'
 };
 export const routeAnimation: AnimationEntryMetadata = [
 

@@ -18,11 +18,9 @@ export class UserList extends BaseComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    console.log('on init...');
   }
 
   ngAfterViewInit(): void {
-    console.log('AfterViewInit');
     const c = { pageIndex: 0, pageSize: 15 };
     const __self = this;
     this.sHelper.UserInfo.Userlist(c).then(() => {

@@ -40,7 +40,6 @@ export class BaiduMapService {
     };
 
     return this.ApiClient(options).then((data) => {
-      console.log(data);
       const { List, Condition } = data;
       const { PlaceListInfo } = __self;
       if (!__self.PlaceListInfo || PageIndex === 0) {

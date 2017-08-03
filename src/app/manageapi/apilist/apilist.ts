@@ -36,16 +36,13 @@ export class ApiList implements OnInit {
         __self.CurrentItem = ApiList[ApiList.length - 1];
       }
     }, (err) => {
-      console.log(err);
     });
   }
 
   onClickExpand(item) {
     if (this.CurrentItem === item) {
-      // this.stateExpression = 'collapsed';
       this.CurrentItem = null;
     } else {
-      // this.stateExpression = 'expanded';
       this.CurrentItem = item;
     }
   }
@@ -63,10 +60,8 @@ export class ApiList implements OnInit {
 
   onSaveRule(rule) {
     this.sHelper.ApiManager.AddApi(rule).then((data) => {
-      console.log(data);
       Utility.$ShowMessage('接口列表', '添加或修改成功。');
     }, (ee) => {
-      console.log(ee);
     });
   }
 

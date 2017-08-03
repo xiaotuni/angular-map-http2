@@ -81,7 +81,6 @@ class server {
         return p;
       }
     });
-    // console.log(extKey, extCrt);
 
     const options = {
       key: fs.readFileSync(extKey[0]), //读取key
@@ -92,12 +91,7 @@ class server {
       r.initHeader();
     }).listen(port || 10000);
     console.log('https://127.0.0.1:%d', port || 10000)
-    
-    // http.createServer((req, res) => {
-    //   const r = new routes(req, res);
-    //   r.initHeader();
-    // }).listen(port || 10000);
-    // console.log('http://127.0.0.1:%d', port || 10000)
+   
   }
 }
 

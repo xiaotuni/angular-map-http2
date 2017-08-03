@@ -34,14 +34,11 @@ export class XtnDialog implements OnInit, OnDestroy, OnChanges, AfterContentChec
   }
 
   ngOnChanges(): void {
-    // console.log('-----ngOnChanges----', this.__Index);
   }
 
   ngAfterContentChecked(): void {
-    // console.log('----ngAfterContentChecked---', this.__Index, '---', this.TriggerStateName);
     const { IsClose } = this.DialogInfo;
     if (!!IsClose && this.TriggerStateName !== 'inactive') {
-      // console.log('--改变活画从 index= %d active -> inactive', this.__Index);
       this.TriggerStateName = 'inactive';
     }
   }

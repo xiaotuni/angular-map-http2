@@ -193,7 +193,6 @@ export class Utility {
     if (this.$ConstItem.UrlItem.GoBack === url) {
       const __Location: Location = this.$GetContent(this.$ConstItem.Location);
       if (__Location) {
-        console.log('go back~~~');
         __Location.back();
       }
       setTimeout(() => {

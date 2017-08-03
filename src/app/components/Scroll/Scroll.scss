@@ -1,7 +1,6 @@
 .scrollCss {
   position: relative;
-  // width: 100%;
-  border: 1px solid;
+  // border: 1px solid;
   padding: 10px 5px;
 
   .top {
@@ -19,6 +18,17 @@
   }
 
   .bottom {
+    position: relative;
+    overflow: hidden;
+    transition: .2s;
     text-align: center;
+    display: none;
+    .title {
+      width: 100%;
+      display: -webkit-box;
+      -webkit-box-align: center;
+      -webkit-box-pack: center;
+      height: 100%;
+    }
   }
 }

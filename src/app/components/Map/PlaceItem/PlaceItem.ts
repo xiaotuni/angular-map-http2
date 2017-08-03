@@ -21,7 +21,6 @@ export class XtnMapPlaceItem implements OnInit, OnDialog {
   }
 
   ngOnInit() {
-    console.log('--Params-->', this.Params);
   }
 
   onClickBtn(type) {

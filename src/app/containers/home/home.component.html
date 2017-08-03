@@ -1,22 +1,20 @@
 <xtn-navbar [(Title)]="__Title"></xtn-navbar>
 <xtn-defref></xtn-defref>
-
 <div class="homeCss">
-  <div class="callApi" (click)="__CallApi()">call api</div>
   <div class="demo">
     <div class="btns">
-      <div class="btn" (click)="__UserInfo('get')">get request</div>
-      <div class="btn" (click)="__UserInfo('post')">post request</div>
-      <div class="btn" (click)="__UserInfo('del')">delete request</div>
-      <div class="btn" (click)="__UserInfo('put')">put request</div>
+      <div class="btn" (click)="__UserInfo('get')">get</div>
+      <div class="btn" (click)="__UserInfo('post')">post</div>
+      <div class="btn" (click)="__UserInfo('del')">delete</div>
+      <div class="btn" (click)="__UserInfo('put')">put</div>
       <div class="btn" (click)="__ShowDialog()">
         弹出信息
       </div>
     </div>
-
   </div>
-  <xtn-scroll [Percentage]="9" [IsNextPageFinish]="ScrollInfo.IsNextPageFinish" [IsRefreshFinish]="ScrollInfo.IsRefreshFinish" (onRefresh)="onScrollRefresh()"
-    (onNextPage)="onScrollNextPage()" (onSlideLeft)="onSlideLeft()" (onSlideRight)="onSlideRight()">
+
+  <xtn-scroll [Percentage]="20" [IsNextPageFinish]="ScrollInfo.IsNextPageFinish" [IsRefreshFinish]="ScrollInfo.IsRefreshFinish"
+    (onRefresh)="onScrollRefresh()" (onNextPage)="onScrollNextPage()" (onSlideLeft)="onSlideLeft()" (onSlideRight)="onSlideRight()">
     <div *ngIf="AreaInfo && AreaInfo.List && AreaInfo.List.length>0">
       <div class="areaInfo" *ngFor="let item of AreaInfo.List">
         <div class="id">{{item.AreaId}}</div>

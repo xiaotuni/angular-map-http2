@@ -24,7 +24,6 @@ export class Register extends BaseComponent implements OnInit {
     data.Password = CryptoJS.MD5(this.UserInfo.Password).toString();
     const __self = this;
     this.sHelper.UserInfo.AddUser(data).then(() => {
-      console.log(__self.sHelper.UserInfo);
     });
   }
 

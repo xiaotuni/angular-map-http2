@@ -24,11 +24,9 @@ export class XtnActionSheet implements OnInit, AfterContentInit {
   constructor() { }
 
   ngOnInit() {
-    console.log('ngOnInit', this.Info);
   }
 
   ngAfterContentInit(): void {
-    console.log('ngAfterContentInit-->', this.Info);
     const { ToPage } = this.Info;
     if (ToPage) {
       const { Url, Params } = ToPage;

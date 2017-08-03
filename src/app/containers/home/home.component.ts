@@ -24,9 +24,7 @@ export class Home extends BaseComponent implements OnInit {
 
   __UserInfo(methodType) {
     this.sHelper.DemoService.UserInfo(methodType).then((result) => {
-      console.log('result', result);
     }, (a) => {
-      console.log(a);
     });
   }
 
@@ -45,12 +43,10 @@ export class Home extends BaseComponent implements OnInit {
       __Title: this.tempData, parma2: '12431243',
     }, {
         onSave: (ee) => {
-          console.log(ee);
           Utility.$ShowMessage('标题', '这是弹出来的内容');
           if (ee.dialog) {
             ee.dialog.onClose();
           }
-          // Utility.$ShowDialogHide(0);
         },
         onDelete: this.TestEvent.bind(this),
         onModify: this.TestEvent.bind(this),
@@ -60,7 +56,6 @@ export class Home extends BaseComponent implements OnInit {
 
   __GetArearData(Condition) {
     const { ScrollInfo } = this;
-    // const { Condition } = this.sHelper.Common.AreaInfo || { Condition: null };
     const { Common } = this.sHelper;
     const self = this;
     Common.GetArea(Condition).then(() => {
@@ -74,19 +69,18 @@ export class Home extends BaseComponent implements OnInit {
   }
 
   onScrollRefresh() {
-    console.log('刷新操作');
     this.ScrollInfo.IsRefreshFinish = false;
     this.__GetArearData(null);
   }
   onScrollNextPage() {
-    console.log('下一页数据');
     this.ScrollInfo.IsNextPageFinish = false;
-    this.__GetArearData(this.sHelper.Common.AreaInfo.Condition);
+    const { AreaInfo } = this.sHelper.Common;
+    this.__GetArearData(AreaInfo && AreaInfo.Condition ? AreaInfo.Condition : null);
   }
   onSlideLeft() {
     console.log('向左边滑动啦...');
   }
   onSlideRight() {
-    console.log('向左边滑动..');
+    console.log('向右边滑动..');
   }
 }

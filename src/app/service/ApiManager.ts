@@ -20,7 +20,9 @@ export class ApiManagerService {
           const { Content } = row;
           try {
             row.RuleInfo = JSON.parse(Content);
-          } catch (ex) { console.log(ex); }
+          } catch (ex) {
+            console.log(ex);
+          }
         });
       }
       return data;
@@ -82,8 +84,6 @@ export class ApiManagerService {
         }
       }
       return data;
-    }, (er) => {
-      console.log(er);
     });
   }
 }

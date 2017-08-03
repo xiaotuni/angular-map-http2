@@ -169,6 +169,7 @@ export default class ApiClient {
             __SendRequest(request);
           } catch (ex) {
             console.log(ex);
+            reject({ code: 500, msg: ex.message })
           }
         });
       }

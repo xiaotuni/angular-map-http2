@@ -40,7 +40,6 @@ export class BaiduMyPlaceList extends BaseComponent implements OnInit {
     if (!item) {
       return;
     }
-    console.log(item);
     const { Name, Longitude, Latitude } = item;
     Utility.$ToPage(Utility.$ConstItem.UrlItem.BaiduMap, { Name, Longitude, Latitude });
   }
