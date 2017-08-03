@@ -7,15 +7,7 @@ import { Utility } from '../Core';
 @Component({
   selector: 'xtn-scroll',
   templateUrl: 'Scroll.html',
-  styleUrls: ['Scroll.scss'],
-  animations: [
-    trigger('Top50', [
-      state('Top50Begin', style({ height: '*' })),
-      state('Top50End', style({ height: '50px' })),
-      transition('Top50End => Top50Begin', animate('1050ms ease-in')),
-      transition('active => inactive', animate('1050ms ease-out')),
-    ])
-  ]
+  styleUrls: ['Scroll.scss']
 })
 export class XtnScroll implements OnInit, OnChanges {
 
