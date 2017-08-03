@@ -1,11 +1,11 @@
 .rulItemCss {
   display: flex;
-
+  align-items: center;
   .row {
     padding-top: 5px;
 
     .title {
-      padding: 5px;
+      // padding: 5px;
       display: flex;
 
       .name {
@@ -72,7 +72,7 @@
       white-space: nowrap;
       align-items: center;
 
-      > textarea {
+      >textarea {
         margin-left: 5px;
       }
     }
@@ -124,7 +124,7 @@
     }
 
     .resultIndex {
-      > span {
+      >span {
         padding: 0 5px;
       }
     }
