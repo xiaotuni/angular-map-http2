@@ -15,7 +15,7 @@
     </div>
 
   </div>
-  <xtn-scroll [IsNextPageFinish]="ScrollInfo.IsNextPageFinish" [IsRefreshFinish]="ScrollInfo.IsRefreshFinish" (onRefresh)="onScrollRefresh()"
+  <xtn-scroll [Percentage]="9" [IsNextPageFinish]="ScrollInfo.IsNextPageFinish" [IsRefreshFinish]="ScrollInfo.IsRefreshFinish" (onRefresh)="onScrollRefresh()"
     (onNextPage)="onScrollNextPage()" (onSlideLeft)="onSlideLeft()" (onSlideRight)="onSlideRight()">
     <div *ngIf="AreaInfo && AreaInfo.List && AreaInfo.List.length>0">
       <div class="areaInfo" *ngFor="let item of AreaInfo.List">

@@ -171,8 +171,11 @@ export class XtnScroll implements OnInit, OnChanges {
     if (!_onNextPage) {
       return;
     }
-    const __bodyScrollTop = document.body.scrollTop || document.documentElement.scrollTop || window.pageYOffset;
-    const __bodyScrollHeight = document.body.scrollHeight || document.documentElement.scrollHeight;
+    const __ctrl = document.body.children[0].children[1];
+    const { scrollTop, scrollHeight } = __ctrl;
+
+    const __bodyScrollTop = scrollTop;// document.body.scrollTop || document.documentElement.scrollTop || window.pageYOffset;
+    const __bodyScrollHeight = scrollHeight;// document.body.scrollHeight || document.documentElement.scrollHeight;
     const __differValue = ((__bodyScrollHeight - __bodyScrollTop - screen.height) / __bodyScrollHeight) * 100;
     if (__differValue > (_Percentage < 3 ? 3 : _Percentage)) {
       return;
@@ -185,7 +188,11 @@ export class XtnScroll implements OnInit, OnChanges {
     if (!_onRefresh) {
       return;
     }
-    _onRefresh.emit();
+    const __ctrl = document.body.children[0].children[1];
+    const { scrollTop } = __ctrl;
+    if (scrollTop === 0) {
+      _onRefresh.emit();
+    }
   }
 
   __JudgeRefreshOrNextPage() {
