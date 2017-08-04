@@ -61,6 +61,18 @@ npm run start-dev
 
  ```
  
+ # 组件
+ ------
+ ## Scroll.ts有个问题
+ 
+ ```
+    const __ctrl = document.body.children[0].children[1];
+    const { scrollTop, scrollHeight } = __ctrl;
+ ```
+- 在SlideNextPage() 方法里，上面这行代码，为什么这样写，页不写成 document.body呢？是因为，我在做路由界面切换动画时，设置了position: 'fixed' ,如果这种切换动画话，就可以改成 
+```
+ const { scrollTop, scrollHeight } = document.body;
+```
 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.3.
