@@ -33,6 +33,7 @@ export class RuleItem implements OnInit {
     { key: 'judge', title: '条件判断' },
     { key: 'cache', title: '保存到缓存' },
     { key: 'setvalue', title: '赋值操作' },
+    { key: 'parentrelation', title: '主子关系' },
   ];
 
   constructor() {
@@ -49,7 +50,7 @@ export class RuleItem implements OnInit {
 
 
     let { type } = this.Rule;
-    const { judgeInfo, setValues } = this.Rule;
+    const { judgeInfo, setValues, parentRelation } = this.Rule;
     if (!type) {
       this.Rule.type = 'query';
     }
@@ -61,6 +62,10 @@ export class RuleItem implements OnInit {
       if (!setValues) {
         this.Rule.setValues = [];
       }
+    } else if (type === 'parentRelation'.toLocaleLowerCase()) {
+      if (!parentRelation) {
+        this.Rule.parentRelation = { fields: [] }
+      }
     }
   }
 
@@ -71,7 +76,7 @@ export class RuleItem implements OnInit {
   }
 
   onChange_RuleType(item) {
-    const { type, judgeInfo, cacheInfo, setValues } = this.Rule;
+    const { type, judgeInfo, cacheInfo, setValues, parentRelation } = this.Rule;
     if (item === 'judge' && !judgeInfo) {
       this.Rule.judgeInfo = {};
     }
@@ -79,6 +84,8 @@ export class RuleItem implements OnInit {
       this.Rule.cacheInfo = {};
     } else if (item === 'setvalue' && !setValues) {
       this.Rule.setValues = [];
+    } else if (item === 'parentRelation'.toLocaleLowerCase() && !parentRelation) {
+      this.Rule.parentRelation = { fields: [] }
     }
   }
 
@@ -114,5 +121,19 @@ export class RuleItem implements OnInit {
   onClickAddSetvalue() {
     const { judgeInfo, setValues } = this.Rule;
     setValues.push({});
+  }
+
+  onBtnClickAddRelation() {
+    console.log('---------------onBtnClickAddRelation--------');
+    let { fields } = this.Rule.parentRelation;
+    if (!fields) {
+      fields = [];
+      this.Rule.parentRelation.fields = fields;
+    }
+    fields.push({});
+  }
+
+  onBtnClickDeleteField(index) {
+    this.Rule.parentRelation.fields.splice(index, 1);
   }
 }

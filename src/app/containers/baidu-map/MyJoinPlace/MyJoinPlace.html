@@ -1,0 +1,13 @@
+<xtn-navbar [(Title)]="__Title"></xtn-navbar>
+
+<div class="myJoinPlace">
+  <h2>请输入邀请码</h2>
+
+  <div class="InviteCode">
+    <input type="text" required [(ngModel)]="InviteCode" maxlength="6">
+  </div>
+
+  <div class="btns">
+    <div class="btn" (click)="onClickOk()">确定</div>
+  </div>
+</div>

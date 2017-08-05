@@ -131,7 +131,7 @@ class routes {
       TokenCollection = {};
       const DbAccess = new MySqlHelper();
       const __self = this;
-      DbAccess.Query('select t.id as tokenId,t.token,t.deadline,t.UserId from sys_session t', (data) => {
+      DbAccess.Query('select t.id as tokenId,t.token,t.deadline,t.UserId as tokenUserId from sys_session t', (data) => {
         const { result } = data;
         if (Array.isArray(result)) {
           result.forEach((item) => {

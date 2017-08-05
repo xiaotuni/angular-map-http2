@@ -25,7 +25,7 @@ export class UserList extends BaseComponent implements OnInit, AfterViewInit {
     const __self = this;
     this.sHelper.UserInfo.Userlist(c).then(() => {
       __self.userList = __self.sHelper.UserInfo.Users;
-    });
+    }, () => { });
   }
 
   __ClickDelete(item) {

@@ -33,79 +33,118 @@
     height: 75px;
   }
 
-  .sqlInfo {
+  .right {
     flex: 1;
-    height: 100%;
+    position: relative;
 
     .oper {
       display: flex;
       align-items: center;
       font-weight: 800;
+      position: absolute;
+      right: 0px;
+      background: #fff;
+      border: 1px solid #c5beb4;
+      background: #efe3e3;
+      border: 1px solid #c5beb4;
+      color: black;
+    }
 
+    .sqlInfo {
+      flex: 1;
+      height: 100%;
       .title {
-        flex: 1;
+        padding: 8px;
       }
     }
-  }
 
-  .judgeInfo {
-    @extend .sqlInfo;
+    .judgeInfo {
+      @extend .sqlInfo;
 
-    .bewrite {
-      font-weight: 900;
-      display: flex;
-      align-items: center;
+      .bewrite {
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        padding: 6px;
+        .failMsg {
+          margin-left: 5px;
+          flex: 1;
+          display: flex;
 
-      .failMsg {
-        margin-left: 5px;
-        flex: 1;
+          input {
+            flex: 1;
+          }
+        }
+      }
+
+      .judgeType {
+        display: flex;
+        white-space: nowrap;
+        align-items: center;
+
+        >textarea {
+          margin-left: 5px;
+        }
+      }
+
+      .eveal {
+        display: none;
+      }
+    }
+
+    .setValue {
+      flex: 1;
+
+      .item {
         display: flex;
 
         input {
           flex: 1;
+          width: 100%;
+          margin-left: 5px;
+        }
+
+        .new {
+          display: flex;
+          white-space: nowrap;
+          align-items: center;
+        }
+
+        .set {
+          flex: 1;
+          margin-left: 5px;
+          align-items: center;
+          display: flex;
+          white-space: nowrap;
         }
       }
     }
 
-    .judgeType {
-      display: flex;
-      white-space: nowrap;
-      align-items: center;
-
-      >textarea {
-        margin-left: 5px;
+    .relation {
+      position: relative;
+      .desc {
+        padding: 8px;
       }
-    }
+      .content {
+        .idInfo {
+          display: flex;
+          align-items: center;
 
-    .eveal {
-      display: none;
-    }
-  }
+          input[type='number'] {
+            width: 50px;
+          }
+          input [type='text'] {
+            width: 100px;
+          }
+        }
+        .fields {
+          position: relative;
 
-  .setValue {
-    flex: 1;
-
-    .item {
-      display: flex;
-
-      input {
-        flex: 1;
-        width: 100%;
-        margin-left: 5px;
-      }
-
-      .new {
-        display: flex;
-        white-space: nowrap;
-        align-items: center;
-      }
-
-      .set {
-        flex: 1;
-        margin-left: 5px;
-        align-items: center;
-        display: flex;
-        white-space: nowrap;
+          .fieldRelation {
+            display: flex;
+            align-items: center;
+          }
+        }
       }
     }
   }

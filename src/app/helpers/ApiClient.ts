@@ -59,6 +59,11 @@ export default class ApiClient {
     },
     Map: {
       /**
+       * post header token 加入活动
+       * -------------------------------------- 
+       */
+      JoinPlace: '/map/joinplace',
+      /**
        * post header token 添加活动起点
        * -------------------------------------- 
        */

@@ -1,0 +1,44 @@
+.myJoinPlace {
+  position: relative;
+
+  >h2 {
+    text-align: center;
+  }
+  .InviteCode {
+    // display: flex;
+    position: relative;
+    padding: 0px 20%;
+
+    >input {
+      width: 100%;
+      margin-top: 10px; // padding: 5px 10px;
+      text-align: center;
+      // flex: 1;
+      font-size: 30px;
+      border-radius: 10px;
+      border: 1px solid darkgray;
+      outline-style: none;
+    }
+  }
+
+  .btns {
+    padding: 5px 10px;
+    margin-top: 30px;
+    .btn {
+      text-align: center;
+      flex: 1;
+      border: 1px solid;
+      font-size: 18px;
+      border-radius: 5px;
+      padding: 5px 10px;
+      background: blue;
+      color: #fbf1f1;
+      &:active {
+        background: #6855d4;
+      }
+      &:hover {
+        background: #a4a4ca;
+      }
+    }
+  }
+}

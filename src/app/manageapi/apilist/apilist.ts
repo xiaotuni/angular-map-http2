@@ -31,10 +31,10 @@ export class ApiList implements OnInit {
     const __self = this;
     this.sHelper.ApiManager.List().then(() => {
       __self.ApiList = __self.sHelper.ApiManager.ApiList;
-      const { ApiList } = __self;
-      if (Array.isArray(ApiList)) {
-        __self.CurrentItem = ApiList[ApiList.length - 1];
-      }
+      // const { ApiList } = __self;
+      // if (Array.isArray(ApiList)) {
+      //   __self.CurrentItem = ApiList[ApiList.length - 1];
+      // }
     }, (err) => {
     });
   }
@@ -45,6 +45,10 @@ export class ApiList implements OnInit {
     } else {
       this.CurrentItem = item;
     }
+  }
+
+  onClickRefresh() {
+    this.ngOnInit();
   }
 
   btnClickAdd() {

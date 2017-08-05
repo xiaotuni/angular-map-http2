@@ -426,6 +426,10 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
     console.log(this);
     this.NextPage(Utility.$ConstItem.UrlItem.BaiduMapMyPlace)
   }
+
+  onClickMyJoin() {
+    this.NextPage(Utility.$ConstItem.UrlItem.BaiduMapMyJoinPlace)
+  }
 }
 
 

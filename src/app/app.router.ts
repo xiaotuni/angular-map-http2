@@ -4,7 +4,7 @@ import { ManagerRouter } from './manage/Index';
 import { ManagerApiRouter } from './manageapi/Index';
 export const AppRouting = {
   Router() {
-    const { BaiduMap, BaiduMyPlaceList, Product, Members, MyComponent, NotFound, Home } = RouterComponent;
+    const { BaiduMap, BaiduMyJoinPlace, BaiduMyPlaceList, Product, Members, MyComponent, NotFound, Home } = RouterComponent;
     const { Login, UserList, Register, Dashboard,
       Address, Place, PlaceList, Contacts } = ManagerRouter;
     const { ApiList } = ManagerApiRouter;
@@ -19,6 +19,7 @@ export const AppRouting = {
         children: [
           { path: '', component: BaiduMap, data: { title: '地图' } },
           { path: 'myplace', component: BaiduMyPlaceList, data: { title: '我发起的活动' } },
+          { path: 'myjoinplace', component: BaiduMyJoinPlace, data: { title: '我要加入' } },
         ]
       },
       {

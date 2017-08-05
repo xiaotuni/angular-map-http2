@@ -198,7 +198,7 @@ class dealbusiness {
     const __self = this;
     switch (_t) {
       case 'begintran':  // 事务
-        this.DbAccess.BeginTransaction(() => __Next(RuleCollection, Options, Complete, Error), (error) => __Next(null, null, Error, null, error));
+        this.DbAccess.BeginTransaction(() => __Next(RuleCollection, Options, Complete, Error), (error) => __Next(null, null, null, Error, error));
         break;
       case 'commit':     // 提交事务
         this.DbAccess.Commit(() => __Next(RuleCollection, Options, Complete, Error), (err) => __Next(null, null, null, Error, err));
@@ -209,7 +209,7 @@ class dealbusiness {
             const { result } = data;
             Options.Result[id] = { __name: name, result };
             __Next(RuleCollection, Options, Complete, Error);
-          }, (err) => __Next(null, null, null, null, err));
+          }, (err) => __Next(null, null, null, Error, err));
         } else {            // 返回单选
           this.DbAccess.QueryOne(_FormatSQL, (data) => {
             const { result } = data;
@@ -219,7 +219,7 @@ class dealbusiness {
             }
             Options.Result[id] = { __name: name, result };
             __Next(RuleCollection, Options, Complete, Error);
-          }, (err) => __Next(null, null, null, null, err));
+          }, (err) => __Next(null, null, null, Error, err));
         }
         break;
       case 'insert':        // 插入
@@ -259,7 +259,7 @@ class dealbusiness {
           this.DbAccess.QueryOne(_FormatSQL, (data) => {
             Object.assign(Options, data.result || {});
             __JudgeOperator(Options, judgeInfo)
-          }, (err) => __Next(null, null, null, null, err));
+          }, (err) => __Next(null, null, null, Error, err));
         } else {
           __JudgeOperator(Options, judgeInfo);
         }
@@ -273,10 +273,46 @@ class dealbusiness {
         this.__ProcessSetValue(Options, setValues);
         __Next(RuleCollection, Options, Complete, Error, null);
         break;
+      case 'parentrelation':
+        const { parentRelation } = Rule;
+        this.__ProcessParentRelation(Options, parentRelation);
+        __Next(RuleCollection, Options, Complete, Error, null);
+        break;
       default:
         __Next(RuleCollection, Options, Complete, Error, null);
         break;
     }
+  }
+  __ProcessParentRelation(Options, parentRelation) {
+    const { Result } = Options;
+    const { parentId, childrenId, name, fields } = parentRelation;
+    const parentData = Result[parentId].result;
+    const childData = Result[childrenId].result;
+    if (!name || name === '' || !Array.isArray(parentData) || !Array.isArray(childData)) {
+      return;
+    }
+
+    const __Judge = (pItem, cItem) => {
+      for (let i = 0; i < fields.length; i++) {
+        const { parentField, childrenField } = fields[i];
+        if (pItem[parentField] !== cItem[childrenField]) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    parentData.forEach((item) => {
+      for (let i = 0; i < childData.length; i++) {
+        const row = childData[i];
+        if (__Judge(item, row)) {
+          if (!item[name]) {
+            item[name] = [];
+          }
+          item[name].push(row);
+        }
+      }
+    });
   }
 
   __ProcessSetValue(Options, setValues) {

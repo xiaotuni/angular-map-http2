@@ -24,9 +24,8 @@
       <input type="text" required [(ngModel)]="Rule.name" />
     </div>
   </div>
-  <div class="sqlInfo" *ngIf=" 'query,insert,update,delete'.indexOf(Rule.type)>=0?true:false">
+  <div class="right">
     <div class="oper">
-      <div class="title">规则执行的SQL语句</div>
       <div class="btns btn-right">
         <div class="btn" *ngIf="!IsFirst">
           <div (click)="btn_Click(OperatorType.UP,Index -1)">上移</div>
@@ -42,50 +41,93 @@
         </div>
       </div>
     </div>
-    <textarea [(ngModel)]="Rule.sql"></textarea>
-  </div>
-  <div class="judgeInfo" *ngIf="Rule.type === 'judge'">
-    <div class="bewrite">
-      添加判断条件信息
-      <div class="failMsg"> <input type="text" placeholder="判断出错返回的信息" [(ngModel)]="Rule.judgeInfo.failMsg"></div>
+    <!-- SQL语句 -->
+    <div class="sqlInfo" *ngIf=" 'query,insert,update,delete'.indexOf(Rule.type)>=0?true:false">
+      <div class="title">规则执行的SQL语句</div>
+      <textarea [(ngModel)]="Rule.sql"></textarea>
     </div>
-    <div class="judgeType">
-      this 方法:
-      <textarea [(ngModel)]="Rule.judgeInfo.strByThis" placeholder="if((this.sex === \'男\' && this.cityname == \'上海\' ) || (this.age > 30 && this.cityname !== \'北京\')){return true;}return false;"></textarea>
+
+    <!-- 添加判断条件信息 -->
+    <div class="judgeInfo" *ngIf="Rule.type === 'judge'">
+      <div class="bewrite">
+        添加判断条件信息
+        <div class="failMsg"> <input type="text" placeholder="判断出错返回的信息" [(ngModel)]="Rule.judgeInfo.failMsg"></div>
+      </div>
+      <div class="judgeType">
+        this 方法:
+        <textarea [(ngModel)]="Rule.judgeInfo.strByThis" placeholder="if((this.sex === \'男\' && this.cityname == \'上海\' ) || (this.age > 30 && this.cityname !== \'北京\')){return true;}return false;"></textarea>
+      </div>
+      <div class="judgeType eveal">
+        eval方法:
+        <textarea [(ngModel)]="Rule.judgeInfo.strByEval" placeholder="(\':sex\' !== \'男\' && \':cityname\' == \'北京\' ) || (:age > 30 && \':cityname\' !== \'北京\')"></textarea>
+      </div>
     </div>
-    <div class="judgeType eveal">
-      eval方法:
-      <textarea [(ngModel)]="Rule.judgeInfo.strByEval" placeholder="(\':sex\' !== \'男\' && \':cityname\' == \'北京\' ) || (:age > 30 && \':cityname\' !== \'北京\')"></textarea>
+    <!-- 缓存操作 -->
+    <div class="cacheInfo" *ngIf="Rule.type === 'cache'">
+      缓存操作
+      <div>
+        token值：<input type="text" required [(ngModel)]="Rule.cacheInfo.token" />
+      </div>
+      <div>
+        其它字段值：
+        <input type="text" required [(ngModel)]="Rule.cacheInfo.fields">
+      </div>
+    </div>
+    <!-- 赋值操作 -->
+    <div class="setValue" *ngIf="Rule.type ==='setvalue'">
+      <div>
+        <div class="btns">
+          <div class="btn" (click)="onClickAddSetvalue()">添加</div>
+        </div>
+      </div>
+      <div class="item" *ngFor="let item of Rule.setValues">
+        <div class="new">
+          新值名称: <input type="text" required [(ngModel)]="item.fieldName" />
+        </div>
+        <div class="set">
+          赋值操作: <input type="text" required [(ngModel)]="item.setValue" />
+        </div>
+      </div>
+    </div>
+    <!-- 主子关系 -->
+    <div class="relation" *ngIf="Rule.type === 'parentrelation' ">
+      <div class="desc">返回的结果是个数组，数组里面某个字段值又是个数组</div>
+      <div class="content">
+        <div class="idInfo">
+          <div class="parent">
+            主序号：
+            <input type="number" required [(ngModel)]="Rule.parentRelation.parentId" />
+          </div>
+          <div class="children">
+            子序号：
+            <input type="number" required [(ngModel)]="Rule.parentRelation.childrenId" />
+          </div>
+          <div class="relationName">
+            关系字段名称：
+            <input type="text" required [(ngModel)]="Rule.parentRelation.name" />
+          </div>
+
+          <button (click)="onBtnClickAddRelation()">添加字段</button>
+        </div>
+        <div class="fields">
+          <div class="fieldRelation" *ngFor="let item of Rule.parentRelation.fields;let i = index">
+            <div class="parent">
+              主数组字段:
+              <input type="text" required [(ngModel)]="item.parentField" />
+            </div>
+            <div class="children">
+              子数组字段：
+              <input type="text" required [(ngModel)]="item.childrenField" />
+            </div>
+
+            <button (click)="onBtnClickDeleteField(i)">删除</button>
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- 缓存操作 -->
-  <div class="cacheInfo" *ngIf="Rule.type === 'cache'">
-    缓存操作
-    <div>
-      token值：<input type="text" required [(ngModel)]="Rule.cacheInfo.token" />
-    </div>
-    <div>
-      其它字段值：
-      <input type="text" required [(ngModel)]="Rule.cacheInfo.fields">
-    </div>
-  </div>
-
-  <div class="setValue" *ngIf="Rule.type ==='setvalue'">
-    <div>
-      <div class="btns">
-        <div class="btn" (click)="onClickAddSetvalue()">添加</div>
-      </div>
-    </div>
-    <div class="item" *ngFor="let item of Rule.setValues">
-      <div class="new">
-        新值名称: <input type="text" required [(ngModel)]="item.fieldName" />
-      </div>
-      <div class="set">
-        赋值操作: <input type="text" required [(ngModel)]="item.setValue" />
-      </div>
-    </div>
-  </div>
 </div>
 
 
