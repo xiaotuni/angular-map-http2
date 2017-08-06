@@ -25,7 +25,6 @@ const queryFormat = function (query, values) {
 
 class dealbusiness {
   constructor() {
-    // this.DbAccess = DbAccess;
   }
 
   /**
@@ -64,6 +63,34 @@ class dealbusiness {
       Response.SendError({ code: 404, msg: '【' + __msg + '】接口没有找到' });
     });
   }
+
+  /**
+   * token 验证
+   * 
+   * @param {any} RuleInfo 
+   * @param {any} Options 
+   * @param {any} Response 
+   * @returns 
+   * @memberof dealbusiness
+   */
+  __ProcessApiTokenRight(RuleInfo, Options, Response) {
+    const { IsTokenAccess, Method, PathName } = RuleInfo;
+    const { token } = Options || {}
+    const { __TokenCollection__ } = this.DbAccess;
+    if (IsTokenAccess !== 1) {
+      return true;
+    }
+    if (token && __TokenCollection__ && __TokenCollection__[token]) {
+      const __tokenInfo = __TokenCollection__[token];
+      Object.assign(Options, __tokenInfo || {});
+      return true;
+    }
+
+    Log.Print('调用【%s】-->【%s】，需要Token', Method, PathName);
+    Response.Send401('没有权限');
+    return false;
+  }
+
 
   /**
    * 检查参数，规则里定义的要传的参数，与接口伟来的参数进行匹配检查。
@@ -137,22 +164,22 @@ class dealbusiness {
     });
   }
 
-  __ProcessApiTokenRight(RuleInfo, Options, Response) {
-    const { IsTokenAccess, Method, PathName } = RuleInfo;
-    const { token } = Options || {}
-    const { __TokenCollection__ } = this.DbAccess;
-    if (IsTokenAccess !== 1) {
-      return true;
+  /**
+   * 格式化SQL
+   * 
+   * @param {any} Rule 
+   * @param {any} Options 
+   * @param {any} Error 
+   * @returns 
+   * @memberof dealbusiness
+   */
+  __FormatSQL(Rule, Options, Error) {
+    const { id, sql } = Rule;
+    const _FormatSQL = queryFormat(sql || '', Options);
+    if (_FormatSQL) {
+      Log.Print('id序号 =>【%d】--执行的SQL语句【%s】', id, _FormatSQL);
     }
-    if (token && __TokenCollection__ && __TokenCollection__[token]) {
-      const __tokenInfo = __TokenCollection__[token];
-      Object.assign(Options, __tokenInfo || {});
-      return true;
-    }
-
-    Log.Print('调用【%s】-->【%s】，需要Token', Method, PathName);
-    Response.Send401('没有权限');
-    return false;
+    return _FormatSQL;
   }
 
   /**
@@ -168,125 +195,12 @@ class dealbusiness {
   __Rules(Rule, RuleCollection, Options, Complete, Error) {
     const { id, type, sql, isRows, name, resultName, judgeInfo, isMergeOption } = Rule;
     const _t = (type || 'query').toLocaleLowerCase();
-    const _FormatSQL = queryFormat(sql || '', Options);
-    if (_FormatSQL) {
-      Log.Print('id序号 =>【%d】--执行的SQL语句【%s】', id, _FormatSQL);
+    const __func = this['__Process_' + _t];
+    if (__func) {
+      __func.apply(this, [{ Rule, RuleCollection, Options, Complete, Error }]);
+      return;
     }
-    /**
-     * 处理下一条规则
-     */
-    const __Next = (rList, rOption, rComplete, rError, errInfo) => {
-      if (errInfo) {
-        Log.Print('执行此规则出错了:【%s】', JSON.stringify(Rule));
-        this.DbAccess.ClosePool(() => rError && rError(errInfo && errInfo.message ? errInfo.message : errInfo), (pe) => {
-          Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
-          rError && rError(errInfo && errInfo.message ? err.message : errInfo);
-        });
-        return;
-      }
-      const nR = rList.shift();
-      if (nR) {
-        const __self = this;
-        __self.__Rules(nR, rList, rOption, rComplete, rError);
-      } else {
-        this.DbAccess.ClosePool(() => rComplete(rOption), (pe) => {
-          Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
-          rComplete(rOption);
-        });
-      }
-    };
-    const __self = this;
-    switch (_t) {
-      case 'begintran':  // 事务
-        this.DbAccess.BeginTransaction(() => __Next(RuleCollection, Options, Complete, Error), (error) => __Next(null, null, null, Error, error));
-        break;
-      case 'commit':     // 提交事务
-        this.DbAccess.Commit(() => __Next(RuleCollection, Options, Complete, Error), (err) => __Next(null, null, null, Error, err));
-        break;
-      case 'query':      // 查询
-        if (isRows) {         // 返回多行
-          this.DbAccess.Query(_FormatSQL, (data) => {
-            const { result } = data;
-            Options.Result[id] = { __name: name, result };
-            __Next(RuleCollection, Options, Complete, Error);
-          }, (err) => __Next(null, null, null, Error, err));
-        } else {            // 返回单选
-          this.DbAccess.QueryOne(_FormatSQL, (data) => {
-            const { result } = data;
-            // 将数据合并到Options里去。
-            if (!!isMergeOption) {
-              Object.assign(Options, result || {});
-            }
-            Options.Result[id] = { __name: name, result };
-            __Next(RuleCollection, Options, Complete, Error);
-          }, (err) => __Next(null, null, null, Error, err));
-        }
-        break;
-      case 'insert':        // 插入
-        this.DbAccess.InsertSQL(_FormatSQL, (data) => {
-          const { result } = data;
-          let __name = (name && name !== '') ? name : 'InsertNo';
-          const __InsertResultInfo = {};
-          __InsertResultInfo[__name] = result.insertId;
-          Object.assign(Options, __InsertResultInfo);
-          __Next(RuleCollection, Options, Complete, Error);
-        }, (err) => __Next(null, null, null, Error, err));
-        break;
-      case 'delete':       // 删除
-        this.DbAccess.DeleteSQL(_FormatSQL,
-          (data) => __Next(RuleCollection, Options, Complete, Error),
-          (err) => __Next(null, null, null, Error, err));
-        break;
-      case 'update':      // 更新
-        this.DbAccess.UpdateSQL(_FormatSQL,
-          (data) => __Next(RuleCollection, Options, Complete, Error),
-          (err) => __Next(null, null, null, Error, err));
-        break;
-      case 'judge':       // 判断
-        const __JudgeOperator = (content, jInfo) => {
-          __self.__ProcessRuleJudge(jInfo, content,
-            // 成功向下走。
-            () => __Next(RuleCollection, content, Complete, Error),
-            // 失败，执行中断。
-            (err) => __Next(null, null, null, Error, err),
-            // 执行分支规则
-            (chilrenRules) => {
-              content.__ResultNo__ = jInfo.resultIndex;
-              __Next(chilrenRules, content, Complete, Error);
-            });
-        };
-        if (_FormatSQL) {
-          this.DbAccess.QueryOne(_FormatSQL, (data) => {
-            Object.assign(Options, data.result || {});
-            __JudgeOperator(Options, judgeInfo)
-          }, (err) => __Next(null, null, null, Error, err));
-        } else {
-          __JudgeOperator(Options, judgeInfo);
-        }
-        break;
-      case 'cache':
-        const { cacheInfo } = Rule;
-        this.__ProcessRuleCache(Options, cacheInfo);
-        __Next(RuleCollection, Options, Complete, Error, null);
-        break;
-      case 'setvalue':
-        const { setValues } = Rule;
-        this.__ProcessSetValue(Options, setValues);
-        __Next(RuleCollection, Options, Complete, Error, null);
-        break;
-      case 'parentrelation':
-        const { parentRelation } = Rule;
-        this.__ProcessParentRelation(Options, parentRelation);
-        __Next(RuleCollection, Options, Complete, Error, null);
-        break;
-      default:
-        __Next(RuleCollection, Options, Complete, Error, null);
-        break;
-    }
-  }
-
-  __ProcessNextRule() {
-
+    this.__ProcessNextRule({ Rule, RuleCollection, Options, Complete, Error });
   }
 
   /**
@@ -298,17 +212,19 @@ class dealbusiness {
    *   ...
    * ]
    * 
-   * @param {any} Options 
-   * @param {any} parentRelation 
+   * @param {any} args 
    * @returns 
    * @memberof dealbusiness
    */
-  __ProcessParentRelation(Options, parentRelation) {
+  __Process_parentrelation(args) {
+    const { Rule, RuleCollection, Options, Complete, Error } = args;
+    const { parentRelation } = Rule;
     const { Result } = Options;
     const { parentId, childrenId, name, fields } = parentRelation;
     const parentData = Result[parentId].result;
     const childData = Result[childrenId].result;
     if (!name || name === '' || !Array.isArray(parentData) || !Array.isArray(childData)) {
+      this.__ProcessNextRule(args);
       return;
     }
 
@@ -333,17 +249,19 @@ class dealbusiness {
         }
       }
     });
+    this.__ProcessNextRule(args);
   }
 
   /**
    * 赋值操作，将一值进行运算后，存放到变量里去，以备后面操作提供参数使用
    * 
-   * @param {any} Options 
-   * @param {any} setValues 
+   * @param {any} args 
    * @memberof dealbusiness
    */
-  __ProcessSetValue(Options, setValues) {
-    if (setValues) {
+  __Process_setvalue(args) {
+    const { Rule, RuleCollection, Options, Complete, Error } = args;
+    const { setValues } = Rule;
+    if (Array.isArray(setValues)) {
       setValues.forEach((item) => {
         const { fieldName, setValue } = item;
         if (setValue) {
@@ -354,20 +272,18 @@ class dealbusiness {
         }
       });
     }
+    this.__ProcessNextRule(args);
   }
 
   /**
    * 这里以后可以用将数据保存到redis里面去，现在就保存当前内存中就可以
    * 
-   * @param {any} cacheInfo 
-   * @param {any} content 
-   * @param {any} Success 
-   * @param {any} Error 
+   * @param {any} args 
    * @memberof dealbusiness
    */
-  __ProcessRuleCache(content, cacheInfo) {
-    // try {
-    const { token, fields } = cacheInfo;
+  __Process_cache(args) {
+    const { Rule, RuleCollection, Options, Complete, Error } = args;
+    const { token, fields } = Rule.cacheInfo;
     const __cache = {};
     if (token) {
       __cache.token = content[token];
@@ -382,51 +298,172 @@ class dealbusiness {
     if (__TokenCollection__) {
       __TokenCollection__[__cache.token] = __cache;
     }
-    //   Success && Success();
-    // } catch (ex) {
-    //   Error && Error(ex.message);
-    // }
+    this.__ProcessNextRule(args);
   }
 
   /**
    * 处理规则判断。
    * 
-   * @param {any} judgeInfo 判断条件信息
-   * @param {any} content 要判断的数据
-   * @param {any} Success 判断成功回调
-   * @param {any} Error 判断失败回调
+   * @param {any} args 
    * @returns 
    * @memberof dealbusiness
    */
-  __ProcessRuleJudge(judgeInfo, content, Success, Error, exeChilrenRules) {
-    const { strByEval, strByThis, chilrenRules } = judgeInfo || {};
-    let { failMsg } = judgeInfo || {};
-    let __ExecResult = true;
-    try {
-      if (strByEval && strByEval !== '') {
-        const __newEval = queryFormat(strByEval || ' ', content);
-        Log.Print('执行 Eval 条件:%s', __newEval);
-        __ExecResult = eval(__newEval);
-      } else if (strByThis && strByThis !== '') {
-        Log.Print('执行 this 条件:%s', strByThis);
-        __ExecResult = new Function(strByThis).apply(content);
-      }
-    } catch (ex) {
-      failMsg = '判断条件规则内容出错了：' + ex.message;
-      Log.Print('执行判断条件时出错了：%s', ex.message);
-      __ExecResult = false;
-    }
-    Log.Print('执行结果为：', __ExecResult);
-    if (!__ExecResult) { // 判断失败，执行失败的时候，规则集合.
-      if (chilrenRules && chilrenRules.length > 0) {
-        exeChilrenRules && exeChilrenRules(chilrenRules);
-        return;
-      }
-      Error && Error(failMsg);
+  __Process_judge(args) {
+    const { Rule, RuleCollection, Options, Complete, Error } = args;
+    const __JudgeOperator = (content, jInfo) => {
+      __self.__ProcessRuleJudge(jInfo, content,
+        // 成功向下走。
+        () => this.__ProcessNextRule(args),
+        // 失败，执行中断。
+        (err) => this.__ProcessNextRule(Object.assign(args, { errInfo: err })),
+        // 执行分支规则
+        (chilrenRules) => {
+          content.__ResultNo__ = jInfo.resultIndex;
+          this.__ProcessNextRule({ Rule, chilrenRules, content, Complete, Error });
+        });
+    };
+    const { judgeInfo } = Rule;
+    const __sql = this.__FormatSQL(Rule, Options)
+    if (!__sql) {
+      __JudgeOperator(Options, judgeInfo);
       return;
     }
-    Success && Success();
+    this.DbAccess.QueryOne(__sql, (data) => {
+      Object.assign(Options, data.result || {});
+      __JudgeOperator(Options, judgeInfo)
+    }, (err) => this.__ProcessNextRule(Object.assign(args, { errInfo: err })));
   }
+
+  /**
+   * 更新
+   * 
+   * @param {any} args 
+   * @memberof dealbusiness
+   */
+  __Process_update(args) {
+    const { Rule, RuleCollection, Options, Complete, Error } = args;
+    this.DbAccess.UpdateSQL(this.__FormatSQL(Rule, Options),
+      (data) => this.__ProcessNextRule(args),
+      (err) => this.__ProcessNextRule(Object.assign(args, { errInfo: err })));
+  }
+
+  /**
+   * 删除
+   * 
+   * @param {any} args 
+   * @memberof dealbusiness
+   */
+  __Process_delete(args) {
+    const { Rule, RuleCollection, Options, Complete, Error } = args;
+    this.DbAccess.DeleteSQL(this.__FormatSQL(Rule, Options),
+      (data) => this.__ProcessNextRule(args),
+      (err) => this.__ProcessNextRule(Object.assign(args, { errInfo: err })));
+  }
+
+  /**
+   * 插入
+   * 
+   * @param {any} args 
+   * @memberof dealbusiness
+   */
+  __Process_insert(args) {
+    const { Rule, RuleCollection, Options, Complete, Error } = args;
+    this.DbAccess.InsertSQL(this.__FormatSQL(Rule, Options), (data) => {
+      const { result } = data;
+      let __name = (name && name !== '') ? name : 'InsertNo';
+      const __InsertResultInfo = {};
+      __InsertResultInfo[__name] = result.insertId;
+      Object.assign(Options, __InsertResultInfo);
+      this.__ProcessNextRule(args);
+    }, this.__ProcessNextRule(Object.assign(args, { errInfo: err })));
+  }
+
+  /**
+   * 查询
+   * 
+   * @param {any} args 
+   * @returns 
+   * @memberof dealbusiness
+   */
+  __Process_query(args) {
+    const { Rule, RuleCollection, Options, Complete, Error } = args;
+    const { id, sql, isRows, name, resultName, isMergeOption } = Rule;
+    const _FormatSQL = this.__FormatSQL(Rule, Options);
+    if (isRows) {         // 返回多行
+      this.DbAccess.Query(_FormatSQL, (data) => {
+        const { result } = data;
+        Options.Result[id] = { __name: name, result };
+        this.__ProcessNextRule(args);
+      }, (err) => this.__ProcessNextRule(Object.assign(args, { errInfo: err })));
+      return;
+    }            // 返回单选
+    this.DbAccess.QueryOne(_FormatSQL, (data) => {
+      const { result } = data;
+      // 将数据合并到Options里去。
+      if (!!isMergeOption) {
+        Object.assign(Options, result || {});
+      }
+      Options.Result[id] = { __name: name, result };
+      this.__ProcessNextRule(args);
+    }, (err) => this.__ProcessNextRule(Object.assign(args, { errInfo: err })));
+  }
+
+  /**
+   * 提交事务
+   * 
+   * @param {any} args 
+   * @memberof dealbusiness
+   */
+  __Process_commit(args) {
+    const { Rule, RuleCollection, Options, Complete, Error } = args;
+    this.DbAccess.Commit(() => this.__ProcessNextRule(args),
+      (err) => this.__ProcessNextRule(Object.assign(args, { errInfo: err })));
+  }
+
+  /**
+   * 开启事务
+   * 
+   * @param {any} args 
+   * @memberof dealbusiness
+   */
+  __Process_begintran(v) {
+    const { Rule, RuleCollection, Options, Complete, Error } = args;
+    this.DbAccess.BeginTransaction(() => this.__ProcessNextRule(args),
+      (err) => this.__ProcessNextRule(Object.assign(args, { errInfo: err })));
+  }
+
+  /**
+   * 处理下一条规则
+   * 
+   * @param {any} rList 
+   * @param {any} rOption 
+   * @param {any} rComplete 
+   * @param {any} rError 
+   * @param {any} errInfo 
+   * @returns 
+   * @memberof dealbusiness
+   */
+  __ProcessNextRule(args) {
+    const { Rule, RuleCollection, Options, Complete, Error, errInfo } = args;
+    if (errInfo) {
+      Log.Print('执行此规则出错了:【%s】', JSON.stringify(Rule));
+      this.DbAccess.ClosePool(() => Error && Error(errInfo && errInfo.message ? errInfo.message : errInfo), (pe) => {
+        Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
+        Error && Error(errInfo && errInfo.message ? err.message : errInfo);
+      });
+      return;
+    }
+    const nR = RuleCollection.shift();
+    if (nR) {
+      this.__Rules(nR, RuleCollection, Options, Complete, Error);
+    } else {
+      this.DbAccess.ClosePool(() => Complete(Options), (pe) => {
+        Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
+        Complete(Options);
+      });
+    }
+  }
+
 
   /**
    * 结果信息
@@ -450,7 +487,6 @@ class dealbusiness {
         const { __name, result } = value;
         __Info[__name] = result;
       });
-
       return __Info;
     }
     const values = Object.values(Result);
@@ -460,5 +496,3 @@ class dealbusiness {
 }
 
 module.exports = dealbusiness;
-
-

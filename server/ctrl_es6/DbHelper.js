@@ -40,11 +40,11 @@ class MySqlHelper {
       database: 'nodejs'   // 表空间
     });
 
-    this.pool.on('connection', function (connection) {
+    this.pool.on('connection', function (cnn) {
       // connection.query('SET SESSION auto_increment_increment=1')
     });
-    this.pool.on('release', function (connection) {
-      // Log.Print('Connection %d released', connection.threadId);
+    this.pool.on('release', function (cnn) {
+      Log.Print('===Connection【 %d 】 released===', cnn.threadId);
     });
   }
 
@@ -173,15 +173,32 @@ class MySqlHelper {
       if (!poolInfo) {
         return;
       }
-      const __query = poolInfo.query(Sql, (err, result, fields) => {
+      poolInfo.getConnection((err, cnn) => {
         if (err) {
-          Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', __query.sql);
+          Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
           Error && Error(err);
           return;
         }
-        const __result = __ProcessResult(__query.sql, result, fields, Type);
-        Success && Success({ fields, result: __result });
+        cnn.query(Sql, (er, result, fields) => {
+          cnn.release();
+          if (er) {
+            Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
+            Error && Error(err);
+            return;
+          }
+          const __result = __ProcessResult(Sql, result, fields, Type);
+          Success && Success({ fields, result: __result });
+        });
       });
+      // const __query = poolInfo.query(Sql, (err, result, fields) => {
+      //   if (err) {
+      //     Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', __query.sql);
+      //     Error && Error(err);
+      //     return;
+      //   }
+      //   const __result = __ProcessResult(__query.sql, result, fields, Type);
+      //   Success && Success({ fields, result: __result });
+      // });
     }
   }
 
@@ -283,6 +300,7 @@ class MySqlHelper {
     const __self = this;
     const poolInfo = this.poolInfo(Error);
     if (!poolInfo) {
+      Success && Success();
       return;
     }
     poolInfo.end((err) => {
@@ -291,10 +309,9 @@ class MySqlHelper {
         return;
       }
       Success && Success();
-
-      if (__self.__pool) {
-        delete this.pool;
-        delete this.__pool;
+      if (__self.pool) {
+        delete __self.pool;
+        delete __self.__pool;
       }
     });
   }
