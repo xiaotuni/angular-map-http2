@@ -63,10 +63,23 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
         this.IsPlace = true;
       }
     }
+    this.__InitMap();
   }
 
   ngAfterContentInit(): void {
-    this.__InitMap();
+    this.__InitData();
+  }
+
+  __InitData() {
+    if (!this.IsPlace) {
+      return;
+    }
+    const { PlaceId } = this.UrlParams.Params;
+    this.sHelper.BaiduMap.JoinPlaceDetail(PlaceId).then(() => {
+
+    }, () => {
+
+    });
   }
 
   __InitMap() {
@@ -122,7 +135,7 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
       this.GetCurrentPosition();
       return;
     }
-    const { Name, Longitude, Latitude } = Params;
+    const { PlaceId, Name, Longitude, Latitude } = Params;
     if (!Longitude || Longitude === '' || !Latitude || Latitude === '') {
       this.GetCurrentPosition();
       return;
@@ -175,9 +188,7 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
         const { city } = address;
         self.__Map.panTo(point);          // 移动到当前定位的位置
         self.__Map.setCurrentCity(city);
-
         self.IsShowMarker = true;
-
         self.__GetLocation(null);
       }
     }, { enableHighAccuracy: true });
@@ -429,13 +440,14 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
   }
 
   onClickMyPlaceList() {
-    console.log(this);
+
     this.NextPage(Utility.$ConstItem.UrlItem.BaiduMapMyPlace)
   }
 
   onClickMyJoin() {
     this.NextPage(Utility.$ConstItem.UrlItem.BaiduMapMyJoinPlace)
   }
+
 }
 
 

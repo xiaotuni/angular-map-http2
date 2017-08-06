@@ -26,6 +26,14 @@ export class BaiduMapService {
    * @memberof BaiduMapService
    */
   public PlaceListInfo: any;
+  
+  /**
+   * 加入活动的人员列表
+   * 
+   * @type {Array<any>}
+   * @memberof BaiduMapService
+   */
+  public JoinPlaceList: Array<any>;
 
   constructor(private client) {
     this.ApiClient = client;
@@ -89,5 +97,19 @@ export class BaiduMapService {
     return this.ApiClient(options).then((data) => {
       return data;
     });
+  }
+
+  JoinPlaceDetail(PlaceId): Promise<any> {
+    const __self = this;
+    const options = {
+      action: {
+        promise: (client) => client.get(client.API.Map.JoinPlaceDetail, { params: { PlaceId } }),
+      },
+    };
+    return this.ApiClient(options).then((data) => {
+      __self.JoinPlaceList = data;
+      return data;
+    });
+
   }
 }

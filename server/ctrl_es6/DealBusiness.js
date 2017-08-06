@@ -310,17 +310,19 @@ class dealbusiness {
    */
   __Process_judge(args) {
     const { Rule, RuleCollection, Options, Complete, Error } = args;
+    const self = this;
     const __JudgeOperator = (content, jInfo) => {
-      __self.__ProcessRuleJudge(jInfo, content,
+      self.__ProcessRuleJudge(jInfo, content,
         // 成功向下走。
-        () => this.__ProcessNextRule(args),
+        () => self.__ProcessNextRule(args),
         // 失败，执行中断。
-        (err) => this.__ProcessNextRule(Object.assign(args, { errInfo: err })),
+        (err) => self.__ProcessNextRule(Object.assign(args, { errInfo: err })),
         // 执行分支规则
         (chilrenRules) => {
           content.__ResultNo__ = jInfo.resultIndex;
-          this.__ProcessNextRule({ Rule, chilrenRules, content, Complete, Error });
+          self.__ProcessNextRule({ Rule, RuleCollection: chilrenRules, Options: content, Complete, Error });
         });
+
     };
     const { judgeInfo } = Rule;
     const __sql = this.__FormatSQL(Rule, Options)
@@ -331,7 +333,47 @@ class dealbusiness {
     this.DbAccess.QueryOne(__sql, (data) => {
       Object.assign(Options, data.result || {});
       __JudgeOperator(Options, judgeInfo)
-    }, (err) => this.__ProcessNextRule(Object.assign(args, { errInfo: err })));
+    }, (err) => self.__ProcessNextRule(Object.assign(args, { errInfo: err })));
+  }
+
+  /**
+   * 处理规则判断。
+   * 
+   * @param {any} judgeInfo 判断条件信息
+   * @param {any} content 要判断的数据
+   * @param {any} Success 判断成功回调
+   * @param {any} Error 判断失败回调
+   * @returns 
+   * @memberof dealbusiness
+   */
+  __ProcessRuleJudge(judgeInfo, content, Success, Error, exeChilrenRules) {
+    const { strByEval, strByThis, chilrenRules } = judgeInfo || {};
+    let { failMsg } = judgeInfo || {};
+    let __ExecResult = true;
+    try {
+      if (strByEval && strByEval !== '') {
+        const __newEval = queryFormat(strByEval || ' ', content);
+        Log.Print('执行 Eval 条件:%s', __newEval);
+        __ExecResult = eval(__newEval);
+      } else if (strByThis && strByThis !== '') {
+        Log.Print('执行 this 条件:%s', strByThis);
+        __ExecResult = new Function(strByThis).apply(content);
+      }
+    } catch (ex) {
+      failMsg = '判断条件规则内容出错了：' + ex.message;
+      Log.Print('执行判断条件时出错了：%s', ex.message);
+      __ExecResult = false;
+    }
+    Log.Print('执行结果为：', __ExecResult);
+    if (!__ExecResult) { // 判断失败，执行失败的时候，规则集合.
+      if (chilrenRules && chilrenRules.length > 0) {
+        exeChilrenRules && exeChilrenRules(chilrenRules);
+        return;
+      }
+      Error && Error(failMsg);
+      return;
+    }
+    Success && Success();
   }
 
   /**
@@ -368,6 +410,7 @@ class dealbusiness {
    */
   __Process_insert(args) {
     const { Rule, RuleCollection, Options, Complete, Error } = args;
+    const { name } = Rule;
     this.DbAccess.InsertSQL(this.__FormatSQL(Rule, Options), (data) => {
       const { result } = data;
       let __name = (name && name !== '') ? name : 'InsertNo';
@@ -375,7 +418,7 @@ class dealbusiness {
       __InsertResultInfo[__name] = result.insertId;
       Object.assign(Options, __InsertResultInfo);
       this.__ProcessNextRule(args);
-    }, this.__ProcessNextRule(Object.assign(args, { errInfo: err })));
+    }, (err) => this.__ProcessNextRule(Object.assign(args, { errInfo: err })));
   }
 
   /**

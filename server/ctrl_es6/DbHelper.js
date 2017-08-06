@@ -44,7 +44,7 @@ class MySqlHelper {
       // connection.query('SET SESSION auto_increment_increment=1')
     });
     this.pool.on('release', function (cnn) {
-      Log.Print('===Connection【 %d 】 released===', cnn.threadId);
+      // Log.Print('===Connection【 %d 】 released===', cnn.threadId);
     });
   }
 

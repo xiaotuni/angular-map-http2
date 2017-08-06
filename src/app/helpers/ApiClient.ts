@@ -73,6 +73,16 @@ export default class ApiClient {
        * --------------------------------------
        */
       MyPlaceList: '/map/placelist',
+      /**
+       * get header token 获取活动详情
+       * -----------------------------------
+       */
+      JoinPlaceDetail: '/map/joinplacedetail',
+      /**
+       * put header token 更新当前的位置
+       * -----------------------------------
+       */
+      UpdatePosition: '/map/place/join/detail',
     }
   }
 
