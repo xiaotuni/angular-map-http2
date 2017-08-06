@@ -1,5 +1,30 @@
 export class BaiduMapService {
+
   private ApiClient: any;
+  Status: any = {
+    BMAP_STATUS_SUCCESS: { name: '检索成功', value: 0 },
+    BMAP_STATUS_CITY_LIST: { name: '城市列表', value: 1 },
+    BMAP_STATUS_UNKNOWN_LOCATION: { name: '位置结果未知', value: 2 },
+    BMAP_STATUS_UNKNOWN_ROUTE: { name: '导航结果未知', value: 3 },
+    BMAP_STATUS_INVALID_KEY: { name: '非法密钥', value: 4 },
+    BMAP_STATUS_INVALID_REQUEST: { name: '非法请求', value: 5 },
+    BMAP_STATUS_PERMISSION_DENIED: { name: '没有权限', value: 6 },
+    BMAP_STATUS_SERVICE_UNAVAILABLE: { name: '服务不可用', value: 7 },
+    BMAP_STATUS_TIMEOUT: { name: '超时', value: 8 },
+  }
+  /**
+   * 当前要查看的活动信息
+   * 
+   * @type {*}
+   * @memberof BaiduMapService
+   */
+  public CurrentPlaceInfo: any;
+  /**
+   * 我的活动列表
+   * 
+   * @type {*}
+   * @memberof BaiduMapService
+   */
   public PlaceListInfo: any;
 
   constructor(private client) {

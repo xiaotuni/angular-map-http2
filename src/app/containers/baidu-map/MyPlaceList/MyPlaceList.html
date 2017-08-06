@@ -19,6 +19,11 @@
       <div class="bewrite">
         描述：<span>{{item.Bewrite}}</span>
       </div>
+      <div class="peopleList" *ngIf="item.PeopleList && item.PeopleList.length>0">
+        <div class="people" *ngFor="let people of item.PeopleList">
+          {{people.username}}
+        </div>
+      </div>
     </div>
   </div>
 </div>

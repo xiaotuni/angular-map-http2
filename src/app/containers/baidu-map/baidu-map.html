@@ -1,9 +1,8 @@
 <div class="baiduMapCss">
-  <xtn-navbar [(Title)]="__Title"></xtn-navbar>
   <div class="allMap">
     <div #baidumapRef></div>
-    <xtn-baidu-map-marker *ngIf="IsShowMarker" (onUpdatePosition)="onUpdateCurrentPosition($event)" [BMap]="BMap" [Map]="__Map"
-      [(Position)]="__CurrentPosition"></xtn-baidu-map-marker>
+    <xtn-baidu-map-marker *ngIf="IsShowMarker" [EnableDragging]="!IsPlace" (onUpdatePosition)="onUpdateCurrentPosition($event)"
+      [BMap]="BMap" [Map]="__Map" [(Position)]="__CurrentPosition"></xtn-baidu-map-marker>
   </div>
   <div class="groupBtn">
     <!-- <div class="btn" (click)="CreateTravel()">创建</div>
@@ -13,6 +12,7 @@
     <div class="btn" (click)="AddPolyline()">拆线</div>
     <div class="btn" (click)="AddDefinedOverlay()">自定义</div>
     <div class="btn" (click)="AddPosition()">创建位置</div> -->
+    <div class="btn" (click)="GoBack()">后退</div>
     <div class="btn" (click)="AddPlace()">添加聚会地址</div>
     <div class="btn" (click)="onClickMyPlaceList()">我发起的</div>
     <div class="btn" (click)="onClickMyJoin()">我要加入</div>

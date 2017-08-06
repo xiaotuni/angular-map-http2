@@ -7,12 +7,12 @@ import { Utility } from '../../Core';
   styleUrls: ['marker.scss']
 })
 export class XtnBaiduMapMarker implements OnInit, OnChanges {
+
+  @Input('EnableDragging') enableDragging: boolean;
   @Input('BMap') BMap: any;
   @Input('Map') __Map: any;
   @Input('Position') __CurrentPosition: any;
   @Output('onUpdatePosition') onUpdatePosition: EventEmitter<any> = new EventEmitter();
-
-
   __Marker: any;
 
   BaiduAnimation: any = { BMAP_ANIMATION_BOUNCE: 2, BMAP_ANIMATION_DROP: 1 };
@@ -70,14 +70,15 @@ export class XtnBaiduMapMarker implements OnInit, OnChanges {
     });
 
     // 让图标可以进行拖拽。
-    marker.enableDragging();
-    marker.addEventListener("dragend", function (e) {
-      console.log("当前位置：" + e.point.lng + ", " + e.point.lat);
-      if (onUpdatePosition) {
-        onUpdatePosition.emit(e);
-      }
-    })
-
+    if (!!this.enableDragging) {
+      marker.enableDragging();
+      marker.addEventListener("dragend", function (e) {
+        console.log("当前位置：" + e.point.lng + ", " + e.point.lat);
+        if (onUpdatePosition) {
+          onUpdatePosition.emit(e);
+        }
+      })
+    }
     this.__Marker = marker;
   }
 }

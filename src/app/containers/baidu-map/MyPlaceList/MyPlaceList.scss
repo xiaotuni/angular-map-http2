@@ -28,7 +28,7 @@
         position: relative;
 
         .name {
-          > span {
+          >span {
             font-size: 120%;
             color: #222;
             font-weight: 600;
@@ -38,7 +38,7 @@
         .invite {
           margin-top: 5px;
 
-          > span {
+          >span {
             color: Red;
             font-size: 120%;
           }
@@ -49,7 +49,7 @@
           top: 0;
           right: 0;
 
-          > div {
+          >div {
             padding: 5px 15px;
             border-radius: 5px;
             border: 1px solid #868689;
@@ -70,6 +70,19 @@
 
       .bewrite {
         @extend .nameInviteCode;
+      }
+
+      .peopleList {
+        padding: 5px;
+        display: flex;
+        overflow: auto;
+        .people {
+          margin-right: 5px;
+          padding: 5px 10px;
+          white-space: nowrap;
+          border: 1px solid;
+          border-radius: 5px;
+        }
       }
     }
   }

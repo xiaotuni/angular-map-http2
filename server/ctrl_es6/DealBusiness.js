@@ -266,7 +266,8 @@ class dealbusiness {
         break;
       case 'cache':
         const { cacheInfo } = Rule;
-        this.__ProcessRuleCache(cacheInfo, Options, () => __Next(RuleCollection, Options, Complete, Error, null), (err) => __Next(null, null, null, Error, err))
+        this.__ProcessRuleCache(Options, cacheInfo);
+        __Next(RuleCollection, Options, Complete, Error, null);
         break;
       case 'setvalue':
         const { setValues } = Rule;
@@ -283,6 +284,25 @@ class dealbusiness {
         break;
     }
   }
+
+  __ProcessNextRule() {
+
+  }
+
+  /**
+   * 设置关联关系，这种情况主要用于，当返回一个数据组集合时，行数据当中的某个字段又是一个数组
+   * @example 
+   * [
+   *   {id:1,name:'name',childrend:[{},{}...]},
+   *   {id:2,name:'name',childrend:[{},{}...]},
+   *   ...
+   * ]
+   * 
+   * @param {any} Options 
+   * @param {any} parentRelation 
+   * @returns 
+   * @memberof dealbusiness
+   */
   __ProcessParentRelation(Options, parentRelation) {
     const { Result } = Options;
     const { parentId, childrenId, name, fields } = parentRelation;
@@ -315,6 +335,13 @@ class dealbusiness {
     });
   }
 
+  /**
+   * 赋值操作，将一值进行运算后，存放到变量里去，以备后面操作提供参数使用
+   * 
+   * @param {any} Options 
+   * @param {any} setValues 
+   * @memberof dealbusiness
+   */
   __ProcessSetValue(Options, setValues) {
     if (setValues) {
       setValues.forEach((item) => {
@@ -338,27 +365,27 @@ class dealbusiness {
    * @param {any} Error 
    * @memberof dealbusiness
    */
-  __ProcessRuleCache(cacheInfo, content, Success, Error) {
-    try {
-      const { token, fields } = cacheInfo;
-      const __cache = {};
-      if (token) {
-        __cache.token = content[token];
-      }
-      if (fields) {
-        fields.split(',').forEach((field) => {
-          const __key = Utility.$trim(field);
-          __cache[__key] = content[__key];
-        });
-      }
-      const { __TokenCollection__ } = this.DbAccess;
-      if (__TokenCollection__) {
-        __TokenCollection__[__cache.token] = __cache;
-      }
-      Success && Success();
-    } catch (ex) {
-      Error && Error(ex.message);
+  __ProcessRuleCache(content, cacheInfo) {
+    // try {
+    const { token, fields } = cacheInfo;
+    const __cache = {};
+    if (token) {
+      __cache.token = content[token];
     }
+    if (fields) {
+      fields.split(',').forEach((field) => {
+        const __key = Utility.$trim(field);
+        __cache[__key] = content[__key];
+      });
+    }
+    const { __TokenCollection__ } = this.DbAccess;
+    if (__TokenCollection__) {
+      __TokenCollection__[__cache.token] = __cache;
+    }
+    //   Success && Success();
+    // } catch (ex) {
+    //   Error && Error(ex.message);
+    // }
   }
 
   /**

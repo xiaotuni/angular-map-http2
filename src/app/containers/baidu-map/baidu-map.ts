@@ -36,6 +36,7 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
   __ZoomControl: Object = new Object();
   __Driving: any;
   IsTilesloaded: boolean;
+  UrlParams: any;
 
   /**
    * 根据当前经/纬度获取位置信息
@@ -46,13 +47,22 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
   __Geocoder: any;
 
   IsShowMarker: boolean;
+  IsPlace: boolean;
 
   constructor(private el: ElementRef, private sHelper: ServiceHelper) {
     super();
   }
 
-
   ngOnInit() {
+    console.log('on init-->baidu-map-init');
+    console.log(this.UrlParams);
+    const { Params } = this.UrlParams;
+    if (Params) {
+      const { PlaceId } = Params;
+      if (PlaceId) {
+        this.IsPlace = true;
+      }
+    }
   }
 
   ngAfterContentInit(): void {
@@ -74,40 +84,17 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
         self.NavigationControl();
         // 移动地图的时候，将当前的信息
         self.__Map.addEventListener("dragend", (e) => {
-          self.__GetLocation(null);
+          if (!self.IsPlace) {
+            self.__GetLocation(null);
+          }
         });
         // 放大缩小事件
         self.__Map.addEventListener('zoomend', (e) => {
-          self.__GetLocation(null);
+          if (!self.IsPlace) {
+            self.__GetLocation(null);
+          }
         });
-        self.__Map.addEventListener('tilesloaded', (e) => {
-          if (!!self.IsTilesloaded) {
-            return;
-          }
-          self.IsTilesloaded = true;
-          const UrlParmas = Utility.$GetContent(Utility.$ConstItem.UrlPathInfo);
-          let IsCall = false;
-          if (!UrlParmas) {
-            self.GetCurrentPosition();
-            return;
-          }
-          const { Params } = UrlParmas;
-          if (!Params) {
-            self.GetCurrentPosition();
-            return;
-          }
-          const { Name, Longitude, Latitude } = Params;
-          if (!Longitude || Longitude === '' || !Latitude || Latitude === '') {
-            self.GetCurrentPosition();
-            return;
-          }
-          const __point = new self.BMap.Point(Number(Longitude), Number(Latitude));
-          self.__Map.panTo(__point);          // 移动到当前定位的位置
-          self.__Geocoder.getLocation(__point, (gcResult) => {
-            self.__CurrentPosition = gcResult;
-            self.IsShowMarker = true;
-          })
-        });
+        self.__Map.addEventListener('tilesloaded', self.__MapTilesloaded.bind(self));
       };
 
       __Interval = setInterval(() => {
@@ -125,6 +112,31 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
     }
   }
 
+  __MapTilesloaded(e) {
+    if (!!this.IsTilesloaded) {
+      return;
+    }
+    this.IsTilesloaded = true;
+    const { Params } = this.UrlParams;
+    if (!Params) {
+      this.GetCurrentPosition();
+      return;
+    }
+    const { Name, Longitude, Latitude } = Params;
+    if (!Longitude || Longitude === '' || !Latitude || Latitude === '') {
+      this.GetCurrentPosition();
+      return;
+    }
+    const __point = new this.BMap.Point(Number(Longitude), Number(Latitude));
+    this.__Map.panTo(__point);          // 移动到当前定位的位置
+    const self = this;
+    this.__Geocoder.getLocation(__point, (gcResult) => {
+      self.__CurrentPosition = gcResult;
+      self.IsShowMarker = true;
+    })
+
+  }
+
   /**
    * 根据当前的位置获取省市区街道等信息
    *  
@@ -138,6 +150,12 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
     })
   }
 
+  /**
+   * 获取当前位置
+   * 
+   * @returns 
+   * @memberof BaiduMap
+   */
   GetCurrentPosition() {
     if (!this.BMap) {
       return;
@@ -146,16 +164,6 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
     if (!geolocation) {
       return;
     }
-    //关于状态码
-    //BMAP_STATUS_SUCCESS	检索成功。对应数值“0”。
-    //BMAP_STATUS_CITY_LIST	城市列表。对应数值“1”。
-    //BMAP_STATUS_UNKNOWN_LOCATION	位置结果未知。对应数值“2”。
-    //BMAP_STATUS_UNKNOWN_ROUTE	导航结果未知。对应数值“3”。
-    //BMAP_STATUS_INVALID_KEY	非法密钥。对应数值“4”。
-    //BMAP_STATUS_INVALID_REQUEST	非法请求。对应数值“5”。
-    //BMAP_STATUS_PERMISSION_DENIED	没有权限。对应数值“6”。(自 1.1 新增)
-    //BMAP_STATUS_SERVICE_UNAVAILABLE	服务不可用。对应数值“7”。(自 1.1 新增)
-    //BMAP_STATUS_TIMEOUT	超时。对应数值“8”。(自 1.1 新增)
     const self = this;
     geolocation.getCurrentPosition(function (result) {
       // latitude 纬度 ,longitude 经度
@@ -189,9 +197,7 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
       this.__Map.setCurrentCity(this.__CurrentPosition.address.city);
     }
   }
-  CreateTravel() {
 
-  }
 
   AddInfomation() {
     if (!this.BMap || !this.__Map) {

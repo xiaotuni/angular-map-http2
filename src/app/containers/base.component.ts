@@ -1,4 +1,4 @@
-import { Component, HostBinding } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { routeAnimation } from './app.animations';
 import { Utility } from './Core';
 
@@ -7,19 +7,26 @@ import { Utility } from './Core';
   selector: 'selector',
   animations: [routeAnimation]
 })
-export class BaseComponent {
+export class BaseComponent implements OnInit {
   __Title: string = '';
+  UrlParams: any;
+
   @HostBinding("@routing") get routing() {
     const IsGoBack = Utility.$GetContent(Utility.$ConstItem.AppIsGoBack);
     return !!IsGoBack ? 'backward' : 'forward';
   }
   // @HostBinding('style.display') display = "block";
-  
+
 
   constructor() {
-
     // get brower title 
     this.__GetBrowerTitle();
+    console.log('constructor-->base component-- ');
+    this.UrlParams = Utility.$GetContent(Utility.$ConstItem.UrlPathInfo);
+  }
+  ngOnInit() {
+    console.log('on init component');
+    // this.UrlParams = Utility.$GetContent(Utility.$ConstItem.UrlPathInfo);
   }
 
   __GetBrowerTitle() {
@@ -28,7 +35,6 @@ export class BaseComponent {
       this.__Title = titleServer.getTitle() || '';
     }
   }
-
 
   routeFn(direction: string, nextRoute: string) {
     this.NextPage(nextRoute);

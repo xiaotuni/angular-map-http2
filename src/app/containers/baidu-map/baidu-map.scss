@@ -1,13 +1,13 @@
 .baiduMapCss {
+  font-size: 12px;
   .allMap {
-    position: fixed;
-    height: 100%;
+    position: relative;
+    height: 92.3vh;
     width: 100%;
     top: 0;
     left: 0;
 
-    > div {
-      position: fixed;
+    >div {
       height: 100%;
       width: 100%;
       top: 0;
@@ -16,16 +16,16 @@
   }
 
   .groupBtn {
-    position: relative;
+    position: absolute;
     z-index: 999;
     display: flex;
     flex-wrap: wrap;
+    top: 0px;
 
     .btn {
       background: aliceblue;
       padding: 10px;
       border-right: 1px solid #f5e5e5;
-
     }
   }
 }
