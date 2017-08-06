@@ -286,12 +286,12 @@ class dealbusiness {
     const { token, fields } = Rule.cacheInfo;
     const __cache = {};
     if (token) {
-      __cache.token = content[token];
+      __cache.token = Options[token];
     }
     if (fields) {
       fields.split(',').forEach((field) => {
         const __key = Utility.$trim(field);
-        __cache[__key] = content[__key];
+        __cache[__key] = Options[__key];
       });
     }
     const { __TokenCollection__ } = this.DbAccess;

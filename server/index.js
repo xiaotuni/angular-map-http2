@@ -91,7 +91,6 @@ class server {
       r.initHeader();
     }).listen(port || 10000);
     console.log('https://127.0.0.1:%d', port || 10000)
-   
   }
 }
 
@@ -248,6 +247,9 @@ class routes {
     }
     const __last = pathList.pop();
     let __CallApi = this.ApiInfo[pathList[0]];
+    if(!__CallApi){
+      return null;
+    }
     let __ApiIsExist = true;
     for (let i = 1; i < pathList.length; i++) {
       __CallApi = __CallApi[pathList[i]];
@@ -275,5 +277,7 @@ class routes {
   }
 }
 
+console.log('---process.env.PORT-', process.env.APIPORT);
+
 const __s = new server();
-__s.createServer(process.env.PORT);
+__s.createServer(process.env.APIPORT);

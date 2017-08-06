@@ -404,7 +404,8 @@ export class BaiduMap extends BaseComponent implements OnInit, AfterContentInit 
     this.__GetLocation(position.point);
   }
 
-  __SavePlace(placeInfo) {
+  __SavePlace(source) {
+    const placeInfo = source.args;
     console.log(placeInfo);
     placeInfo.BeginTime = Utility.$ConvertToTimestamp(placeInfo.BeginDate + ' 08:00');
     placeInfo.EndTime = Utility.$ConvertToTimestamp(placeInfo.EndDate + ' 18:00');
