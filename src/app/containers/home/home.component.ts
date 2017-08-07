@@ -20,6 +20,7 @@ export class Home extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
+    // this.__ShowDialog();
   }
 
   __UserInfo(methodType) {
@@ -32,15 +33,22 @@ export class Home extends BaseComponent implements OnInit {
     console.log('test event-->', args);
   }
 
-  __ShowDialog() {
-    // Utility.$ShowMessage('这是一个标题', '这里是内容了，随便写的东西，看看出来的情况吧。');
+  __ShowDialog2() {
+    Utility.$ShowDialogComponent('XtnConfirm',
+      { Title: 'XtnConfirm组件' },
+      {
+        onConfirm: (event) => {
+          const { dialog, args } = event;
+          console.log(args);
+          dialog.onClose();
+        }
+      });
 
+  }
+
+  __ShowDialog() {
     Utility.$ShowDialogComponent('XtnMapPlaceItem', {
-      Place: { address: '就在这里啦', },
-      Params: { __Title: '里面的参数了' },
-      Params2: { Params2: 'Params-->里的信息啦' },
-      Params123: { Params123: 'Params123-->里的信息啦' },
-      __Title: this.tempData, parma2: '12431243',
+      Place: { Address: '就在这里啦', },
     }, {
         onSave: (ee) => {
           Utility.$ShowMessage('标题', '这是弹出来的内容');
@@ -49,11 +57,16 @@ export class Home extends BaseComponent implements OnInit {
           }
         },
         onDelete: this.TestEvent.bind(this),
-        onModify: this.TestEvent.bind(this),
+        onModify: (event) => {
+          console.log('on modify--', event);
+        },
       });
-
   }
 
+
+
+
+  
   __GetArearData(Condition) {
     const { ScrollInfo } = this;
     const { Common } = this.sHelper;

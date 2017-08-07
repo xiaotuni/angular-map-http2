@@ -128,7 +128,6 @@ export class XtnDialog implements OnInit, OnDestroy, OnChanges, AfterContentChec
   }
 
   onClose() {
-    // this.TriggerStateName = 'inactive';
     Utility.$ShowDialogHide(this.__Index);
   }
 

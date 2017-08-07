@@ -10,8 +10,6 @@ export class XtnMapPlaceItem implements OnInit, OnDialog {
 
   @Input('Place') place: any;
   @Input() Params: any;
-  @Input('Params2') Params2: any;
-  @Input('Params123') Params123: any;
   @Output('onSave') _onSave: EventEmitter<any> = new EventEmitter();
   @Output('onDelete') _onDelete: EventEmitter<any> = new EventEmitter();
   @Output('onModify') _onModify: EventEmitter<any> = new EventEmitter();
@@ -21,6 +19,7 @@ export class XtnMapPlaceItem implements OnInit, OnDialog {
   }
 
   ngOnInit() {
+    console.log('placeitem---', this.place);
   }
 
   onClickBtn(type) {
@@ -48,5 +47,11 @@ export class XtnMapPlaceItem implements OnInit, OnDialog {
 
   onDialogCancel(dialog) {
     dialog.onClose();
+  }
+
+  onBtnClickModify() {
+    if (this._onModify) {
+      this._onModify.emit('这是点击事件，调用的是修改事件');
+    }
   }
 }

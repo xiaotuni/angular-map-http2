@@ -1,0 +1,28 @@
+.confirmCss {
+  position: relative;
+  margin-top: 5px;
+
+  .title {
+    padding: 5px 20px;
+    font-size: 16px;
+    color: #222;
+    text-align: center;
+  }
+  .line {
+    border-top: 1px solid #e0e0e0;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  .input {
+    padding: 5px;
+    margin: 5px;
+
+    input {
+      font-size: 16px;
+      padding: 5px;
+      border-radius: 5px;
+      outline-style: none;
+      border: 1px solid #bfd2f5;
+    }
+  }
+}
