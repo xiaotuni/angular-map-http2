@@ -12,6 +12,13 @@ http.ServerResponse.prototype.Send = function (data) {
 其实他地方调用的方法时如： Response.Send({}); IE10来的请求就报说找不到 Send()这个方法，google浏览器就可以正常使用。
 ```
 
+## 如果数据库连接数量超过最大值，可以修改ManagerQueue.js  Next()方法里 setTimeout，添加点时间来进行缓冲一下。
+
+
+
+
+
+
 项目的依赖安装
 ```bash
 npm install
