@@ -1,69 +1,20 @@
 const http = require('http2');
 // const http = require('http');
 const util = require('util');
-const queryString = require('querystring');
-const url = require('url');
 const querystring = require('querystring');
+const url = require('url');
 const path = require('path');
 const fs = require('fs');
 const api = require('./ctrl_es6/index');
 const MySqlHelper = require('./ctrl_es6/DbHelper');
+const ManagerQueue = require('./ManagerQueue');
 
-
-class ManagerQueue {
-
-  constructor() {
-
-    this._Query = [];
-    this.IsLock = false;
-  }
-
-  AddQueue(options) {
-    this._Query.push(options);
-    this.GetQueueLength();
-    if (!this.IsLock) {
-      this.IsLock = true;
-      const args = this._Query.shift();
-      setTimeout(() => {
-        this.NextQueue(args);
-      }, 0);
-    }
-  }
-
-
-  Next() {
-    const { _Query } = this;
-    if (_Query.length === 0) {
-      this.IsLock = false;
-      console.log('---------队列处理完了------');
-      return;
-    }
-    this.GetQueueLength();
-    setTimeout(() => {
-      this.NextQueue(_Query.shift());
-    }, 0);
-  }
-
-  NextQueue(args) {
-    const { ApiInfo, request, response, params, data, token, TokenCollection, func, ctrl, methodInfo } = args;
-    // 查询用户定义好的接口。
-    if (func) {
-      func.apply(ctrl, [request, response, { params, data, token }]);
-      return;
-    }
-    const _db = new MySqlHelper(); // 实例化一个数据库操作类
-    _db.__TokenCollection__ = TokenCollection;
-    ApiInfo.DealBusiness.Process(_db, request, response, { methodInfo, params, data, token });
-  }
-
-  GetQueueLength() {
-    console.log('---------队列大小为：【%d】--------', this._Query.length);
-  }
-
-}
-
-const __MQ = new ManagerQueue();
-
+/**
+ * 为什么在这里引用呢，JS是从上向下找的，如果在send()之前没有找到 __MQ变量的话，会报错误
+ * 在每个请求处理完Send()之后，要调用 __MQ.Next()方法。
+ * 所在就在这里引用进来。
+ */
+const __MQ = new ManagerQueue(MySqlHelper);
 
 /**
  * 日期格式化
@@ -90,13 +41,42 @@ Date.prototype.Format = function (fmt) { //author: meizz
   return fmt;
 }
 
-class server {
-  constructor() {
+/**
+ * 发送内容到界面上去.
+ * @param data
+ */
+http.ServerResponse.prototype.Send = function (data) {
+  this.write(JSON.stringify(data));
+  this.end();
+  // 处理下一个请求。
+  __MQ.Next();
+};
+http.ServerResponse.prototype.SendOk = function () {
+  this.Send({ msg: 'ok' });
+};
+http.ServerResponse.prototype.Send_404 = function (data) {
+  this.statusCode = 404;
+  this.Send(data);
+};
+http.ServerResponse.prototype.Send401 = function (data) {
+  this.statusCode = 401;
+  this.Send({ msg: data });
+};
+http.ServerResponse.prototype.Send_500 = function (data) {
+  this.statusCode = 500;
+  this.Send(data);
+};
+http.ServerResponse.prototype.SendError = function (data) {
+  const { code } = data;
+  this.statusCode = code || 400;
+  this.Send(data);
+};
 
 
-  }
+class Server {
+  constructor() { }
 
-  createServer(port) {
+  CreateServer(port) {
     const __key = '/ca/www.other.org.key';
     const __crt = '/ca/www.other.org.crt';
     const __keys = [path.join('.', 'server', __key), '.' + __key];
@@ -121,16 +101,6 @@ class server {
       r.initHeader();
     }).listen(port || 10000);
     console.log('https://127.0.0.1:%d', port || 10000)
-  }
-
-
-
-  InitQueueSet(qm) {
-    this.QueueSet = qm;
-  }
-
-  ExecuteQueue() {
-
   }
 }
 
@@ -214,17 +184,10 @@ class routes {
       if (func) {
         args.func = func;
         args.ctrl = ctrl;
-        // func.apply(ctrl, [__self.req, __self.res,
-        // { params: __self.QueryParams, data, token: __self.token }]);
         __MQ.AddQueue(args);
         return;
       }
       __MQ.AddQueue(args);
-      // const _db = new MySqlHelper(); // 实例化一个数据库操作类
-      // _db.__TokenCollection__ = TokenCollection;
-      // __self.ApiInfo.DealBusiness.Process(_db, __self.req, __self.res,
-      //   { methodInfo, params: __self.QueryParams, data, token: __self.token });
-
     });
   }
 
@@ -334,38 +297,5 @@ class routes {
 
 console.log('---process.env.PORT-', process.env.APIPORT);
 
-const __s = new server();
-__s.createServer(process.env.APIPORT);
-
-
-
-
-/**
- * 发送内容到界面上去.
- * @param data
- */
-http.ServerResponse.prototype.Send = function (data) {
-  this.write(JSON.stringify(data));
-  this.end();
-  __MQ.Next();
-};
-http.ServerResponse.prototype.SendOk = function () {
-  this.Send({ msg: 'ok' });
-};
-http.ServerResponse.prototype.Send_404 = function (data) {
-  this.statusCode = 404;
-  this.Send(data);
-};
-http.ServerResponse.prototype.Send401 = function (data) {
-  this.statusCode = 401;
-  this.Send({ msg: data });
-};
-http.ServerResponse.prototype.Send_500 = function (data) {
-  this.statusCode = 500;
-  this.Send(data);
-};
-http.ServerResponse.prototype.SendError = function (data) {
-  const { code } = data;
-  this.statusCode = code || 400;
-  this.Send(data);
-};
+const start = new Server();
+start.CreateServer(process.env.APIPORT);
