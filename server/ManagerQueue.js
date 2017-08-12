@@ -1,8 +1,16 @@
-
+/**
+ * 队列管理，主要是用来处理量请求时
+ * 由于要调用数据库，大量的请求，就必须创建大量的数据库连接，
+ * 而数据库连接是由限制的，所以在这里添加一个队列，
+ * 可以有效的解决数据库连接超过最大限制问题.
+ * 
+ * 也许还有其它好的办法，目前就想到了这种方法。
+ * 
+ * @class ManagerQueue
+ */
 class ManagerQueue {
 
   constructor(MySqlHelper) {
-
     this._Query = [];
     this.IsLock = false;
     this.MySqlHelper = MySqlHelper;
@@ -19,7 +27,6 @@ class ManagerQueue {
       }, 0);
     }
   }
-
 
   Next() {
     const { _Query } = this;
@@ -49,7 +56,6 @@ class ManagerQueue {
   GetQueueLength() {
     console.log('---------队列大小为：【%d】--------', this._Query.length);
   }
-
 }
 
 module.exports = ManagerQueue;
