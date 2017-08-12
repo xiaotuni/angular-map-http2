@@ -23,7 +23,7 @@ class XTN_Log {
     //   var loc = e.stack.replace(/Error\n/).split(/\n/)[1].replace(/^\s+|\s+$/, "");
     //   console.log(loc);
     // }
-    console.log(...arguments);
+    // console.log(...arguments);
     // console.log(new Date().Format("yyyy-MM-dd hh:mm:ss.S") + "------------[END]--------------");
   }
 

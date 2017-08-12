@@ -33,7 +33,7 @@ class MySqlHelper {
    */
   __CreatePool() {
     this.pool = mysql.createPool({
-      connectionLimit: 10,
+      connectionLimit: 5,
       host: 'localhost', // 数据库连接
       user: 'liaohb',    // 数据库名用户名
       password: 'xiaotuni', // 密码
@@ -44,7 +44,7 @@ class MySqlHelper {
       // connection.query('SET SESSION auto_increment_increment=1')
     });
     this.pool.on('release', function (cnn) {
-      // Log.Print('===Connection【 %d 】 released===', cnn.threadId);
+      console.log('===Connection【 %d 】 released===', cnn.threadId);
     });
   }
 
@@ -297,6 +297,7 @@ class MySqlHelper {
    * @memberof MySqlHelper
    */
   ClosePool(Success, Error) {
+    // Success && Success();
     const __self = this;
     const poolInfo = this.poolInfo(Error);
     if (!poolInfo) {
