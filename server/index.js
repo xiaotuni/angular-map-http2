@@ -9,6 +9,62 @@ const fs = require('fs');
 const api = require('./ctrl_es6/index');
 const MySqlHelper = require('./ctrl_es6/DbHelper');
 
+
+class ManagerQueue {
+
+  constructor() {
+
+    this._Query = [];
+    this.IsLock = false;
+  }
+
+  AddQueue(options) {
+    this._Query.push(options);
+    this.GetQueueLength();
+    if (!this.IsLock) {
+      this.IsLock = true;
+      const args = this._Query.shift();
+      setTimeout(() => {
+        this.NextQueue(args);
+      }, 0);
+    }
+  }
+
+
+  Next() {
+    const { _Query } = this;
+    if (_Query.length === 0) {
+      this.IsLock = false;
+      console.log('---------队列处理完了------');
+      return;
+    }
+    this.GetQueueLength();
+    setTimeout(() => {
+      this.NextQueue(_Query.shift());
+    }, 0);
+  }
+
+  NextQueue(args) {
+    const { ApiInfo, request, response, params, data, token, TokenCollection, func, ctrl, methodInfo } = args;
+    // 查询用户定义好的接口。
+    if (func) {
+      func.apply(ctrl, [request, response, { params, data, token }]);
+      return;
+    }
+    const _db = new MySqlHelper(); // 实例化一个数据库操作类
+    _db.__TokenCollection__ = TokenCollection;
+    ApiInfo.DealBusiness.Process(_db, request, response, { methodInfo, params, data, token });
+  }
+
+  GetQueueLength() {
+    console.log('---------队列大小为：【%d】--------', this._Query.length);
+  }
+
+}
+
+const __MQ = new ManagerQueue();
+
+
 /**
  * 日期格式化
  * var time1 = new Date().Format(“yyyy-MM-dd”);
@@ -33,38 +89,12 @@ Date.prototype.Format = function (fmt) { //author: meizz
     if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
   return fmt;
 }
-/**
- * 发送内容到界面上去.
- * @param data
- */
-http.ServerResponse.prototype.Send = function (data) {
-  this.write(JSON.stringify(data));
-  this.end();
-};
-http.ServerResponse.prototype.SendOk = function () {
-  this.Send({ msg: 'ok' });
-};
-http.ServerResponse.prototype.Send_404 = function (data) {
-  this.statusCode = 404;
-  this.Send(data);
-};
-http.ServerResponse.prototype.Send401 = function (data) {
-  this.statusCode = 401;
-  this.Send({ msg: data });
-};
-http.ServerResponse.prototype.Send_500 = function (data) {
-  this.statusCode = 500;
-  this.Send(data);
-};
-http.ServerResponse.prototype.SendError = function (data) {
-  const { code } = data;
-  this.statusCode = code || 400;
-  this.Send(data);
-};
-
 
 class server {
-  constructor() { }
+  constructor() {
+
+
+  }
 
   createServer(port) {
     const __key = '/ca/www.other.org.key';
@@ -91,6 +121,16 @@ class server {
       r.initHeader();
     }).listen(port || 10000);
     console.log('https://127.0.0.1:%d', port || 10000)
+  }
+
+
+
+  InitQueueSet(qm) {
+    this.QueueSet = qm;
+  }
+
+  ExecuteQueue() {
+
   }
 }
 
@@ -140,14 +180,14 @@ class routes {
         MySqlHelper.TokenCollection = TokenCollection;
         __self.__ProcessApi(PathInfo);
       }, (err) => { });
-    }
-    else {
+    } else {
       this.__ProcessApi(PathInfo);
     }
   }
 
   __ProcessApi(PathInfo) {
     const methodInfo = { pathname: this.UrlInfo.pathname, method: this.Method };
+
     // 以utf-8的形式接受body数据
     this.req.setEncoding('utf8');
     let __ReData = "";
@@ -156,20 +196,35 @@ class routes {
       __ReData += data;
     });
     const __self = this;
+    const { TokenCollection } = MySqlHelper;
+    const args = {
+      request: this.req,
+      response: this.res,
+      params: this.QueryParams,
+      token: this.token,
+      TokenCollection,
+      methodInfo,
+      ApiInfo: this.ApiInfo,
+    };
     this.req.on('end', () => {      // 监听数据接受完后事件。
       // 查询用户定义好的接口。
       const { func, ctrl } = __self.__FindMethod(PathInfo) || {};
       const data = __ReData && __ReData !== '' ? JSON.parse(__ReData) : {};
+      args.data = data;
       if (func) {
-        func.apply(ctrl, [__self.req, __self.res,
-        { params: __self.QueryParams, data, token: __self.token }]);
+        args.func = func;
+        args.ctrl = ctrl;
+        // func.apply(ctrl, [__self.req, __self.res,
+        // { params: __self.QueryParams, data, token: __self.token }]);
+        __MQ.AddQueue(args);
         return;
       }
-      const { TokenCollection } = MySqlHelper;
-      const _db = new MySqlHelper(); // 实例化一个数据库操作类
-      _db.__TokenCollection__ = TokenCollection;
-      __self.ApiInfo.DealBusiness.Process(_db, __self.req, __self.res,
-        { methodInfo, params: __self.QueryParams, data, token: __self.token });
+      __MQ.AddQueue(args);
+      // const _db = new MySqlHelper(); // 实例化一个数据库操作类
+      // _db.__TokenCollection__ = TokenCollection;
+      // __self.ApiInfo.DealBusiness.Process(_db, __self.req, __self.res,
+      //   { methodInfo, params: __self.QueryParams, data, token: __self.token });
+
     });
   }
 
@@ -247,7 +302,7 @@ class routes {
     }
     const __last = pathList.pop();
     let __CallApi = this.ApiInfo[pathList[0]];
-    if(!__CallApi){
+    if (!__CallApi) {
       return null;
     }
     let __ApiIsExist = true;
@@ -281,3 +336,36 @@ console.log('---process.env.PORT-', process.env.APIPORT);
 
 const __s = new server();
 __s.createServer(process.env.APIPORT);
+
+
+
+
+/**
+ * 发送内容到界面上去.
+ * @param data
+ */
+http.ServerResponse.prototype.Send = function (data) {
+  this.write(JSON.stringify(data));
+  this.end();
+  __MQ.Next();
+};
+http.ServerResponse.prototype.SendOk = function () {
+  this.Send({ msg: 'ok' });
+};
+http.ServerResponse.prototype.Send_404 = function (data) {
+  this.statusCode = 404;
+  this.Send(data);
+};
+http.ServerResponse.prototype.Send401 = function (data) {
+  this.statusCode = 401;
+  this.Send({ msg: data });
+};
+http.ServerResponse.prototype.Send_500 = function (data) {
+  this.statusCode = 500;
+  this.Send(data);
+};
+http.ServerResponse.prototype.SendError = function (data) {
+  const { code } = data;
+  this.statusCode = code || 400;
+  this.Send(data);
+};
