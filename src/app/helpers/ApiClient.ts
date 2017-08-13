@@ -43,6 +43,7 @@ export default class ApiClient {
        * get 根据Id获取信息
        */
       AreaById: '/base/AreaById',
+      Captcha: '/apihelper/captcha',
     },
     Api: {
       List: '/manager/api/list',
@@ -104,9 +105,11 @@ export default class ApiClient {
           if (params) {
             request.query(params);
           }
-
+          const sessionId = window.sessionStorage.getItem('__XTN__SESSION');
+          request.header.sessionId = 'XTN_SESSION';
+          
           if (req && req.get('cookie')) {
-            request.set('cookie', req.get('cookie'));
+            request.set('cookie', sessionId);
           }
 
           if (data) {

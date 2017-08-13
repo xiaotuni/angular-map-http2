@@ -126,6 +126,27 @@
         </div>
       </div>
     </div>
+    <!-- 验证码 -->
+    <div class="captcha" *ngIf="Rule.type === 'captcha'">
+      <div class="delete" (click)="onClickCaptcha()">
+        <input type="checkbox" [(ngModel)]="Rule.captcha.isDelete" disabled /> 删除验证码
+      </div>
+
+      <div class="desc">
+        验证字段名称：
+        <input type="text" required [(ngModel)]="Rule.captcha.field" />
+      </div>
+      <div class="content" *ngIf="!Rule.captcha.isDelete">
+        <div class="desc">
+          时间超时说明：
+          <input type="text" required [(ngModel)]="Rule.captcha.timeout" placeholder="默认值：验证码已过期" />
+        </div>
+        <div class="desc">
+          验证错误时说明：
+          <input type="text" required [(ngModel)]="Rule.captcha.fail" placeholder="默认值：验证码错误" />
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>

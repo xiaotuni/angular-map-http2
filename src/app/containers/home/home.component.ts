@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ServiceHelper, BaseComponent, routeAnimation, Utility, Client, } from '../Core';
 
 @Component({
@@ -13,14 +14,26 @@ export class Home extends BaseComponent implements OnInit {
   ScrollInfo: any;
   public DataList: Array<any>;
   AreaInfo: any;
+  CommonInfo: any;
+  Catcha: any;
 
-  constructor(private sHelper: ServiceHelper) {
+  constructor(private sHelper: ServiceHelper, private sanitizer: DomSanitizer) {
     super();
     this.ScrollInfo = {};
+    this.CommonInfo = sHelper.Common;
   }
 
   ngOnInit() {
     // this.__ShowDialog();
+    this.__GetCaptcha();
+  }
+
+  __GetCaptcha() {
+    const self = this;
+
+    this.sHelper.Common.GetCaptcha().then((result) => {
+      self.Catcha = self.sanitizer.bypassSecurityTrustHtml(result);
+    }, () => { });
   }
 
   __UserInfo(methodType) {
@@ -66,7 +79,7 @@ export class Home extends BaseComponent implements OnInit {
 
 
 
-  
+
   __GetArearData(Condition) {
     const { ScrollInfo } = this;
     const { Common } = this.sHelper;

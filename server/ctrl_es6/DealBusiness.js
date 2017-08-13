@@ -91,7 +91,6 @@ class dealbusiness {
     return false;
   }
 
-
   /**
    * 检查参数，规则里定义的要传的参数，与接口伟来的参数进行匹配检查。
    * 
@@ -159,7 +158,7 @@ class dealbusiness {
         new Date().getTime() - __CurrentDate);
     }, (err) => {
       Log.Print('调用此接口出错:方法名称->【%s】,接口:【%s】', Method, PathName);
-      Response.SendError({ code: 500, msg: err && err.message ? message : err });
+      Response.SendError({ code: 400, msg: err && err.message ? message : err });
       Log.Print('--结束-->【%s】--用时:【%d】', new Date().Format("yyyy-MM-dd hh:mm:ss.S"), new Date().getTime() - __CurrentDate);
     });
   }
@@ -201,6 +200,41 @@ class dealbusiness {
       return;
     }
     this.__ProcessNextRule({ Rule, RuleCollection, Options, Complete, Error });
+  }
+
+  /**
+   * 验证码操作
+   * 
+   * @param {any} args 
+   * @returns 
+   * @memberof dealbusiness
+   */
+  __Process_captcha(args) {
+    const { Rule, RuleCollection, Options, Complete, Error } = args;
+    const { captcha } = Rule;
+    const { field, timeout, fail, isDelete } = captcha;
+    let __value = Options[field];
+    if (!__value) {
+      this.__ProcessNextRule(Object.assign(args, { errInfo: '请输入验证码。' }));
+      return;
+    }
+    // 其实可以将验证码进行MD5加密一下。
+    __value = __value.toLocaleLowerCase();
+    if (!!isDelete) {
+      delete Utility.ConstItem.CaptchaInfo[__value];
+      this.__ProcessNextRule(args);
+      return;
+    }
+    const __CI = Utility.ConstItem.CaptchaInfo[__value];
+    if (!__CI) {
+      this.__ProcessNextRule(Object.assign(args, { errInfo: fail }));
+      return;
+    }
+    if (__CI.getTime() < new Date().getTime()) {
+      this.__ProcessNextRule(Object.assign(args, { errInfo: timeout }));
+      return;
+    }
+    this.__ProcessNextRule(args);
   }
 
   /**
@@ -506,7 +540,6 @@ class dealbusiness {
       });
     }
   }
-
 
   /**
    * 结果信息

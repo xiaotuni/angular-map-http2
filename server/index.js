@@ -51,6 +51,13 @@ http.ServerResponse.prototype.Send = function (data) {
   // 处理下一个请求。
   __MQ.Next();
 };
+http.ServerResponse.prototype.SendImgSvg = function (data) {
+  this.setHeader('Content-Type', 'image/svg+xml');
+  this.write(String(data));
+  this.end();
+  // 处理下一个请求。
+  __MQ.Next();
+}
 http.ServerResponse.prototype.SendOk = function () {
   this.Send({ msg: 'ok' });
 };
@@ -114,16 +121,15 @@ class routes {
   initHeader() {
     this.res.setHeader("Content-Type", "application/json;charset=utf-8");
     this.res.setHeader("Access-Control-Allow-Origin", "*");
-    this.res.setHeader("access-control-allow-headers", "x-pingother, origin, x-requested-with, content-type, accept, token, xiaotuni,systemdate");
+    this.res.setHeader("access-control-allow-headers", "x-pingother, origin, x-requested-with, content-type, accept, token, xiaotuni,systemdate,sessionid");
     this.res.setHeader("access-control-allow-methods", "GET, POST, PUT, DELETE, OPTIONS");
-    this.res.setHeader("Access-Control-Expose-Headers", "date, token,systemdate");
+    this.res.setHeader("Access-Control-Expose-Headers", "date, token,systemdate,sessionid");
     this.res.setHeader('systemdate', new Date().getTime());
     const { method } = this.req;
     if (method && method === 'OPTIONS') {
       this.res.end();
       return;
     }
-
     this.processRequestMethod(method);
   }
 

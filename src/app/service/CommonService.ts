@@ -4,13 +4,13 @@ export class CommonService {
   public CurrentRouterPathInfo: any;
   private ApiClient: any;
   AreaInfo: any;
+  CaptchaInfo: any;
 
   constructor(private client) {
     this.ApiClient = client;
   }
 
   GetArea(condition): Promise<any> {
-
     const __self = this;
     const options = {
       action: {
@@ -27,8 +27,16 @@ export class CommonService {
         __self.AreaInfo.List = __self.AreaInfo.List.concat(List)
         __self.AreaInfo.Condition = Condition;
       }
-
       return data;
+    });
+  }
+
+  GetCaptcha(): Promise<any> {
+    const self = this;
+    const options = { action: { promise: (client) => client.get(client.API.Common.Captcha, {}) } };
+    return this.ApiClient(options).then((success) => {
+      self.CaptchaInfo = success;
+      return success;
     });
   }
 }

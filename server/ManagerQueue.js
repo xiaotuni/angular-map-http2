@@ -48,7 +48,7 @@ class ManagerQueue {
     const { _Queue } = this;
     if (_Queue.length === 0) {
       this.IsLock = false;
-      console.log('---------队列处理完了------');
+      // console.log('---------队列处理完了------');
       return;
     }
     this.GetQueueLength();
@@ -67,7 +67,7 @@ class ManagerQueue {
   NextQueue(args) {
     const { ApiInfo, request, response, params, data, token, TokenCollection, func, ctrl, methodInfo } = args;
     if (func) {
-      func.apply(ctrl, [request, response, { params, data, token }]);
+      func.apply(ctrl, [request, response, { TokenCollection, params, data, token }]);
       return;
     }
     const _db = new this.MySqlHelper(); // 实例化一个数据库操作类
@@ -81,7 +81,7 @@ class ManagerQueue {
    * @memberof ManagerQueue
    */
   GetQueueLength() {
-    console.log('---------队列大小为：【%d】--------', this._Queue.length);
+    // console.log('---------队列大小为：【%d】--------', this._Queue.length);
     return this._Queue.length;
   }
 }

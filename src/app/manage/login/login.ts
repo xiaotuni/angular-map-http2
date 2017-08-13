@@ -11,7 +11,7 @@ import * as CryptoJS from 'crypto-js';
 })
 export class Login extends BaseComponent implements OnInit {
   public UserInfo: any;
-
+  captchaUrl: string = "https://127.0.0.1:30081/webapi/apihelper/captchaCode";
   /**
    * Creates an instance of Login.
    * @param {ServiceHelper} sHelper service用于接口调用等
@@ -42,8 +42,12 @@ export class Login extends BaseComponent implements OnInit {
         Utility.$ToPage(Utility.$ConstItem.UrlItem.ManagerDashboard, {});
       }
     }, () => {
-     
+
     });
+  }
+
+  onClickUpdateCaptcha() {
+    this.captchaUrl = "https://127.0.0.1:30081/webapi/apihelper/captchaCode?times" + new Date().getTime();
   }
 
   forgetPassword() {

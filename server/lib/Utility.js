@@ -25,6 +25,7 @@ class Utility {
 				? args[number] : match;
 		});
 	}
+
 	/**
 	 * 去空格
 	 * @param value
@@ -36,6 +37,7 @@ class Utility {
 		}
 		return '';
 	}
+
 	/**
 	 * 获取当前时间
 	 * @returns {*}
@@ -44,6 +46,7 @@ class Utility {
 	static GetCurrentDate() {
 		return new Date().Format("yyyy-MM-dd hh:mm:ss.S");
 	}
+
 	/**
 	 * md5 加密
 	 * @param data 要加密的数据
@@ -55,6 +58,7 @@ class Utility {
 		var str = buf.toString("binary");
 		return crypto.createHash("md5").update(str).digest("hex");
 	}
+
 	/**
 	 * sah1 加密
 	 * @param data 要加密的数据
@@ -66,6 +70,7 @@ class Utility {
 		var str = buff.toString('binary');
 		return crypto.createHash("sha1").update(str).digest("hex");
 	}
+
 	//http://blog.shiqichan.com/encrypt-and-decrypt-string-with-aes/
 	/**
 	 * 加密函数
@@ -80,6 +85,7 @@ class Utility {
 		crypted += cipher.final('hex');
 		return crypted;
 	}
+
 	/**
 	 * 解密函数
 	 * @param data 要解密的数据
@@ -92,6 +98,7 @@ class Utility {
 		dec += decipher.final('utf8');
 		return dec;
 	}
+
 	/**
 	 * 判断是否为数组类型
 	 * @param data
@@ -101,6 +108,7 @@ class Utility {
 	static IsArray(data) {
 		return (typeof data == 'array') && data.constructor == Array;
 	}
+
 	/**
 	 * 判断是否为字符串类型
 	 * @param data
@@ -110,6 +118,7 @@ class Utility {
 	static IsString(data) {
 		return (typeof data == 'string') && data.constructor == String;
 	}
+
 	/**
 	 * 判断是否为日期类型
 	 * @param data
@@ -118,6 +127,7 @@ class Utility {
 	static IsDate(data) {
 		return (typeof data == 'date') && data.constructor == Date;
 	}
+
 	/**
 	 * 判断是否为函数
 	 * @param data
@@ -167,6 +177,12 @@ class Utility {
 	 */
 	static ParseObject(args) {
 		return util.inspect(object, true, 12, true);
+	}
+
+}
+Utility.ConstItem = {
+	CaptchaInfo: {
+
 	}
 }
 

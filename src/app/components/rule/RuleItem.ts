@@ -34,6 +34,7 @@ export class RuleItem implements OnInit {
     { key: 'cache', title: '保存到缓存' },
     { key: 'setvalue', title: '赋值操作' },
     { key: 'parentrelation', title: '主子关系' },
+    { key: 'captcha', title: '验证码' },
   ];
 
   constructor() {
@@ -50,11 +51,10 @@ export class RuleItem implements OnInit {
 
 
     let { type } = this.Rule;
-    const { judgeInfo, setValues, parentRelation } = this.Rule;
+    const { judgeInfo, setValues, parentRelation, captcha } = this.Rule;
     if (!type) {
       this.Rule.type = 'query';
-    }
-    else if (type === 'judge') {
+    } else if (type === 'judge') {
       if (!judgeInfo) {
         this.Rule.judgeInfo = {};
       }
@@ -66,6 +66,8 @@ export class RuleItem implements OnInit {
       if (!parentRelation) {
         this.Rule.parentRelation = { fields: [] }
       }
+    } else if (type === 'captcha' && !captcha) {
+      this.Rule.captcha = {};
     }
   }
 
@@ -76,7 +78,7 @@ export class RuleItem implements OnInit {
   }
 
   onChange_RuleType(item) {
-    const { type, judgeInfo, cacheInfo, setValues, parentRelation } = this.Rule;
+    const { type, judgeInfo, cacheInfo, setValues, parentRelation, captcha } = this.Rule;
     if (item === 'judge' && !judgeInfo) {
       this.Rule.judgeInfo = {};
     }
@@ -86,7 +88,10 @@ export class RuleItem implements OnInit {
       this.Rule.setValues = [];
     } else if (item === 'parentRelation'.toLocaleLowerCase() && !parentRelation) {
       this.Rule.parentRelation = { fields: [] }
+    } else if (type === 'captcha' && !captcha) {
+      this.Rule.captcha = {};
     }
+
   }
 
   onClickAddRule(rule) {
@@ -136,4 +141,8 @@ export class RuleItem implements OnInit {
   onBtnClickDeleteField(index) {
     this.Rule.parentRelation.fields.splice(index, 1);
   }
+  onClickCaptcha() {
+    this.Rule.captcha.isDelete = !this.Rule.captcha.isDelete;
+  }
+
 }

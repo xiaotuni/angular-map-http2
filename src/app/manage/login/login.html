@@ -9,6 +9,10 @@
     <div class="password">
       <input type="password" placeholder="Enter password" required [(ngModel)]="UserInfo.password">
     </div>
+    <div class="captcha">
+      <input type="text" placeholder="验证码" required [(ngModel)]="UserInfo.captcha">
+      <img src="{{captchaUrl}}" (click)="onClickUpdateCaptcha()">
+    </div>
   </div>
 
   <div class="operator">

@@ -16,6 +16,13 @@
     </div>
   </div>
 
+  <div>
+    <div class="captcha" *ngIf="CommonInfo && CommonInfo.CaptchaInfo">
+      <div [innerHTML]="Catcha" (click)="__GetCaptcha()"></div>
+      <button (click)="__GetCaptcha()">获取验证码 </button>
+    </div>
+  </div>
+
   <xtn-scroll [Percentage]="20" [IsNextPageFinish]="ScrollInfo.IsNextPageFinish" [IsRefreshFinish]="ScrollInfo.IsRefreshFinish"
     (onRefresh)="onScrollRefresh()" (onNextPage)="onScrollNextPage()" (onSlideLeft)="onSlideLeft()" (onSlideRight)="onSlideRight()">
     <div *ngIf="AreaInfo && AreaInfo.List && AreaInfo.List.length>0">
