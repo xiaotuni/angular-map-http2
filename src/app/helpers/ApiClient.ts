@@ -44,6 +44,7 @@ export default class ApiClient {
        */
       AreaById: '/base/AreaById',
       Captcha: '/apihelper/captcha',
+      FileUpload: '/apihelper/fileupload',
     },
     Api: {
       List: '/manager/api/list',
@@ -107,7 +108,7 @@ export default class ApiClient {
           }
           const sessionId = window.sessionStorage.getItem('__XTN__SESSION');
           request.header.sessionId = 'XTN_SESSION';
-          
+
           if (req && req.get('cookie')) {
             request.set('cookie', sessionId);
           }

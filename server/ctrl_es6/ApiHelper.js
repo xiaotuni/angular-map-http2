@@ -1,3 +1,4 @@
+const fs = require('fs');
 const vCode = require('svg-captcha');
 const Utility = require('../lib/Utility');
 
@@ -27,6 +28,7 @@ class ApiHelper {
     Utility.ConstItem.CaptchaInfo[captcha.text] = a;
     res.Send(captcha.data);
   }
+
   get_captchaCode(req, res, options) {
     const captcha = vCode.create({ fontSize: 50, width: 100, height: 40 });
     const exp = new Date();
@@ -34,6 +36,15 @@ class ApiHelper {
     // 其实可以将验证码进行MD5加密一下。
     Utility.ConstItem.CaptchaInfo[captcha.text.toLocaleLowerCase()] = date;
     res.SendImgSvg(captcha.data);
+  }
+
+  post_fileupload(req, res, options) {
+    console.log('--------file upload--------');
+
+    const __fileName = 'file_name_' + new Date().getTime() + '.png';
+    const { data } = options;
+    fs.appendFileSync('./public/image/' + __fileName, data, 'buffer');
+    res.SendOk();
   }
 }
 

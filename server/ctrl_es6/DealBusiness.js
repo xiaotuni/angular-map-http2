@@ -82,6 +82,11 @@ class dealbusiness {
     }
     if (token && __TokenCollection__ && __TokenCollection__[token]) {
       const __tokenInfo = __TokenCollection__[token];
+      const { deadline } = __tokenInfo;
+      if (deadline.getTime() < new Date().getTime()) {
+        Response.Send401('令牌已过期，请重新登录。');
+        return false;
+      }
       Object.assign(Options, __tokenInfo || {});
       return true;
     }

@@ -39,4 +39,13 @@ export class CommonService {
       return success;
     });
   }
+
+  FileUpload(file): Promise<any> {
+    const self = this;
+    const options = { action: { promise: (client) => client.post(client.API.Common.FileUpload, { data: file }) } };
+    return this.ApiClient(options).then((success) => {
+      self.CaptchaInfo = success;
+      return success;
+    });
+  }
 }

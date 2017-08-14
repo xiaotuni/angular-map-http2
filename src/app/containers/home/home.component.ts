@@ -76,10 +76,6 @@ export class Home extends BaseComponent implements OnInit {
       });
   }
 
-
-
-
-
   __GetArearData(Condition) {
     const { ScrollInfo } = this;
     const { Common } = this.sHelper;
@@ -98,15 +94,31 @@ export class Home extends BaseComponent implements OnInit {
     this.ScrollInfo.IsRefreshFinish = false;
     this.__GetArearData(null);
   }
+
   onScrollNextPage() {
     this.ScrollInfo.IsNextPageFinish = false;
     const { AreaInfo } = this.sHelper.Common;
     this.__GetArearData(AreaInfo && AreaInfo.Condition ? AreaInfo.Condition : null);
   }
+
   onSlideLeft() {
     console.log('向左边滑动啦...');
   }
+
   onSlideRight() {
     console.log('向右边滑动..');
+  }
+
+  __FileInfo: any;
+  onBtnClickUpload() {
+    console.log('file uploading demo...123');
+  }
+
+  onTxtUpload(event) {
+    console.log(event);
+    const file = event.currentTarget.files[0];
+    this.sHelper.Common.FileUpload(file).then((success) => {
+      console.log('file upload success.');
+    }, () => { });
   }
 }

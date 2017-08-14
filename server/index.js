@@ -163,13 +163,29 @@ class routes {
 
   __ProcessApi(PathInfo) {
     const methodInfo = { pathname: this.UrlInfo.pathname, method: this.Method };
+    const { func, ctrl } = this.__FindMethod(PathInfo) || {};
+    // if (func && func.name === 'post_fileupload') {
+
+    // }
+    // else {
 
     // 以utf-8的形式接受body数据
-    this.req.setEncoding('utf8');
-    let __ReData = "";
+    // this.req.setEncoding('utf8');
+    // }
+    let __ReData = { DataType: 'String', Data: '' };
+    const __fileName = 'file_name_' + new Date().getTime() + '.png';
     // 这里接受用户调用接口时，向body发送的数据
     this.req.on('data', (data) => {
-      __ReData += data;
+      if (Buffer.isBuffer(data)) {
+        if (!__ReData.BufferData) {
+          __ReData.DataType = 'Buffer';
+          __ReData.BufferData = data;
+        } else {
+          __ReData.BufferData = Buffer.concat([__ReData.BufferData, data], data.length + __ReData.BufferData.length);
+        }
+      } else {
+        __ReData.Data += data;
+      }
     });
     const __self = this;
     const { TokenCollection } = MySqlHelper;
@@ -184,9 +200,12 @@ class routes {
     };
     this.req.on('end', () => {      // 监听数据接受完后事件。
       // 查询用户定义好的接口。
-      const { func, ctrl } = __self.__FindMethod(PathInfo) || {};
-      const data = __ReData && __ReData !== '' ? JSON.parse(__ReData) : {};
-      args.data = data;
+      const { DataType, Data, BufferData } = __ReData;
+      if (DataType === 'Buffer') {
+        args.data = BufferData;
+      } else {
+        args.data = Data && Data !== '' ? JSON.parse(Data) : {};
+      }
       if (func) {
         args.func = func;
         args.ctrl = ctrl;

@@ -44,15 +44,22 @@
     }
   }
 
-  // .captcha {
-  //   padding: 10px;
-  //   border: 1px solid;
+  .captcha {
+    display: flex;
 
-  //   >div {
-  //     height: 50px;
-  //     width: 100%;
-  //   }
-  // }
+    > div {
+      height: 50px;
+      width: 100%;
+    }
+
+    button {
+      white-space: nowrap;
+    }
+  }
+
+  .fileUpload {
+    margin-top: 10px;
+  }
 
   .areaInfo {
     display: flex;
