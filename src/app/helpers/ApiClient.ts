@@ -45,6 +45,7 @@ export default class ApiClient {
       AreaById: '/base/AreaById',
       Captcha: '/apihelper/captcha',
       FileUpload: '/apihelper/fileupload',
+      FilesUpload: '/apihelper/filesupload',
     },
     Api: {
       List: '/manager/api/list',
@@ -88,6 +89,14 @@ export default class ApiClient {
     }
   }
 
+  GetFilesData(data) {
+    const formData = new FormData();
+    data.forEach((file) => {
+      formData.append(file.name, file, file.name);
+    });
+    return formData;
+  }
+
   /**
    * Creates an instance of ApiClient.
    * @param {any} req 
@@ -102,26 +111,21 @@ export default class ApiClient {
         const { params, data } = condition || { params: null, data: null };
         return new Promise((resolve, reject) => {
           const request = superagent[method](formatUrl(path));
+          const { token } = Utility.$GetContent(Utility.$ConstItem.UserInfo) || { token: null };
+          request.header.xiaotuni = 'liaohaibing_' + new Date().getTime();
+          request.header.token = token;
+
 
           if (params) {
             request.query(params);
           }
-          const sessionId = window.sessionStorage.getItem('__XTN__SESSION');
-          request.header.sessionId = 'XTN_SESSION';
 
-          if (req && req.get('cookie')) {
-            request.set('cookie', sessionId);
-          }
-
-          if (data) {
+          if (path === this.API.Common.FilesUpload) {
+            request.header['Content-Type'] = 'application/x-www-form-urlencoded';
+            request.send(this.GetFilesData(data));
+          } else if (data) {
             request.send(data);
           }
-
-          const { token } = Utility.$GetContent(Utility.$ConstItem.UserInfo) || { token: null };
-
-          request.header.xiaotuni = 'liaohaibing_' + new Date().getTime();
-          request.header.token = token;
-
           const { HttpStatus } = Utility.$ConstItem.Events;
           /**
            * 错误处理及提示

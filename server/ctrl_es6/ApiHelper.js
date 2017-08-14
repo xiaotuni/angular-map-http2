@@ -46,6 +46,14 @@ class ApiHelper {
     fs.appendFileSync('./public/image/' + __fileName, data, 'buffer');
     res.SendOk();
   }
+
+  post_filesupload(req, res, options) {
+    console.log('--------file upload--------');
+    const __fileName = 'file_name_' + new Date().getTime() + '.png';
+    const { data } = options;
+    fs.appendFileSync('./public/image/' + __fileName, data, 'buffer');
+    res.SendOk();
+  }
 }
 
 module.exports = ApiHelper;

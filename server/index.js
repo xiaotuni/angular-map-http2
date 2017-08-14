@@ -164,14 +164,14 @@ class routes {
   __ProcessApi(PathInfo) {
     const methodInfo = { pathname: this.UrlInfo.pathname, method: this.Method };
     const { func, ctrl } = this.__FindMethod(PathInfo) || {};
-    // if (func && func.name === 'post_fileupload') {
+    const cType = this.req.headers['content-type'];
+    if (!cType || cType === 'application/json') {
+      // 以utf - 8的形式接受body数据
+      this.req.setEncoding('utf8');
+    } else {
+      // this.req.setEncoding('Buffer');
+    }
 
-    // }
-    // else {
-
-    // 以utf-8的形式接受body数据
-    // this.req.setEncoding('utf8');
-    // }
     let __ReData = { DataType: 'String', Data: '' };
     const __fileName = 'file_name_' + new Date().getTime() + '.png';
     // 这里接受用户调用接口时，向body发送的数据
