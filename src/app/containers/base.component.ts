@@ -21,11 +21,10 @@ export class BaseComponent implements OnInit {
   constructor() {
     // get brower title 
     this.__GetBrowerTitle();
-    console.log('constructor-->base component-- ');
     this.UrlParams = Utility.$GetContent(Utility.$ConstItem.UrlPathInfo);
   }
+  
   ngOnInit() {
-    console.log('on init component');
     // this.UrlParams = Utility.$GetContent(Utility.$ConstItem.UrlPathInfo);
   }
 

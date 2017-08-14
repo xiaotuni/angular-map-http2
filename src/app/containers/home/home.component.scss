@@ -46,8 +46,7 @@
 
   .captcha {
     display: flex;
-
-    > div {
+    >div {
       height: 50px;
       width: 100%;
     }
@@ -59,6 +58,18 @@
 
   .fileUpload {
     margin-top: 10px;
+    .file {
+      display: flex;
+
+      .name {
+        flex: 1;
+      }
+
+      .type,
+      size {
+        margin: 0px 5px;
+      }
+    }
   }
 
   .areaInfo {

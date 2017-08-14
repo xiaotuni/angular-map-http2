@@ -45,6 +45,7 @@ export default class ApiClient {
       AreaById: '/base/AreaById',
       Captcha: '/apihelper/captcha',
       FileUpload: '/apihelper/fileupload',
+      FilesUpload: '/apihelper/filesupload',
     },
     Api: {
       List: '/manager/api/list',
@@ -88,6 +89,17 @@ export default class ApiClient {
     }
   }
 
+  GetFormData(files) {
+    const formData = new FormData();
+    formData.append('test1','test_1');
+    formData.append('test2','test_2');
+    formData.append('test3','test_3');
+    files.forEach((file) => {
+      formData.append(file.name, file, file.name);
+    });
+    return formData;
+  }
+
   /**
    * Creates an instance of ApiClient.
    * @param {any} req 
@@ -108,12 +120,16 @@ export default class ApiClient {
           }
           const sessionId = window.sessionStorage.getItem('__XTN__SESSION');
           request.header.sessionId = 'XTN_SESSION';
-
+          
           if (req && req.get('cookie')) {
             request.set('cookie', sessionId);
           }
-
-          if (data) {
+          
+          if (path === this.API.Common.FilesUpload) {
+            
+            request.header['Content-Type'] = 'multipart/form-data';
+            request.send(this.GetFormData(data));
+          } else if (data) {
             request.send(data);
           }
 
