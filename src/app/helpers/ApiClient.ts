@@ -91,9 +91,9 @@ export default class ApiClient {
 
   GetFormData(files) {
     const formData = new FormData();
-    formData.append('test1','test_1');
-    formData.append('test2','test_2');
-    formData.append('test3','test_3');
+    formData.append('test1', 'test_1');
+    formData.append('test2', 'test_2');
+    formData.append('test3', 'test_3');
     files.forEach((file) => {
       formData.append(file.name, file, file.name);
     });
@@ -117,21 +117,19 @@ export default class ApiClient {
           const { token } = Utility.$GetContent(Utility.$ConstItem.UserInfo) || { token: null };
           request.header.xiaotuni = 'liaohaibing_' + new Date().getTime();
           request.header.token = token;
-
-
           if (params) {
             request.query(params);
           }
-          const sessionId = window.sessionStorage.getItem('__XTN__SESSION');
-          request.header.sessionId = 'XTN_SESSION';
-          
+
           if (req && req.get('cookie')) {
-            request.set('cookie', sessionId);
+            request.set('cookie', req.getCookie());
           }
-          
+
           if (path === this.API.Common.FilesUpload) {
-            
-            request.header['Content-Type'] = 'multipart/form-data';
+            // request.header['Content-Type'] = 'multipart/form-data';
+            // data.forEach((file) => {
+            //   request.attach(file.name, file);
+            // });
             request.send(this.GetFormData(data));
           } else if (data) {
             request.send(data);

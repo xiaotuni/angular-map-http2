@@ -126,4 +126,9 @@ export class Home extends BaseComponent implements OnInit {
     }, () => { });
 
   }
+
+  onBtnDeleteFile(index) {
+    console.log('onBtnDeleteFile----index is ', index);
+    this.FileCollection.splice(index, 1);
+  }
 }

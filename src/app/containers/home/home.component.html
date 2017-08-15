@@ -21,10 +21,11 @@
     <button (click)="__GetCaptcha()">获取验证码 </button>
   </div>
   <div class="fileUpload">
-    <div class="file" *ngFor="let item of FileCollection">
+    <div class="file" *ngFor="let item of FileCollection;let i = index">
       <div class="type">{{item.type}}</div>
       <div class="name">{{item.name}}</div>
       <div class="size">{{item.size}}</div>
+      <button (click)="onBtnDeleteFile(i)">删除</button>
     </div>
 
     <input type="file" [(ngModel)]="__FileInfo" (change)="onTxtUpload($event)">

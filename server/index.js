@@ -8,6 +8,7 @@ const fs = require('fs');
 const api = require('./ctrl_es6/index');
 const MySqlHelper = require('./ctrl_es6/DbHelper');
 const ManagerQueue = require('./ManagerQueue');
+const formidable = require('formidable');
 
 /**
  * 为什么在这里引用呢，JS是从上向下找的，如果在send()之前没有找到 __MQ变量的话，会报错误
@@ -164,6 +165,42 @@ class routes {
   __ProcessApi(PathInfo) {
     const methodInfo = { pathname: this.UrlInfo.pathname, method: this.Method };
     const { func, ctrl } = this.__FindMethod(PathInfo) || {};
+    const __self = this;
+    const { TokenCollection } = MySqlHelper;
+    const args = {
+      request: this.req,
+      response: this.res,
+      params: this.QueryParams,
+      token: this.token,
+      TokenCollection,
+      methodInfo,
+      ApiInfo: this.ApiInfo,
+    };
+
+    const form = new formidable.IncomingForm();
+    const res = this.res;
+    form.parse(this.req, (err, fields, files) => {
+      if (err) {
+        res.SendError({ msg: err.message });
+        return;
+      }
+      args.data = fields;
+      args.files = files;
+      if (func) {
+        args.func = func;
+        args.ctrl = ctrl;
+        __MQ.AddQueue(args);
+        return;
+      }
+      __MQ.AddQueue(args);
+    });
+
+
+
+    return;
+
+
+
     const cType = this.req.headers['content-type'];
     if (!cType || cType === 'application/json') {
       // 以utf - 8的形式接受body数据
@@ -187,17 +224,7 @@ class routes {
         __ReData.Data += data;
       }
     });
-    const __self = this;
-    const { TokenCollection } = MySqlHelper;
-    const args = {
-      request: this.req,
-      response: this.res,
-      params: this.QueryParams,
-      token: this.token,
-      TokenCollection,
-      methodInfo,
-      ApiInfo: this.ApiInfo,
-    };
+
     this.req.on('end', () => {      // 监听数据接受完后事件。
       // 查询用户定义好的接口。
       const { DataType, Data, BufferData } = __ReData;
