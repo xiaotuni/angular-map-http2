@@ -89,9 +89,12 @@ export default class ApiClient {
     }
   }
 
-  GetFilesData(data) {
+  GetFormData(files) {
     const formData = new FormData();
-    data.forEach((file) => {
+    formData.append('test1','test_1');
+    formData.append('test2','test_2');
+    formData.append('test3','test_3');
+    files.forEach((file) => {
       formData.append(file.name, file, file.name);
     });
     return formData;
@@ -119,10 +122,17 @@ export default class ApiClient {
           if (params) {
             request.query(params);
           }
-
+          const sessionId = window.sessionStorage.getItem('__XTN__SESSION');
+          request.header.sessionId = 'XTN_SESSION';
+          
+          if (req && req.get('cookie')) {
+            request.set('cookie', sessionId);
+          }
+          
           if (path === this.API.Common.FilesUpload) {
-            request.header['Content-Type'] = 'application/x-www-form-urlencoded';
-            request.send(this.GetFilesData(data));
+            
+            request.header['Content-Type'] = 'multipart/form-data';
+            request.send(this.GetFormData(data));
           } else if (data) {
             request.send(data);
           }

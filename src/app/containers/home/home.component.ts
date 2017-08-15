@@ -30,7 +30,6 @@ export class Home extends BaseComponent implements OnInit {
 
   __GetCaptcha() {
     const self = this;
-
     this.sHelper.Common.GetCaptcha().then((result) => {
       self.Catcha = self.sanitizer.bypassSecurityTrustHtml(result);
     }, () => { });
@@ -110,23 +109,21 @@ export class Home extends BaseComponent implements OnInit {
   }
 
   FileCollection: Array<any> = new Array();
-
-
   onTxtUpload(event) {
     console.log(event);
     const file = event.currentTarget.files[0];
     this.FileCollection.push(file);
   }
-
-  onBtnClickUpload() {
+  onBtnClickBatchUpload() {
     this.sHelper.Common.FilesUpload(this.FileCollection).then((success) => {
       console.log('file upload success.');
     }, () => { });
-  }
 
-  onBtnClickUpload1() {
+  }
+  onBtnClickUpload() {
     this.sHelper.Common.FileUpload(this.FileCollection[0]).then((success) => {
       console.log('file upload success.');
     }, () => { });
+
   }
 }

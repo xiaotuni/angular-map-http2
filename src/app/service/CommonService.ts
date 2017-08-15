@@ -49,9 +49,9 @@ export class CommonService {
     });
   }
 
-  FilesUpload(file): Promise<any> {
+  FilesUpload(files): Promise<any> {
     const self = this;
-    const options = { action: { promise: (client) => client.post(client.API.Common.FilesUpload, { data: file }) } };
+    const options = { action: { promise: (client) => client.post(client.API.Common.FilesUpload, { data: files }) } };
     return this.ApiClient(options).then((success) => {
       self.CaptchaInfo = success;
       return success;

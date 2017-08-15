@@ -21,16 +21,16 @@
     <button (click)="__GetCaptcha()">获取验证码 </button>
   </div>
   <div class="fileUpload">
-    <div class="file" *ngFor="let file of FileCollection">
-      <div class="type">{{file.type}}</div>
-      <div class="name">{{file.name}}</div>
-      <div class="size">{{file.size}}</div>
+    <div class="file" *ngFor="let item of FileCollection">
+      <div class="type">{{item.type}}</div>
+      <div class="name">{{item.name}}</div>
+      <div class="size">{{item.size}}</div>
     </div>
 
-    <input type="file" name="" [(ngModel)]="__FileInfo" (change)="onTxtUpload($event)">
+    <input type="file" [(ngModel)]="__FileInfo" (change)="onTxtUpload($event)">
 
-    <button (click)="onBtnClickUpload()">批量 </button>
-    <button (click)="onBtnClickUpload1()">单个 </button>
+    <button (click)="onBtnClickBatchUpload()">批量 </button>
+    <button (click)="onBtnClickUpload()">单个 </button>
   </div>
 
   <xtn-scroll [Percentage]="20" [IsNextPageFinish]="ScrollInfo.IsNextPageFinish" [IsRefreshFinish]="ScrollInfo.IsRefreshFinish"

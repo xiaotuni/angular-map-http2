@@ -47,8 +47,10 @@ class ApiHelper {
     res.SendOk();
   }
 
+  
   post_filesupload(req, res, options) {
-    console.log('--------file upload--------');
+    console.log('--------file list upload--------');
+
     const __fileName = 'file_name_' + new Date().getTime() + '.png';
     const { data } = options;
     fs.appendFileSync('./public/image/' + __fileName, data, 'buffer');
