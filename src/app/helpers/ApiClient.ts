@@ -126,10 +126,6 @@ export default class ApiClient {
           }
 
           if (path === this.API.Common.FilesUpload) {
-            // request.header['Content-Type'] = 'multipart/form-data';
-            // data.forEach((file) => {
-            //   request.attach(file.name, file);
-            // });
             request.send(this.GetFormData(data));
           } else if (data) {
             request.send(data);

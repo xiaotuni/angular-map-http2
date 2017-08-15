@@ -168,13 +168,8 @@ class routes {
     const __self = this;
     const { TokenCollection } = MySqlHelper;
     const args = {
-      request: this.req,
-      response: this.res,
-      params: this.QueryParams,
-      token: this.token,
-      TokenCollection,
-      methodInfo,
-      ApiInfo: this.ApiInfo,
+      request: this.req, response: this.res, params: this.QueryParams,
+      token: this.token, TokenCollection, methodInfo, ApiInfo: this.ApiInfo,func, ctrl
     };
 
     const form = new formidable.IncomingForm();
@@ -186,59 +181,6 @@ class routes {
       }
       args.data = fields;
       args.files = files;
-      if (func) {
-        args.func = func;
-        args.ctrl = ctrl;
-        __MQ.AddQueue(args);
-        return;
-      }
-      __MQ.AddQueue(args);
-    });
-
-
-
-    return;
-
-
-
-    const cType = this.req.headers['content-type'];
-    if (!cType || cType === 'application/json') {
-      // 以utf - 8的形式接受body数据
-      this.req.setEncoding('utf8');
-    } else {
-      // this.req.setEncoding('Buffer');
-    }
-
-    let __ReData = { DataType: 'String', Data: '' };
-    const __fileName = 'file_name_' + new Date().getTime() + '.png';
-    // 这里接受用户调用接口时，向body发送的数据
-    this.req.on('data', (data) => {
-      if (Buffer.isBuffer(data)) {
-        if (!__ReData.BufferData) {
-          __ReData.DataType = 'Buffer';
-          __ReData.BufferData = data;
-        } else {
-          __ReData.BufferData = Buffer.concat([__ReData.BufferData, data], data.length + __ReData.BufferData.length);
-        }
-      } else {
-        __ReData.Data += data;
-      }
-    });
-
-    this.req.on('end', () => {      // 监听数据接受完后事件。
-      // 查询用户定义好的接口。
-      const { DataType, Data, BufferData } = __ReData;
-      if (DataType === 'Buffer') {
-        args.data = BufferData;
-      } else {
-        args.data = Data && Data !== '' ? JSON.parse(Data) : {};
-      }
-      if (func) {
-        args.func = func;
-        args.ctrl = ctrl;
-        __MQ.AddQueue(args);
-        return;
-      }
       __MQ.AddQueue(args);
     });
   }

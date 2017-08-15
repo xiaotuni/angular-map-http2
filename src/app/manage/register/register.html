@@ -15,6 +15,9 @@
   <div class="row">
     <input type="text" [(ngModel)]="UserInfo.Address" placeholder="地址" maxtLength="150">
   </div>
+  <div class="row">
+    <input type="file" [(ngModel)]="UserInfo.HeadPortrait" placeholder="头像" (change)="onChangeHeadPortrait($event)">
+  </div>
   <div class="btn">
     <div type="text" (click)="__ClickRegister()">确定</div>
   </div>

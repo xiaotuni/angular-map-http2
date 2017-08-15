@@ -66,13 +66,17 @@ class ManagerQueue {
    */
   NextQueue(args) {
     const { ApiInfo, request, response, params, data, token, TokenCollection, func, ctrl, methodInfo } = args;
+    const newArgs = Object.assign({}, args);
+    delete newArgs.request;
+    delete newArgs.response;
+
     if (func) {
-      func.apply(ctrl, [request, response, { TokenCollection, params, data, token }]);
+      func.apply(ctrl, [request, response, newArgs]);
       return;
     }
     const _db = new this.MySqlHelper(); // 实例化一个数据库操作类
     _db.__TokenCollection__ = TokenCollection;
-    ApiInfo.DealBusiness.Process(_db, request, response, { methodInfo, params, data, token });
+    ApiInfo.DealBusiness.Process(_db, request, response, newArgs);
   }
 
   /**

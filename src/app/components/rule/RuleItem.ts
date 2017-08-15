@@ -23,6 +23,13 @@ export class RuleItem implements OnInit {
     DELETE: 'delete',
   }
 
+  FileTypes: Array<any> = [
+    { key: 'image', title: '图片' },
+    { key: 'video', title: '视频' },
+    { key: 'doc', title: '文档' },
+    { key: 'other', title: '其它' },
+  ];
+
   public RuleType: Array<any> = [
     { key: 'query', title: '查询' },
     { key: 'update', title: '更新' },
@@ -35,6 +42,7 @@ export class RuleItem implements OnInit {
     { key: 'setvalue', title: '赋值操作' },
     { key: 'parentrelation', title: '主子关系' },
     { key: 'captcha', title: '验证码' },
+    { key: 'file', title: '文件上传' },
   ];
 
   constructor() {
@@ -51,7 +59,7 @@ export class RuleItem implements OnInit {
 
 
     let { type } = this.Rule;
-    const { judgeInfo, setValues, parentRelation, captcha } = this.Rule;
+    const { judgeInfo, setValues, parentRelation, captcha, files } = this.Rule;
     if (!type) {
       this.Rule.type = 'query';
     } else if (type === 'judge') {
@@ -68,6 +76,8 @@ export class RuleItem implements OnInit {
       }
     } else if (type === 'captcha' && !captcha) {
       this.Rule.captcha = {};
+    } else if (type === 'file' && !files) {
+      this.Rule.files = { type: this.FileTypes[0].key };
     }
   }
 
@@ -78,11 +88,10 @@ export class RuleItem implements OnInit {
   }
 
   onChange_RuleType(item) {
-    const { type, judgeInfo, cacheInfo, setValues, parentRelation, captcha } = this.Rule;
+    const { type, judgeInfo, files, cacheInfo, setValues, parentRelation, captcha } = this.Rule;
     if (item === 'judge' && !judgeInfo) {
       this.Rule.judgeInfo = {};
-    }
-    else if (item === 'cache' && !cacheInfo) {
+    } else if (item === 'cache' && !cacheInfo) {
       this.Rule.cacheInfo = {};
     } else if (item === 'setvalue' && !setValues) {
       this.Rule.setValues = [];
@@ -90,8 +99,15 @@ export class RuleItem implements OnInit {
       this.Rule.parentRelation = { fields: [] }
     } else if (type === 'captcha' && !captcha) {
       this.Rule.captcha = {};
-    }
+    } else if (type === 'file' && !files) {
+      this.Rule.files = { type: this.FileTypes[0].key };
 
+    }
+  }
+
+  onChange_FileType(type) {
+    console.log(type);
+    this.Rule.files.filePath = './public/' + type;
   }
 
   onClickAddRule(rule) {

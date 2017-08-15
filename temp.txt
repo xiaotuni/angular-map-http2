@@ -69,3 +69,17 @@ update sys_rule set content = '
 }
 '
 where id = 1
+
+
+
+
+-------------------
+CREATE TABLE `xtn_sys_file` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `FileName` varchar(150) DEFAULT NULL COMMENT '文件名称',
+  `FilePath` varchar(200) DEFAULT NULL COMMENT '文件路径',
+  `Status` tinyint(1) DEFAULT '1',
+  `CreateTime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文件系统表';
+

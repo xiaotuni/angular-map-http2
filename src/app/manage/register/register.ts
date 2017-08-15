@@ -27,4 +27,7 @@ export class Register extends BaseComponent implements OnInit {
     });
   }
 
+  onChangeHeadPortrait(event) {
+    this.UserInfo.HeadPortrait = event.currentTarget.files[0];
+  }
 }

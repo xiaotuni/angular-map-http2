@@ -83,7 +83,7 @@ class dealbusiness {
     if (token && __TokenCollection__ && __TokenCollection__[token]) {
       const __tokenInfo = __TokenCollection__[token];
       const { deadline } = __tokenInfo;
-      if (deadline.getTime() < new Date().getTime()) {
+      if (deadline && deadline.getTime() < new Date().getTime()) {
         Response.Send401('令牌已过期，请重新登录。');
         return false;
       }
@@ -531,7 +531,7 @@ class dealbusiness {
       Log.Print('执行此规则出错了:【%s】', JSON.stringify(Rule));
       this.DbAccess.ClosePool(() => Error && Error(errInfo && errInfo.message ? errInfo.message : errInfo), (pe) => {
         Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
-        Error && Error(errInfo && errInfo.message ? err.message : errInfo);
+        Error && Error(errInfo && errInfo.message ? errInfo.message : errInfo);
       });
       return;
     }

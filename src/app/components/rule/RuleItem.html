@@ -7,7 +7,7 @@
       <div class="name"> 类型 </div>
       <select required [(ngModel)]="Rule.type" (change)="onChange_RuleType(Rule.type)">
           <option *ngFor="let item of RuleType" [value]="item.key">{{item.title}} </option>
-        </select>
+      </select>
     </div>
     <div class="title" *ngIf="Rule.type === 'query'">
       <div class="name"> 多行数据</div>
@@ -146,6 +146,17 @@
           <input type="text" required [(ngModel)]="Rule.captcha.fail" placeholder="默认值：验证码错误" />
         </div>
       </div>
+    </div>
+    <div class="files" *ngIf="Rule.type === 'file'">
+      文件保存路径：
+      <input type="text" [ngModel]="Rule.files.filePath" disabled>
+      <div>
+        文件类型
+        <select required [(ngModel)]="Rule.files.type" (change)="onChange_FileType(Rule.files.type)">
+          <option *ngFor="let item of FileTypes" [value]="item.key">{{item.title}} </option>
+      </select>
+      </div>
+      <div></div>
     </div>
   </div>
 
