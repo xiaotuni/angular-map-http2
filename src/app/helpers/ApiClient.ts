@@ -128,7 +128,12 @@ export default class ApiClient {
           if (path === this.API.Common.FilesUpload) {
             request.send(this.GetFormData(data));
           } else if (data) {
-            request.send(data);
+            // request.send(data);
+            const fd = new FormData();
+            Object.keys(data).forEach((field) => {
+              fd.append(field, data[field])
+            });
+            request.send(fd);
           }
           const { HttpStatus } = Utility.$ConstItem.Events;
           /**

@@ -158,6 +158,27 @@
     .files {
       border: 1px solid;
       min-height: 90px;
+
+      .row {
+        margin-left: 5px;
+        margin-top: 2px;
+        align-items: center;
+        >label {
+          width: 60px;
+          text-align: right;
+        }
+        select,
+        input[type='text'] {
+          width: 100px;
+        }
+      }
+
+      .desc {
+        padding: 5px;
+        color: red;
+        font-weight: 700;
+        line-height: 1.8;
+      }
     }
   }
 }

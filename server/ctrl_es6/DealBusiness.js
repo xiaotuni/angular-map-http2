@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const Utility = require('../lib/Utility');
 const MySqlHelper = require('../ctrl_es6/DbHelper');
 const Log = new Utility().Log;
@@ -205,6 +207,43 @@ class dealbusiness {
       return;
     }
     this.__ProcessNextRule({ Rule, RuleCollection, Options, Complete, Error });
+  }
+
+  __Process_files(args) {
+    //
+    const { Rule, RuleCollection, Options, Complete, Error } = args;
+    const { files } = Options;
+    const { filePath, } = Rule.files;
+
+    let __baseDir = ''
+    const __mkdir = (listDir) => {
+      for (let i = 0; i < listDir.length; i++) {
+        __baseDir = path.join(__baseDir, String(listDir[i]));
+        try {
+          const st = fs.statSync(__baseDir);
+          if (!st.isDirectory()) {
+            fs.mkdirSync(__baseDir);
+          }
+        }
+        catch (ex) {
+          fs.mkdirSync(__baseDir);
+        }
+      }
+    }
+    const date = new Date();
+    const __paths = [filePath, date.getFullYear(), date.getMonth() + 1];
+    __mkdir(__paths);
+
+    Object.keys(files).forEach((key) => {
+      const fi = files[key];
+      const { name, type, size } = fi;
+      const _newName = date.getTime() + '_' + name;
+      const _newpath = path.join(__baseDir, String(_newName));
+      // fs.renameSync(fi.path, _newpath);
+      fs.writeFileSync(_newpath, fs.readdirSync(fi.path));
+    });
+
+    this.__ProcessNextRule(args);
   }
 
   /**

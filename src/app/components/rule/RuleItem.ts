@@ -29,6 +29,7 @@ export class RuleItem implements OnInit {
     { key: 'doc', title: '文档' },
     { key: 'other', title: '其它' },
   ];
+  private defaultFileInfo: any = {};
 
   public RuleType: Array<any> = [
     { key: 'query', title: '查询' },
@@ -42,10 +43,17 @@ export class RuleItem implements OnInit {
     { key: 'setvalue', title: '赋值操作' },
     { key: 'parentrelation', title: '主子关系' },
     { key: 'captcha', title: '验证码' },
-    { key: 'file', title: '文件上传' },
+    { key: 'files', title: '文件上传' },
   ];
 
   constructor() {
+
+    const tf = this.FileTypes[0];
+    this.defaultFileInfo = {
+      type: tf.key, filePath: './public/' + tf.key,
+      filePathField: 'filepath',
+      fileNameField: 'filename',
+    }
   }
 
   ngOnInit(): void {
@@ -76,8 +84,9 @@ export class RuleItem implements OnInit {
       }
     } else if (type === 'captcha' && !captcha) {
       this.Rule.captcha = {};
-    } else if (type === 'file' && !files) {
-      this.Rule.files = { type: this.FileTypes[0].key };
+    } else if (type === 'files' && !files) {
+      // const tf = this.FileTypes[0];
+      this.Rule.files = this.defaultFileInfo; // { type: tf.key, filePath: './public/' + tf.key };
     }
   }
 
@@ -100,8 +109,9 @@ export class RuleItem implements OnInit {
     } else if (type === 'captcha' && !captcha) {
       this.Rule.captcha = {};
     } else if (type === 'file' && !files) {
-      this.Rule.files = { type: this.FileTypes[0].key };
-
+      // const tf = this.FileTypes[0];
+      // this.Rule.files = { type: tf.key, filePath: './public/' + tf.key };
+      this.Rule.files = this.defaultFileInfo;
     }
   }
 
