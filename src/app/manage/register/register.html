@@ -15,8 +15,11 @@
   <div class="row">
     <input type="text" [(ngModel)]="UserInfo.Address" placeholder="地址" maxtLength="150">
   </div>
-  <div class="row">
-    <input type="file" [(ngModel)]="UserInfo.HeadPortrait" placeholder="头像" (change)="onChangeHeadPortrait($event)">
+  <div class="filelist">
+    <input type="file" (change)="onChangeHeadPortrait($event, 'file1')">
+    <input type="file" (change)="onChangeHeadPortrait($event, 'file2')">
+    <input type="file" (change)="onChangeHeadPortrait($event, 'file3')">
+    <input type="file" (change)="onChangeHeadPortrait($event, 'file4')">
   </div>
   <div class="btn">
     <div type="text" (click)="__ClickRegister()">确定</div>

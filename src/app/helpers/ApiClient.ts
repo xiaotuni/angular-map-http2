@@ -111,7 +111,7 @@ export default class ApiClient {
      */
     methods.forEach((method) => {
       this[method] = (path, condition) => {
-        const { params, data } = condition || { params: null, data: null };
+        const { params, data, isFormData } = condition || { params: null, data: null, isFormData: false };
         return new Promise((resolve, reject) => {
           const request = superagent[method](formatUrl(path));
           const { token } = Utility.$GetContent(Utility.$ConstItem.UserInfo) || { token: null };
@@ -128,12 +128,15 @@ export default class ApiClient {
           if (path === this.API.Common.FilesUpload) {
             request.send(this.GetFormData(data));
           } else if (data) {
-            // request.send(data);
-            const fd = new FormData();
-            Object.keys(data).forEach((field) => {
-              fd.append(field, data[field])
-            });
-            request.send(fd);
+            if (!!isFormData) {
+              const fd = new FormData();
+              Object.keys(data).forEach((field) => {
+                fd.append(field, data[field])
+              });
+              request.send(fd);
+            } else {
+              request.send(data);
+            }
           }
           const { HttpStatus } = Utility.$ConstItem.Events;
           /**

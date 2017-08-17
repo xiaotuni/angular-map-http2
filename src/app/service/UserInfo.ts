@@ -18,7 +18,7 @@ export class UserInfoService {
     const __List = { actions: { list: [], loading: 'Load', fail: 'Fail', complete: 'Complete' } };
     __List.actions.list.push({
       StateName: 'StateName', Condition: obj,
-      promise: (client) => client.post(client.API.UserInfo.Login, { data: obj }),
+      promise: (client) => client.post(client.API.UserInfo.Login, { data: obj, isFormData: false }),
     });
     const __self = this;
     return this.Client(__List).then((result) => {
@@ -40,7 +40,7 @@ export class UserInfoService {
     const __List = { actions: { list: [], loading: 'Load', fail: 'Fail', complete: 'Complete' } };
     __List.actions.list.push({
       StateName: 'StateName', Condition: obj,
-      promise: (client) => client.post(client.API.Common.AddUser, { data: obj }),
+      promise: (client) => client.post(client.API.Common.AddUser, { data: obj, isFormData: true }),
     });
     const __self = this;
     return this.Client(__List).then((result) => {

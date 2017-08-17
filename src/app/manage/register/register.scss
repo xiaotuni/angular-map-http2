@@ -15,6 +15,13 @@
     margin-bottom: 5px;
     display: flex;
   }
+  .filelist {
+    position: relative;
+    input {
+      margin-top: 5px;
+      width: 100%;
+    }
+  }
   .btn {
     cursor: default;
     justify-content: center;

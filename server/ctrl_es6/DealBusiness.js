@@ -209,8 +209,36 @@ class dealbusiness {
     this.__ProcessNextRule({ Rule, RuleCollection, Options, Complete, Error });
   }
 
+  /**
+   * 处理下一条规则
+   * {Rule, RuleCollection, Options, Complete, Error, errInfo}
+   * @param {any} args  {Rule, RuleCollection, Options, Complete, Error, errInfo}
+   * Rule, RuleCollection, Options, Complete, Error, errInfo
+   * @returns 
+   * @memberof dealbusiness
+   */
+  __ProcessNextRule(args) {
+    const { Rule, RuleCollection, Options, Complete, Error, errInfo } = args;
+    if (errInfo) {
+      Log.Print('执行此规则出错了:【%s】', JSON.stringify(Rule));
+      this.DbAccess.ClosePool(() => Error && Error(errInfo && errInfo.message ? errInfo.message : errInfo), (pe) => {
+        Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
+        Error && Error(errInfo && errInfo.message ? errInfo.message : errInfo);
+      });
+      return;
+    }
+    const nR = RuleCollection.shift();
+    if (nR) {
+      this.__Rules(nR, RuleCollection, Options, Complete, Error);
+    } else {
+      this.DbAccess.ClosePool(() => Complete(Options), (pe) => {
+        Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
+        Complete(Options);
+      });
+    }
+  }
+
   __Process_files(args) {
-    //
     const { Rule, RuleCollection, Options, Complete, Error } = args;
     const { files } = Options;
     const { filePath, } = Rule.files;
@@ -220,8 +248,7 @@ class dealbusiness {
       for (let i = 0; i < listDir.length; i++) {
         __baseDir = path.join(__baseDir, String(listDir[i]));
         try {
-          const st = fs.statSync(__baseDir);
-          if (!st.isDirectory()) {
+          if (!fs.existsSync(__baseDir)) {
             fs.mkdirSync(__baseDir);
           }
         }
@@ -234,16 +261,32 @@ class dealbusiness {
     const __paths = [filePath, date.getFullYear(), date.getMonth() + 1];
     __mkdir(__paths);
 
+    const fileList = [];
+    const Values = [];
     Object.keys(files).forEach((key) => {
       const fi = files[key];
       const { name, type, size } = fi;
       const _newName = date.getTime() + '_' + name;
       const _newpath = path.join(__baseDir, String(_newName));
-      // fs.renameSync(fi.path, _newpath);
-      fs.writeFileSync(_newpath, fs.readdirSync(fi.path));
+      const fileBuffer = fs.readFileSync(fi.path);
+      fs.writeFileSync(_newpath, fileBuffer, 'buffer');
+      fileList.push({ name, type, size, path: _newpath });
+      Values.push([type, name, _newpath, size]);
     });
 
-    this.__ProcessNextRule(args);
+    const sql = 'insert into xtn_sys_file (type,name,path,size) values ?';
+    const self = this;
+    this.DbAccess.BatchInsertSQL(sql, Values, (success) => {
+      const { result } = success;
+      const { insertId, affectedRows } = result;
+      for (let i = insertId, index = 0; i < insertId + affectedRows; i++ , index++) {
+        fileList[index].id = i;
+      }
+      Options.Result[Rule.id] = { __name: Rule.name, result: fileList.length === 1 ? fileList[0] : fileList };
+      self.__ProcessNextRule(args);
+    }, (erInfo) => {
+      self.__ProcessNextRule(Object.assign(args, { errInfo: erInfo }));
+    });
   }
 
   /**
@@ -551,38 +594,6 @@ class dealbusiness {
     const { Rule, RuleCollection, Options, Complete, Error } = args;
     this.DbAccess.BeginTransaction(() => this.__ProcessNextRule(args),
       (err) => this.__ProcessNextRule(Object.assign(args, { errInfo: err })));
-  }
-
-  /**
-   * 处理下一条规则
-   * 
-   * @param {any} rList 
-   * @param {any} rOption 
-   * @param {any} rComplete 
-   * @param {any} rError 
-   * @param {any} errInfo 
-   * @returns 
-   * @memberof dealbusiness
-   */
-  __ProcessNextRule(args) {
-    const { Rule, RuleCollection, Options, Complete, Error, errInfo } = args;
-    if (errInfo) {
-      Log.Print('执行此规则出错了:【%s】', JSON.stringify(Rule));
-      this.DbAccess.ClosePool(() => Error && Error(errInfo && errInfo.message ? errInfo.message : errInfo), (pe) => {
-        Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
-        Error && Error(errInfo && errInfo.message ? errInfo.message : errInfo);
-      });
-      return;
-    }
-    const nR = RuleCollection.shift();
-    if (nR) {
-      this.__Rules(nR, RuleCollection, Options, Complete, Error);
-    } else {
-      this.DbAccess.ClosePool(() => Complete(Options), (pe) => {
-        Log.Print('关闭连接池出错了-->', JSON.stringify(pe));
-        Complete(Options);
-      });
-    }
   }
 
   /**

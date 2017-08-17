@@ -13,7 +13,7 @@ export class Register extends BaseComponent implements OnInit {
   public UserInfo: any;
   constructor(private sHelper: ServiceHelper) {
     super();
-    this.UserInfo = {};
+    this.UserInfo = { UserName: 1, Password: 1, ConfromPassword: 1, Tel: '12142141', Address: 'address' };
   }
 
   ngOnInit() {
@@ -27,7 +27,7 @@ export class Register extends BaseComponent implements OnInit {
     });
   }
 
-  onChangeHeadPortrait(event) {
-    this.UserInfo.HeadPortrait = event.currentTarget.files[0];
+  onChangeHeadPortrait(event, field) {
+    this.UserInfo[field] = event.currentTarget.files[0];
   }
 }

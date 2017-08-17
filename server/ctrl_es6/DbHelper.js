@@ -111,6 +111,33 @@ class MySqlHelper {
     this.__ExecuteSQL(Sql, Success, Error, OperatorType.Insert);
   }
 
+  BatchInsertSQL(Sql, values, Success, Error) {
+    const poolInfo = this.poolInfo(Error);
+    if (!poolInfo) {
+      return;
+    }
+    poolInfo.getConnection((err, cnn) => {
+      if (err) {
+        Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
+        Error && Error(err);
+        return;
+      }
+      const _q = cnn.query(Sql, [values], (er, result, fields) => {
+        console.log('---------query-------------------');
+        console.log(_q.sql);
+        console.log('---------query-------------------');
+        cnn.release();
+        if (er) {
+          Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
+          Error && Error(er);
+          return;
+        }
+
+        Success && Success({ fields, result });
+      });
+    });
+  }
+
   /**
    * 删除操作
    * 
@@ -183,22 +210,13 @@ class MySqlHelper {
           cnn.release();
           if (er) {
             Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
-            Error && Error(err);
+            Error && Error(er);
             return;
           }
           const __result = __ProcessResult(Sql, result, fields, Type);
           Success && Success({ fields, result: __result });
         });
       });
-      // const __query = poolInfo.query(Sql, (err, result, fields) => {
-      //   if (err) {
-      //     Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', __query.sql);
-      //     Error && Error(err);
-      //     return;
-      //   }
-      //   const __result = __ProcessResult(__query.sql, result, fields, Type);
-      //   Success && Success({ fields, result: __result });
-      // });
     }
   }
 
