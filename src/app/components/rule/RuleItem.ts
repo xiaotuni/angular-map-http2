@@ -53,6 +53,10 @@ export class RuleItem implements OnInit {
       type: tf.key, filePath: './public/' + tf.key,
       filePathField: 'filepath',
       fileNameField: 'filename',
+      Relation: {
+        TableName: '',
+        Fields: [{}]
+      }
     }
   }
 
@@ -84,9 +88,15 @@ export class RuleItem implements OnInit {
       }
     } else if (type === 'captcha' && !captcha) {
       this.Rule.captcha = {};
-    } else if (type === 'files' && !files) {
-      // const tf = this.FileTypes[0];
-      this.Rule.files = this.defaultFileInfo; // { type: tf.key, filePath: './public/' + tf.key };
+    } else if (type === 'files') {
+      if (!files) {
+        this.Rule.files = this.defaultFileInfo; // { type: tf.key, filePath: './public/' + tf.key };
+      } else {
+        const { Relation } = files;
+        if (!Relation) {
+          files.Relation = { TableName: '', Fields: [{}] };
+        }
+      }
     }
   }
 
@@ -171,4 +181,13 @@ export class RuleItem implements OnInit {
     this.Rule.captcha.isDelete = !this.Rule.captcha.isDelete;
   }
 
+  btnDeleteFileRelationField(index, fileds) {
+    if (fileds.length > 1) {
+      fileds.splice(index, 1);
+    }
+  }
+
+  btnAddFileRelationField(index, fields) {
+    fields.splice(index + 1, 0, {});
+  }
 }

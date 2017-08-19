@@ -241,10 +241,10 @@ class dealbusiness {
   __Process_files(args) {
     const { Rule, RuleCollection, Options, Complete, Error } = args;
     const { files } = Options;
-    const { filePath, } = Rule.files;
+    const { id, filePath, Relation } = Rule.files;
 
     let __baseDir = ''
-    const __mkdir = (listDir) => {
+    const __MkDir = (listDir) => {
       for (let i = 0; i < listDir.length; i++) {
         __baseDir = path.join(__baseDir, String(listDir[i]));
         try {
@@ -259,7 +259,7 @@ class dealbusiness {
     }
     const date = new Date();
     const __paths = [filePath, date.getFullYear(), date.getMonth() + 1];
-    __mkdir(__paths);
+    __MkDir(__paths);
 
     const fileList = [];
     const Values = [];
@@ -270,22 +270,68 @@ class dealbusiness {
       const _newpath = path.join(__baseDir, String(_newName));
       const fileBuffer = fs.readFileSync(fi.path);
       fs.writeFileSync(_newpath, fileBuffer, 'buffer');
-      fileList.push({ name, type, size, path: _newpath });
+      fileList.push({ FileName: name, FileType: type, FileSize: size, FilePath: _newpath });
       Values.push([type, name, _newpath, size]);
     });
 
-    const sql = 'insert into xtn_sys_file (type,name,path,size) values ?';
+    const sql = 'insert into xtn_sys_file (FileType,FileName,FilePath,FileSize) values ?';
     const self = this;
     this.DbAccess.BatchInsertSQL(sql, Values, (success) => {
       const { result } = success;
       const { insertId, affectedRows } = result;
       for (let i = insertId, index = 0; i < insertId + affectedRows; i++ , index++) {
-        fileList[index].id = i;
+        fileList[index].FileId = i;
       }
       Options.Result[Rule.id] = { __name: Rule.name, result: fileList.length === 1 ? fileList[0] : fileList };
-      self.__ProcessNextRule(args);
+
+      if (fileList.length === 1) {
+        Object.assign(Options, fileList[0]);
+      }
+
+      if (!Relation) {
+        self.__ProcessNextRule(args);
+        return;
+      }
+      // Relation SQL
+      self.__ProcessFileRelation(Relation, fileList, Options, (success) => {
+        self.__ProcessNextRule(args);
+      }, (rErr) => {
+        self.__ProcessNextRule(Object.assign(args, { errInfo: rErr }));
+      });
     }, (erInfo) => {
       self.__ProcessNextRule(Object.assign(args, { errInfo: erInfo }));
+    });
+  }
+
+  __ProcessFileRelation(Relation, fileList, Options, Success, Error) {
+    const { TableName, Fields } = Relation;
+    if (!TableName && !Fields) {
+      Success && Success();
+    }
+
+    const TableFields = [];
+    const ValueFields = [];
+    Fields.forEach((kv) => {
+      const { TabelFieldName, RelationFieldName } = kv;
+      TableFields.push(TabelFieldName);
+      ValueFields.push(RelationFieldName);
+    })
+    const __RelationSQL = 'insert into ' + TableName + '(' + TableFields.join(',') + ') values ?';
+    const __RelationValues = [];
+    fileList.forEach((rFile) => {
+      const __rFieldValueList = [];
+      ValueFields.forEach((vFieldName) => {
+        const rFieldValue = rFile[vFieldName] ? rFile[vFieldName] : Options[vFieldName] ? Options[vFieldName] : vFieldName;
+        __rFieldValueList.push(rFieldValue);
+      });
+      __RelationValues.push(__rFieldValueList);
+    });
+
+    // 执行插入数据操作。
+    this.DbAccess.BatchInsertSQL(__RelationSQL, __RelationValues, (success) => {
+      Success && Success();
+    }, (err) => {
+      Error && Error(err);
     });
   }
 
@@ -590,7 +636,7 @@ class dealbusiness {
    * @param {any} args 
    * @memberof dealbusiness
    */
-  __Process_begintran(v) {
+  __Process_begintran(args) {
     const { Rule, RuleCollection, Options, Complete, Error } = args;
     this.DbAccess.BeginTransaction(() => this.__ProcessNextRule(args),
       (err) => this.__ProcessNextRule(Object.assign(args, { errInfo: err })));

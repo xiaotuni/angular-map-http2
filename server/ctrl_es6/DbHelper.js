@@ -112,23 +112,43 @@ class MySqlHelper {
   }
 
   BatchInsertSQL(Sql, values, Success, Error) {
+    const { IsBeginTrConn, BeginTrConn } = this;
+    const __self = this;
+    if (!!IsBeginTrConn) {
+      Log.Print('事务线程ID：', BeginTrConn.threadId);
+      // 事务处理
+      const bSQL = BeginTrConn.query(Sql, [values], (err, result, fields) => {
+        console.log('---------batch insert-------------------');
+        console.log(bSQL.sql);
+        console.log('---------batch insert-------------------');
+        if (err) {
+          Log.Print('执行此SQL【 %s 】出错了，请检查SQL语句是否正确。', bSQL.sql);
+          __self.Rollback(err);
+          Error && Error(err);
+          return;
+        }
+        Success && Success({ fields, result });
+      });
+      return;
+    }
+
     const poolInfo = this.poolInfo(Error);
     if (!poolInfo) {
       return;
     }
     poolInfo.getConnection((err, cnn) => {
       if (err) {
-        Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
+        Log.Print('获取数据库连接出错了。', Sql);
         Error && Error(err);
         return;
       }
       const _q = cnn.query(Sql, [values], (er, result, fields) => {
-        console.log('---------query-------------------');
+        console.log('---------batch insert-------------------');
         console.log(_q.sql);
-        console.log('---------query-------------------');
+        console.log('---------batch insert-------------------');
         cnn.release();
         if (er) {
-          Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
+          Log.Print('执行此SQL【 %s 】出错了，请检查SQL语句是否正确。', _q.sql);
           Error && Error(er);
           return;
         }

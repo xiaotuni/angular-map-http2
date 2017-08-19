@@ -18,11 +18,11 @@ http.ServerResponse.prototype.Send = function (data) {
 ## 批量文件上传时个数据表文件为：
 ``` sql
 CREATE TABLE `xtn_sys_file` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `Type` varchar(50) DEFAULT NULL COMMENT '文件类型',
-  `Name` varchar(150) DEFAULT NULL COMMENT '文件名称',
-  `Path` varchar(200) DEFAULT NULL COMMENT '文件路径',
-  `Size` int(11) DEFAULT NULL COMMENT '文件大小',
+  `FileId` int(11) NOT NULL AUTO_INCREMENT,
+  `FileType` varchar(50) DEFAULT NULL COMMENT '文件类型',
+  `FileName` varchar(150) DEFAULT NULL COMMENT '文件名称',
+  `FilePath` varchar(200) DEFAULT NULL COMMENT '文件路径',
+  `FileSize` int(11) DEFAULT NULL COMMENT '文件大小',
   `Status` tinyint(1) DEFAULT '1',
   `CreateTime` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`Id`)
