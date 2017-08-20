@@ -15,13 +15,20 @@
   <div class="row">
     <input type="text" [(ngModel)]="UserInfo.Address" placeholder="地址" maxtLength="150">
   </div>
+  <div class="file" *ngFor="let item of UserInfo.FileList;let i = index;">
+    <div class="type">{{item.type}}</div>
+    <div class="name">{{item.name}}</div>
+    <div class="size">{{item.size}}</div>
+    <button (click)="btnDeleteSelectDelete(i)">删除</button>
+  </div>
   <div class="filelist">
     <input type="file" (change)="onChangeHeadPortrait($event, 'file1')">
-    <input type="file" (change)="onChangeHeadPortrait($event, 'file2')">
+    <!-- <input type="file" (change)="onChangeHeadPortrait($event, 'file2')">
     <input type="file" (change)="onChangeHeadPortrait($event, 'file3')">
-    <input type="file" (change)="onChangeHeadPortrait($event, 'file4')">
+    <input type="file" (change)="onChangeHeadPortrait($event, 'file4')"> -->
   </div>
   <div class="btn">
-    <div type="text" (click)="__ClickRegister()">确定</div>
+    <!-- <div type="text" (click)="__ClickRegister()">确定</div> -->
+    <div type="text" (click)="btnSubmit()">确定</div>
   </div>
 </div>

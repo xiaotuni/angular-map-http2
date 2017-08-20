@@ -263,15 +263,27 @@ class dealbusiness {
 
     const fileList = [];
     const Values = [];
-    Object.keys(files).forEach((key) => {
-      const fi = files[key];
-      const { name, type, size } = fi;
+    const __SaveFile = (sfile) => {
+      const { name, type, size } = sfile;
       const _newName = date.getTime() + '_' + name;
       const _newpath = path.join(__baseDir, String(_newName));
-      const fileBuffer = fs.readFileSync(fi.path);
+      const fileBuffer = fs.readFileSync(sfile.path);
       fs.writeFileSync(_newpath, fileBuffer, 'buffer');
       fileList.push({ FileName: name, FileType: type, FileSize: size, FilePath: _newpath });
       Values.push([type, name, _newpath, size]);
+    };
+    Object.keys(files).forEach((key) => {
+      // 这里最好是分开保存，
+      // 每一个都对应的一类文件，如果在保存的时候不区分的话，后面估计会很难处理的。
+      // 这个先留在这里，以后再想想怎么处理这种情况，
+      const fi = files[key];
+      if (Array.isArray(fi)) {
+        fi.forEach((file) => {
+          __SaveFile(file);
+        });
+      } else {
+        __SaveFile(fi);
+      }
     });
 
     const sql = 'insert into xtn_sys_file (FileType,FileName,FilePath,FileSize) values ?';

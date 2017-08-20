@@ -169,11 +169,13 @@ class routes {
     const { TokenCollection } = MySqlHelper;
     const args = {
       request: this.req, response: this.res, params: this.QueryParams,
-      token: this.token, TokenCollection, methodInfo, ApiInfo: this.ApiInfo,func, ctrl
+      token: this.token, TokenCollection, methodInfo, ApiInfo: this.ApiInfo, func, ctrl
     };
 
-    const form = new formidable.IncomingForm();
     const res = this.res;
+    const form = new formidable.IncomingForm();
+    form.multiples = true;     // 多文件
+    form.keepExtensions = true;//是否包含文件后缀
     form.parse(this.req, (err, fields, files) => {
       if (err) {
         res.SendError({ msg: err.message });

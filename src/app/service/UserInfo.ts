@@ -49,6 +49,30 @@ export class UserInfoService {
     });
   }
 
+  Register(userInfo): Promise<any> {
+    const fd = new FormData();
+    const nValue = Object.assign({}, userInfo);
+    delete nValue.FileList;
+    userInfo.FileList.forEach((file) => {
+      fd.append('fileCollection', file, file.name);
+    });
+    userInfo.fList = fd;
+
+    Object.keys(nValue).forEach((key) => {
+      fd.append(key, nValue[key]);
+    });
+
+    const action = {
+      StateName: 'StateName', types: ['Loading', 'Success', 'Fail'], Condition: userInfo,
+      promise: (client) => client.post(client.API.Common.AddUser, { data: fd }),
+    };
+    const __self = this;
+    return this.Client({ action }).then((result) => {
+
+      return result;
+    });
+  }
+
   /**
    * 用户列表
    * 

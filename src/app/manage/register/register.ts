@@ -28,6 +28,21 @@ export class Register extends BaseComponent implements OnInit {
   }
 
   onChangeHeadPortrait(event, field) {
-    this.UserInfo[field] = event.currentTarget.files[0];
+    // this.UserInfo[field] = event.currentTarget.files[0];
+    if (!this.UserInfo.FileList) {
+      this.UserInfo.FileList = [];
+    }
+    const file = event.currentTarget.files[0];
+    this.UserInfo.FileList.push(file);
+  }
+  btnDeleteSelectDelete(index) {
+    this.UserInfo.FileList.splice(index, 1);
+  }
+  btnSubmit() {
+    const data = Object.assign({}, this.UserInfo);
+    data.Password = CryptoJS.MD5(this.UserInfo.Password).toString();
+    const __self = this;
+    this.sHelper.UserInfo.Register(data).then(() => {
+    });
   }
 }
