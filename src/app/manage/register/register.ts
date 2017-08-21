@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, Input } from '@angular/core';
 import { Utility, ServiceHelper, routeAnimation, BaseComponent } from '../Core';
+import { DomSanitizer } from '@angular/platform-browser';
 import * as CryptoJS from 'crypto-js';
 
 @Component({
@@ -11,7 +12,7 @@ import * as CryptoJS from 'crypto-js';
 })
 export class Register extends BaseComponent implements OnInit {
   public UserInfo: any;
-  constructor(private sHelper: ServiceHelper) {
+  constructor(private sHelper: ServiceHelper, private sanitizer: DomSanitizer) {
     super();
     this.UserInfo = { UserName: 1, Password: 1, ConfromPassword: 1, Tel: '12142141', Address: 'address' };
   }
@@ -27,14 +28,21 @@ export class Register extends BaseComponent implements OnInit {
     });
   }
 
+  HeadPortrait: any;
   onChangeHeadPortrait(event, field) {
-    // this.UserInfo[field] = event.currentTarget.files[0];
+    const file = event.currentTarget.files[0];
+    this.UserInfo[field] = file;
+    this.HeadPortrait = this.sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(file));
+  }
+
+  onChangeFileList(event, field) {
     if (!this.UserInfo.FileList) {
       this.UserInfo.FileList = [];
     }
     const file = event.currentTarget.files[0];
     this.UserInfo.FileList.push(file);
   }
+
   btnDeleteSelectDelete(index) {
     this.UserInfo.FileList.splice(index, 1);
   }

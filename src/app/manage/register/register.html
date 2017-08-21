@@ -15,6 +15,16 @@
   <div class="row">
     <input type="text" [(ngModel)]="UserInfo.Address" placeholder="地址" maxtLength="150">
   </div>
+
+  <div class="userHeader">
+    <div class="selectHeader">
+      <label> 用户头像</label> <input type="file" (change)="onChangeHeadPortrait($event, 'file1')">
+    </div>
+    <div class="header" *ngIf="HeadPortrait">
+      <img [src]="HeadPortrait">
+    </div>
+  </div>
+
   <div class="file" *ngFor="let item of UserInfo.FileList;let i = index;">
     <div class="type">{{item.type}}</div>
     <div class="name">{{item.name}}</div>
@@ -22,7 +32,7 @@
     <button (click)="btnDeleteSelectDelete(i)">删除</button>
   </div>
   <div class="filelist">
-    <input type="file" (change)="onChangeHeadPortrait($event, 'file1')">
+    <input type="file" (change)="onChangeFileList($event, 'file1')">
     <!-- <input type="file" (change)="onChangeHeadPortrait($event, 'file2')">
     <input type="file" (change)="onChangeHeadPortrait($event, 'file3')">
     <input type="file" (change)="onChangeHeadPortrait($event, 'file4')"> -->
