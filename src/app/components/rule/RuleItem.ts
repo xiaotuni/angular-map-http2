@@ -29,7 +29,7 @@ export class RuleItem implements OnInit {
     { key: 'doc', title: '文档' },
     { key: 'other', title: '其它' },
   ];
-  private defaultFileInfo: any = {};
+  private defaultFileInfo: any = [{ TableName: '', Fields: [{}] }];
 
   public RuleType: Array<any> = [
     { key: 'query', title: '查询' },
@@ -53,10 +53,11 @@ export class RuleItem implements OnInit {
       type: tf.key, filePath: './public/' + tf.key,
       filePathField: 'filepath',
       fileNameField: 'filename',
-      Relation: {
-        TableName: '',
-        Fields: [{}]
-      }
+      Relations: [{ TableName: '', Fields: [] }],
+      // Relation: {
+      //   TableName: '',
+      //   Fields: [{}]
+      // }
     }
   }
 
@@ -72,29 +73,31 @@ export class RuleItem implements OnInit {
 
     let { type } = this.Rule;
     const { judgeInfo, setValues, parentRelation, captcha, files } = this.Rule;
-    if (!type) {
+    if (!type) { // 查询操作
       this.Rule.type = 'query';
-    } else if (type === 'judge') {
+    } else if (type === 'judge') {  // 判断操作
       if (!judgeInfo) {
         this.Rule.judgeInfo = {};
       }
-    } else if (type === 'setvalue') {
+    } else if (type === 'setvalue') {    // 赋值操作
       if (!setValues) {
         this.Rule.setValues = [];
       }
-    } else if (type === 'parentRelation'.toLocaleLowerCase()) {
+    } else if (type === 'parentRelation'.toLocaleLowerCase()) {      // 主表与从表的关系
       if (!parentRelation) {
         this.Rule.parentRelation = { fields: [] }
       }
-    } else if (type === 'captcha' && !captcha) {
+    } else if (type === 'captcha' && !captcha) { // 验证码
       this.Rule.captcha = {};
-    } else if (type === 'files') {
+    } else if (type === 'files') {    // 文件关系
       if (!files) {
         this.Rule.files = this.defaultFileInfo; // { type: tf.key, filePath: './public/' + tf.key };
       } else {
-        const { Relation } = files;
-        if (!Relation) {
-          files.Relation = { TableName: '', Fields: [{}] };
+        let { Relation, Relations } = files;
+        if (!Relations) {
+          Relations = [];
+          files.Relations = Relations;
+          Relations.push(Relation || { TableName: '', Fields: [{}] });
         }
       }
     }
@@ -177,6 +180,7 @@ export class RuleItem implements OnInit {
   onBtnClickDeleteField(index) {
     this.Rule.parentRelation.fields.splice(index, 1);
   }
+  
   onClickCaptcha() {
     this.Rule.captcha.isDelete = !this.Rule.captcha.isDelete;
   }
@@ -190,4 +194,23 @@ export class RuleItem implements OnInit {
   btnAddFileRelationField(index, fields) {
     fields.splice(index + 1, 0, {});
   }
+
+  btnAddTableRelation(index, tables) {
+    console.log('btnAddTableRelation', tables);
+    tables.splice(index + 1, 0, { TableName: '', Fields: [{}] });
+  }
+
+  btnDeleteTableRelation(index, tables) {
+    console.log('btnDeleteTableRelation', tables);
+    if (tables.length > 1) {
+      tables.splice(index, 1);
+    }
+
+  }
+
+
+
+
+
+
 }

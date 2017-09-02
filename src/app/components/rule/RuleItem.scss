@@ -180,15 +180,35 @@
       }
 
       .relation {
+        .tableInfo {
+          border-bottom: 2px solid;
 
-        .relaField {
-          display: flex;
-          white-space: nowrap;
-          align-items: center;
-          input {
-            flex: 1;
-            width: 100%;
+          .tableName {
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            input {
+              flex: 1;
+              width: 100%;
+            }
+            button {
+              margin: 0px 5px;
+            }
           }
+
+          .relaField {
+            display: flex;
+            white-space: nowrap;
+            align-items: center;
+            input {
+              flex: 1;
+              width: 100%;
+            }
+          }
+        }
+
+        >div:last-child {
+          border-bottom: none;
         }
       }
     }

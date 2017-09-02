@@ -241,7 +241,7 @@ class dealbusiness {
   __Process_files(args) {
     const { Rule, RuleCollection, Options, Complete, Error } = args;
     const { files } = Options;
-    const { id, filePath, Relation } = Rule.files;
+    const { id, filePath, Relations } = Rule.files;
 
     let __baseDir = ''
     const __MkDir = (listDir) => {
@@ -261,28 +261,33 @@ class dealbusiness {
     const __paths = [filePath, date.getFullYear(), date.getMonth() + 1];
     __MkDir(__paths);
 
-    const fileList = [];
+    const fileList = { Set: [] };
     const Values = [];
-    const __SaveFile = (sfile) => {
+    const __SaveFile = (sField, sfile) => {
       const { name, type, size } = sfile;
-      const _newName = date.getTime() + '_' + name;
+      const _newName = date.getTime() + '_' + parseInt(Math.random() * 1000) + '_' + name;
       const _newpath = path.join(__baseDir, String(_newName));
       const fileBuffer = fs.readFileSync(sfile.path);
       fs.writeFileSync(_newpath, fileBuffer, 'buffer');
-      fileList.push({ FileName: name, FileType: type, FileSize: size, FilePath: _newpath });
+      if (!fileList[sField]) {
+        fileList[sField] = { List: [] };
+      }
+      const _fInfo = { FileName: name, FileType: type, FileSize: size, FilePath: _newpath };
+      fileList.Set.push(_fInfo);
+      fileList[sField].List.push(_fInfo);
       Values.push([type, name, _newpath, size]);
     };
     Object.keys(files).forEach((key) => {
       // 这里最好是分开保存，
       // 每一个都对应的一类文件，如果在保存的时候不区分的话，后面估计会很难处理的。
-      // 这个先留在这里，以后再想想怎么处理这种情况，
+      // 这个先留在这里，以后再想想怎么处理这种情况， 
       const fi = files[key];
       if (Array.isArray(fi)) {
         fi.forEach((file) => {
-          __SaveFile(file);
+          __SaveFile(key, file);
         });
       } else {
-        __SaveFile(fi);
+        __SaveFile(key, fi);
       }
     });
 
@@ -292,7 +297,7 @@ class dealbusiness {
       const { result } = success;
       const { insertId, affectedRows } = result;
       for (let i = insertId, index = 0; i < insertId + affectedRows; i++ , index++) {
-        fileList[index].FileId = i;
+        fileList.Set[index].FileId = i;
       }
       Options.Result[Rule.id] = { __name: Rule.name, result: fileList.length === 1 ? fileList[0] : fileList };
 
@@ -300,12 +305,13 @@ class dealbusiness {
         Object.assign(Options, fileList[0]);
       }
 
-      if (!Relation) {
+      if (!Relations) {
         self.__ProcessNextRule(args);
         return;
       }
       // Relation SQL
-      self.__ProcessFileRelation(Relation, fileList, Options, (success) => {
+      const __FirstRelationFile = Relations.shift();
+      self.__ProcessFileRelation(__FirstRelationFile, Relations, fileList, Options, (success) => {
         self.__ProcessNextRule(args);
       }, (rErr) => {
         self.__ProcessNextRule(Object.assign(args, { errInfo: rErr }));
@@ -315,10 +321,30 @@ class dealbusiness {
     });
   }
 
-  __ProcessFileRelation(Relation, fileList, Options, Success, Error) {
-    const { TableName, Fields } = Relation;
-    if (!TableName && !Fields) {
+  /**
+   * 文件关联操作
+   * 
+   * @param {any} Relation 关联关系
+   * @param {any} fileList 文件列表
+   * @param {any} Options 参数选项
+   * @param {any} Success 成功
+   * @param {any} Error 失败
+   * @memberof dealbusiness
+   */
+  __ProcessFileRelation(Relation, Relations, fileList, Options, Success, Error) {
+    const __NextFileRelation = () => {
+      const __FirstRelationFile = Relations.shift();
+      this.__ProcessFileRelation(__FirstRelationFile, Relations, fileList, Options, Success, Error);
+    };
+
+    if (!Relation) {
       Success && Success();
+      return;
+    }
+    const { TableName, Fields, UploadFieldName } = Relation // Relations;
+    if (!TableName && !Fields || !UploadFieldName) {
+      __NextFileRelation();
+      return;
     }
 
     const TableFields = [];
@@ -330,18 +356,27 @@ class dealbusiness {
     })
     const __RelationSQL = 'insert into ' + TableName + '(' + TableFields.join(',') + ') values ?';
     const __RelationValues = [];
-    fileList.forEach((rFile) => {
-      const __rFieldValueList = [];
-      ValueFields.forEach((vFieldName) => {
-        const rFieldValue = rFile[vFieldName] ? rFile[vFieldName] : Options[vFieldName] ? Options[vFieldName] : vFieldName;
-        __rFieldValueList.push(rFieldValue);
+    const { List } = fileList[UploadFieldName];
+    if (Array.isArray(List)) {
+      List.forEach((rFile) => {
+        const __rFieldValueList = [];
+        ValueFields.forEach((vFieldName) => {
+          const rFieldValue = rFile[vFieldName] ? rFile[vFieldName] : Options[vFieldName] ? Options[vFieldName] : vFieldName;
+          __rFieldValueList.push(rFieldValue);
+        });
+        __RelationValues.push(__rFieldValueList);
       });
-      __RelationValues.push(__rFieldValueList);
-    });
+    }
+
+    if (__RelationValues.length === 0) {
+      __NextFileRelation();
+      return;
+    }
 
     // 执行插入数据操作。
+    const self = this;
     this.DbAccess.BatchInsertSQL(__RelationSQL, __RelationValues, (success) => {
-      Success && Success();
+      __NextFileRelation();
     }, (err) => {
       Error && Error(err);
     });

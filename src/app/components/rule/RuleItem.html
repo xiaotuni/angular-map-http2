@@ -162,7 +162,25 @@
       </div>
 
       <div class="relation">
-        <input type="text" [(ngModel)]="Rule.files.Relation.TableName" placeholder="表名">
+        <div class="tableInfo" *ngFor="let table of Rule.files.Relations;let i =index">
+          <div class="tableName">
+            表关联关系 <input type="text" [(ngModel)]="table.TableName" placeholder="表名"> 上传文件字段名：
+            <input type="text" [(ngModel)]="table.UploadFieldName" title="对应接口中文件上传的字段名称" placeholder="对应接口中文件上传的字段名称">
+            <button (click)="btnAddTableRelation(i, Rule.files.Relations) ">添加表联</button>
+            <button (click)="btnDeleteTableRelation(i, Rule.files.Relations) ">删除表联</button>
+          </div>
+          <div class="relaField" *ngFor="let rField of table.Fields;let ti = index">
+            <label for="">表字段：</label>
+            <input type="text" [(ngModel)]="rField.TabelFieldName">
+            <label for=""> 关联取值字段：</label>
+            <input type="text" [(ngModel)]="rField.RelationFieldName" placeholder="描述中的字段" title="默认是从fileList信息中获取，其实就是从options里取，最后就是字段以内容当作存储">
+            <button (click)="btnAddFileRelationField(ti, table.Fields)">添加</button>
+            <button (click)="btnDeleteFileRelationField(ti, table.Fields)">删除</button>
+          </div>
+        </div>
+
+
+        <!-- <input type="text" [(ngModel)]="Rule.files.Relation.TableName" placeholder="表名">
         <div class="relaField" *ngFor="let rField of Rule.files.Relation.Fields;let i = index">
           <label for="">表字段：</label>
           <input type="text" [(ngModel)]="rField.TabelFieldName">
@@ -170,7 +188,7 @@
           <input type="text" [(ngModel)]="rField.RelationFieldName" placeholder="描述中的字段" title="默认是从fileList信息中获取，其实就是从options里取，最后就是字段以内容当作存储">
           <button (click)="btnAddFileRelationField(i,Rule.files.Relation.Fields)">添加</button>
           <button (click)="btnDeleteFileRelationField(i,Rule.files.Relation.Fields)">删除</button>
-        </div>
+        </div> -->
       </div>
 
 
