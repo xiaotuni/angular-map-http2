@@ -42,7 +42,7 @@ class dealbusiness {
     this.DbAccess = DbAccess;
     const { methodInfo } = Options;
     const { pathname, method } = methodInfo;
-    const sql = Utility.format("select * from sys_rule t where t.status = 1 and t.PathName = '{0}' and t.Method = '{1}'",
+    const sql = Utility.format("select * from xtn_sys_rule t where t.status = 1 and t.PathName = '{0}' and t.Method = '{1}'",
       pathname, method);
     Log.Print('查询接口SQL【 %s 】', sql);
     const __self = this;
