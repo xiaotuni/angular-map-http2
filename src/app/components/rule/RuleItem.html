@@ -147,6 +147,7 @@
         </div>
       </div>
     </div>
+    <!-- 文件 -->
     <div class="files" *ngIf="Rule.type === 'files'">
       <div class="desc">
         保存成功后,会提供有几个字段,【FileType,FileName,FilePath,FileSize】可以用。
@@ -192,6 +193,21 @@
       </div>
 
 
+    </div>
+
+    <!-- 调用 第三方API -->
+    <div class="apiCall" *ngIf="Rule.type === 'apiCall'">
+      <div>
+        <span>
+          方法
+         </span>
+        <input type="text" [(ngModel)]="Rule.apiCall.Method" />
+        <span>接口地址:</span>
+        <input type="text" [(ngModel)]="Rule.apiCall.Url" />
+      </div>
+      <div>
+        参数
+      </div>
     </div>
   </div>
 

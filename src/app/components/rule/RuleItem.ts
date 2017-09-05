@@ -44,6 +44,7 @@ export class RuleItem implements OnInit {
     { key: 'parentrelation', title: '主子关系' },
     { key: 'captcha', title: '验证码' },
     { key: 'files', title: '文件上传' },
+    { key: 'apiCall', title: '调用第三方API' },
   ];
 
   constructor() {
@@ -72,7 +73,7 @@ export class RuleItem implements OnInit {
 
 
     let { type } = this.Rule;
-    const { judgeInfo, setValues, parentRelation, captcha, files } = this.Rule;
+    const { judgeInfo, setValues, parentRelation, captcha, files, apiCall } = this.Rule;
     if (!type) { // 查询操作
       this.Rule.type = 'query';
     } else if (type === 'judge') {  // 判断操作
@@ -100,17 +101,13 @@ export class RuleItem implements OnInit {
           Relations.push(Relation || { TableName: '', Fields: [{}] });
         }
       }
-    }
-  }
-
-  btn_Click(type, index) {
-    if (this.onMoveUpOrDown) {
-      this.onMoveUpOrDown.emit({ type, index, OperatorType: this.OperatorType });
+    } else if (type === 'apiCall' && !apiCall) {
+      this.Rule.apiCall = {};
     }
   }
 
   onChange_RuleType(item) {
-    const { type, judgeInfo, files, cacheInfo, setValues, parentRelation, captcha } = this.Rule;
+    const { type, judgeInfo, files, cacheInfo, setValues, parentRelation, captcha,apiCall } = this.Rule;
     if (item === 'judge' && !judgeInfo) {
       this.Rule.judgeInfo = {};
     } else if (item === 'cache' && !cacheInfo) {
@@ -125,6 +122,14 @@ export class RuleItem implements OnInit {
       // const tf = this.FileTypes[0];
       // this.Rule.files = { type: tf.key, filePath: './public/' + tf.key };
       this.Rule.files = this.defaultFileInfo;
+    }else if (type === 'apiCall' && !apiCall){
+      this.Rule.apiCall = {};
+    }
+  }
+ 
+  btn_Click(type, index) {
+    if (this.onMoveUpOrDown) {
+      this.onMoveUpOrDown.emit({ type, index, OperatorType: this.OperatorType });
     }
   }
 
@@ -180,7 +185,7 @@ export class RuleItem implements OnInit {
   onBtnClickDeleteField(index) {
     this.Rule.parentRelation.fields.splice(index, 1);
   }
-  
+
   onClickCaptcha() {
     this.Rule.captcha.isDelete = !this.Rule.captcha.isDelete;
   }
