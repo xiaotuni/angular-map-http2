@@ -1,5 +1,5 @@
-const http = require('http2');
-const httpClient = require('http');
+// const http = require('http2');
+const http = require('http');
 const util = require('util');
 const querystring = require('querystring');
 const url = require('url');
@@ -104,11 +104,15 @@ class Server {
       key: fs.readFileSync(extKey[0]), //读取key
       cert: fs.readFileSync(extCrt[0]) //读取crt
     };
-    http.createServer(options, (req, res) => {
+    // console.log('--------options-------');
+    // console.log(options);
+    // console.log('--------options-------');
+    http.createServer((req, res) => {
       const r = new routes(req, res);
+      console.log('--------1---------');
       r.initHeader();
-    }).listen(port || 10000);
-    console.log('https://127.0.0.1:%d', port || 10000)
+    }).listen(port || 20000);
+    console.log('https://127.0.0.1:%d', port || 20000)
   }
 }
 
@@ -141,62 +145,9 @@ class routes {
     }
     this.Method = method.toLocaleLowerCase();
     this.parseUrlParams();
-
-    // //--------------------------------------
-    // this.testCallOtherApi();
-    // //--------------------------------------
-    // return;
-
-    //读取数据库里的token信息
-    let { TokenCollection } = MySqlHelper;
-    if (!TokenCollection || TokenCollection.length || TokenCollection.length === 0) {
-      TokenCollection = {};
-      const DbAccess = new MySqlHelper();
-      const __self = this;
-      DbAccess.Query('select t.id as tokenId,t.token,t.deadline,t.UserId as tokenUserId from xtn_sys_session t', (data) => {
-        const { result } = data;
-        if (Array.isArray(result)) {
-          result.forEach((item) => {
-            TokenCollection[item.token] = item;
-          });
-        }
-        MySqlHelper.TokenCollection = TokenCollection;
-        __self.__ProcessApi(PathInfo);
-      }, (err) => { });
-    } else {
-      this.__ProcessApi(PathInfo);
-    }
+    console.log('---------');
+    this.__ProcessApi(PathInfo);
   }
-
-
-  testCallOtherApi() {
-    // this.res.SendOk();
-    // return;
-    var options = {
-      host: '127.0.0.1',
-      port: 20000,
-      path: '/resource?id=foo&bar=baz',
-      method: 'POST'
-    };
-    const __res = this.res;
-    httpClient.request(options, (res) => {
-      console.log('STATUS: ' + res.statusCode);
-      console.log('HEADERS: ' + JSON.stringify(res.headers));
-      res.setEncoding('utf8');
-
-      var finalData = "";
-      res.on("data", function (data) {
-        finalData += data.toString();
-      });
-
-      res.on("end", function () {
-        console.log(finalData.length);
-        console.log(finalData.toString());
-        __res.Send(JSON.parse(finalData));
-      });
-    }).end();
-  }
-
 
   __ProcessApi(PathInfo) {
     const methodInfo = { pathname: this.UrlInfo.pathname, method: this.Method };
@@ -219,7 +170,11 @@ class routes {
       }
       args.data = fields;
       args.files = files;
-      __MQ.AddQueue(args);
+      if (func) {
+        func.apply(ctrl, [request, response, newArgs]);
+        return;
+      }
+      res.Send_404({ status: 404, msg: '接口没有找到' });
     });
   }
 
