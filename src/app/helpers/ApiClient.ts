@@ -46,6 +46,7 @@ export default class ApiClient {
       Captcha: '/apihelper/captcha',
       FileUpload: '/apihelper/fileupload',
       FilesUpload: '/apihelper/filesupload',
+      CallThirdPartyApi: '/callThirdPartyApi',
     },
     Api: {
       List: '/manager/api/list',

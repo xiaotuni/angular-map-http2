@@ -124,11 +124,14 @@ export class Home extends BaseComponent implements OnInit {
     this.sHelper.Common.FileUpload(this.FileCollection[0]).then((success) => {
       console.log('file upload success.');
     }, () => { });
-
   }
 
   onBtnDeleteFile(index) {
     console.log('onBtnDeleteFile----index is ', index);
     this.FileCollection.splice(index, 1);
+  }
+
+  onBtnCallApi() {
+    this.sHelper.Common.CallOtherApi();
   }
 }

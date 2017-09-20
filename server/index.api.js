@@ -174,7 +174,11 @@ class routes {
         func.apply(ctrl, [request, response, newArgs]);
         return;
       }
-      res.Send_404({ status: 404, msg: '接口没有找到' });
+      console.log('--------------------------------------------');
+      console.log(args.data);
+      console.log('--------------------------------------------');
+      res.Send(fields);
+      // res.Send_404({ status: 404, msg: '接口没有找到' });
     });
   }
 

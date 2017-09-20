@@ -1,4 +1,7 @@
 const fs = require('fs');
+const httpClient = require('http');
+const querystring = require('querystring');
+const url = require('url');
 const path = require('path');
 const Utility = require('../lib/Utility');
 const MySqlHelper = require('../ctrl_es6/DbHelper');
@@ -238,6 +241,50 @@ class dealbusiness {
     }
   }
 
+  __Process_apicall(args) {
+    const { Rule, Options } = args;
+    const { id, name, apiCall, isMergeOption } = Rule;
+    const { Url, Method, ApiBodyParams, ApiHeaderParams } = apiCall;
+    const urlInfo = url.parse(Url, true);
+    const { hostname, path, port, protocol } = urlInfo;
+
+    const postData = querystring.stringify({ id: 1000, name: 'temp_1000' });
+    const _options = { host: hostname, port, path, method: Method };
+    if (Method.toLocaleLowerCase() !== 'get') {
+      _options.headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    }
+
+    const self = this;
+    const hClientRequest = httpClient.request(_options, (res) => {
+      // res.setEncoding('utf8');
+      let finalData = "";
+      res.on("data", function (data) {
+        finalData += data.toString();
+      });
+
+      res.on("end", function () {
+        console.log(finalData);
+        const _result = JSON.parse(finalData);
+        Object.assign(Options, _result || {});
+        Options.Result[id] = { __name: name, result: _result };
+        self.__ProcessNextRule(args);
+      });
+    });
+    if (Method.toLocaleLowerCase() !== 'get') {
+      hClientRequest.write(postData);
+    }
+    hClientRequest.end();
+  }
+
+  /**
+   * 处理文件操作
+   * 
+   * @param {any} args 
+   * @memberof dealbusiness
+   */
   __Process_files(args) {
     const { Rule, RuleCollection, Options, Complete, Error } = args;
     const { files } = Options;

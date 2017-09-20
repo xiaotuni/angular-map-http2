@@ -162,7 +162,9 @@ class routes {
         }
         MySqlHelper.TokenCollection = TokenCollection;
         __self.__ProcessApi(PathInfo);
-      }, (err) => { });
+      }, (err) => {
+        __self.res.SendError({ msg: err.message });
+      });
     } else {
       this.__ProcessApi(PathInfo);
     }

@@ -179,20 +179,7 @@
             <button (click)="btnDeleteFileRelationField(ti, table.Fields)">删除</button>
           </div>
         </div>
-
-
-        <!-- <input type="text" [(ngModel)]="Rule.files.Relation.TableName" placeholder="表名">
-        <div class="relaField" *ngFor="let rField of Rule.files.Relation.Fields;let i = index">
-          <label for="">表字段：</label>
-          <input type="text" [(ngModel)]="rField.TabelFieldName">
-          <label for=""> 关联取值字段：</label>
-          <input type="text" [(ngModel)]="rField.RelationFieldName" placeholder="描述中的字段" title="默认是从fileList信息中获取，其实就是从options里取，最后就是字段以内容当作存储">
-          <button (click)="btnAddFileRelationField(i,Rule.files.Relation.Fields)">添加</button>
-          <button (click)="btnDeleteFileRelationField(i,Rule.files.Relation.Fields)">删除</button>
-        </div> -->
       </div>
-
-
     </div>
 
     <!-- 调用 第三方API -->
@@ -206,7 +193,33 @@
         <input type="text" [(ngModel)]="Rule.apiCall.Url" />
       </div>
       <div>
-        参数
+        <div>
+          <span>调用接口时给接口传的Header参数 </span>
+          <button (click)="btnClickThirdPartyApi(null,-1, Rule.apiCall.ApiHeaderParams,1)">添加 </button>
+        </div>
+        <div *ngFor="let apiParam of Rule.apiCall.ApiHeaderParams;let i = index;">
+          <span>参数名称：</span>
+          <input type="text" [(ngModel)]="apiParam.ParamName" />
+          <span>参数值：</span>
+          <input type="text" [(ngModel)]="apiParam.ParamValue" />
+          <button (click)="btnClickThirdPartyApi(apiParam, i, Rule.apiCall.ApiHeaderParams, 1)">添加</button>
+          <button (click)="btnClickThirdPartyApi(apiParam, i, Rule.apiCall.ApiHeaderParams, 0)">删除</button>
+        </div>
+      </div>
+      <div>
+        <div>
+          <span>调用接口时给接口传的Body参数 </span>
+          <button (click)="btnClickThirdPartyApiBody(null,-1, Rule.apiCall.ApiBodyParams,1)">添加 </button>
+        </div>
+        <div *ngFor="let apiParam of Rule.apiCall.ApiBodyParams;let i = index;">
+          <span>参数名称：</span>
+          <input type="text" [(ngModel)]="apiParam.ParamName" />
+          <span>参数值：</span>
+          <input type="text" [(ngModel)]="apiParam.ParamValue" />
+          <button (click)="btnClickThirdPartyApiBody(apiParam, i, Rule.apiCall.ApiBodyParams, 1)">添加</button>
+          <button (click)="btnClickThirdPartyApiBody(apiParam, i, Rule.apiCall.ApiBodyParams, 0)">删除</button>
+        </div>
+
       </div>
     </div>
   </div>

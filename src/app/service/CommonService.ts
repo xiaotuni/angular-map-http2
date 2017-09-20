@@ -57,4 +57,14 @@ export class CommonService {
       return success;
     });
   }
+
+
+  CallOtherApi() {
+    const self = this;
+    const options = { action: { promise: (client) => client.post(client.API.Common.CallThirdPartyApi, { data: { id: 1, name: '1234' } }) } };
+    return this.ApiClient(options).then((success) => {
+      self.CaptchaInfo = success;
+      return success;
+    });
+  }
 }
