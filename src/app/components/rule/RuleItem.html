@@ -188,7 +188,10 @@
         <span>
           方法
          </span>
-        <input type="text" [(ngModel)]="Rule.apiCall.Method" />
+        <!-- <input type="text" [(ngModel)]="Rule.apiCall.Method" /> -->
+        <select [(ngModel)]="Rule.apiCall.Method">
+            <option *ngFor="let item of ThirdPartyApiMethod"  [value]="item.key">{{item.title}}</option>
+          </select>
         <span>接口地址:</span>
         <input type="text" [(ngModel)]="Rule.apiCall.Url" />
       </div>
@@ -202,6 +205,9 @@
           <input type="text" [(ngModel)]="apiParam.ParamName" />
           <span>参数值：</span>
           <input type="text" [(ngModel)]="apiParam.ParamValue" />
+          <label for="" (click)="onClickSetFixedValue(apiParam)">
+            <input disabled type="checkbox" [(ngModel)]="apiParam.IsFixedValue"/> 是否固定值
+          </label>
           <button (click)="btnClickThirdPartyApi(apiParam, i, Rule.apiCall.ApiHeaderParams, 1)">添加</button>
           <button (click)="btnClickThirdPartyApi(apiParam, i, Rule.apiCall.ApiHeaderParams, 0)">删除</button>
         </div>
@@ -216,6 +222,9 @@
           <input type="text" [(ngModel)]="apiParam.ParamName" />
           <span>参数值：</span>
           <input type="text" [(ngModel)]="apiParam.ParamValue" />
+          <label for="" (click)="onClickSetFixedValue(apiParam)">
+            <input disabled type="checkbox" [(ngModel)]="apiParam.IsFixedValue"/> 是否固定值
+          </label>
           <button (click)="btnClickThirdPartyApiBody(apiParam, i, Rule.apiCall.ApiBodyParams, 1)">添加</button>
           <button (click)="btnClickThirdPartyApiBody(apiParam, i, Rule.apiCall.ApiBodyParams, 0)">删除</button>
         </div>

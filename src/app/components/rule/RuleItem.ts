@@ -46,6 +46,12 @@ export class RuleItem implements OnInit {
     { key: 'files', title: '文件上传' },
     { key: 'apiCall', title: '调用第三方API' },
   ];
+  public ThirdPartyApiMethod: Array<any> = [
+    { key: 'get', title: 'get' },
+    { key: 'delete', title: 'delete' },
+    { key: 'post', title: 'post' },
+    { key: 'put', title: 'put' },
+  ];
 
   constructor() {
 
@@ -229,18 +235,21 @@ export class RuleItem implements OnInit {
   }
 
   btnClickThirdPartyApiBody(apiParam, index, apiParamList, operator) {
-  if(operator === 1) {
-    if (index === -1) {
-      if (!apiParamList) {
-        apiParamList = [];
-        this.Rule.apiCall.ApiBodyParams = apiParamList;
+    if (operator === 1) {
+      if (index === -1) {
+        if (!apiParamList) {
+          apiParamList = [];
+          this.Rule.apiCall.ApiBodyParams = apiParamList;
+        }
       }
+      apiParamList.splice(index + 1, 0, {});
+      return;
     }
-    apiParamList.splice(index + 1, 0, {});
-    return;
-  }
-  apiParamList.splice(index, 1);
+    apiParamList.splice(index, 1);
   }
 
+  onClickSetFixedValue(item) {
+    item.IsFixedValue = !item.IsFixedValue;
+  }
 
 }

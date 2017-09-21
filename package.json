@@ -7,7 +7,7 @@
     "start-dev": "better-npm-run start-dev",
     "watch-client": "better-npm-run watch-client",
     "dev": "concurrent --kill-others  \"npm run start-dev\" \"npm run watch-client\"",
-    "start": "ng serve",
+    "start": "ng serve --port 3000",
     "start:dev": "better-npm-run start:dev",
     "build": "ng build",
     "test": "ng test",

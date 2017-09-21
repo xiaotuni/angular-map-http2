@@ -109,10 +109,9 @@ class Server {
     // console.log('--------options-------');
     http.createServer((req, res) => {
       const r = new routes(req, res);
-      console.log('--------1---------');
       r.initHeader();
     }).listen(port || 20000);
-    console.log('https://127.0.0.1:%d', port || 20000)
+    console.log('http://127.0.0.1:%d', port || 20000)
   }
 }
 
@@ -135,6 +134,9 @@ class routes {
       this.res.end();
       return;
     }
+    console.log('-------------header---start--------');
+    console.log(this.req.headers);
+    console.log('-------------header---end----------');
     this.processRequestMethod(method);
   }
 
@@ -145,7 +147,6 @@ class routes {
     }
     this.Method = method.toLocaleLowerCase();
     this.parseUrlParams();
-    console.log('---------');
     this.__ProcessApi(PathInfo);
   }
 
@@ -174,10 +175,16 @@ class routes {
         func.apply(ctrl, [request, response, newArgs]);
         return;
       }
-      console.log('--------------------------------------------');
-      console.log(args.data);
-      console.log('--------------------------------------------');
-      res.Send(fields);
+      console.log('--------------------data------------------------');
+      const __NewData = fields;
+      const __ReturnData = {};
+      Object.keys(__NewData).forEach((key) => {
+        // const Value = __NewData[key];
+        __ReturnData['XTN_' + key] = __NewData[key];
+      });
+      console.log(__ReturnData);
+      console.log('--------------------data------------------------');
+      res.Send(__ReturnData);
       // res.Send_404({ status: 404, msg: '接口没有找到' });
     });
   }
