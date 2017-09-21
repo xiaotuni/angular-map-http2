@@ -34,20 +34,31 @@ CREATE TABLE `xtn_sys_file` (
 # 后台接口配置系统
 ## 已经完成的功能
 - 查询
+![call query](doc/img/callQuery.png)
 - 更新
+![call update](doc/img/callUpdate.png)
 - 插入
+![call insert](doc/img/callInsert.png)
 - 删除
+![call delete](doc/img/callDelete.png)
 - 开始事务
+![call tran](doc/img/callTran.png)
 - 提交事务
+![call tran commit](doc/img/callTranCommit.png)
 - 条件判断
+![call judge condition](doc/img/callJudgeCondition.png)
 - 保存到缓存
+![call call save](doc/img/callSaveCache.png)
 - 赋值操作
+![call fu zhi](doc/img/callFuZhi.png)
 - 主子关系
 - 验证码
 - 文件上传
+![call fileupload](doc/img/callFileUpload.png)
+- 调用第三方API,配置如下。
+![call third part api](doc/img/callThirdPartApi.png)
 -----
-## 将要添加的功能
-- 调用第三方API
+
 
 
 项目的依赖安装
