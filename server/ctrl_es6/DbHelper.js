@@ -220,24 +220,65 @@ class MySqlHelper {
       if (!poolInfo) {
         return;
       }
+      const __self = this;
+      this.getConnection().then((cnn) => {
+        return __self.getQuery(cnn, Sql);
+      }).then(({ result, fields }) => {
+        const __result = __ProcessResult(Sql, result, fields, Type);
+        Success && Success({ fields, result: __result });
+      }).catch((ex) => {
+        console.log(ex);
+        Error && Error(er);
+      });
+
+      // poolInfo.getConnection((err, cnn) => {
+      //   if (err) {
+      //     Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
+      //     Error && Error(err);
+      //     return;
+      //   }
+      //   cnn.query(Sql, (er, result, fields) => {
+      //     cnn.release();
+      //     if (er) {
+      //       Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
+      //       Error && Error(er);
+      //       return;
+      //     }
+      //     const __result = __ProcessResult(Sql, result, fields, Type);
+      //     Success && Success({ fields, result: __result });
+      //   });
+      // });
+    }
+  }
+
+  getQuery(cnn, Sql) {
+    return new Promise((resolve, reject) => {
+      cnn.query(Sql, (er, result, fields) => {
+        cnn.release();
+        if (er) {
+          Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
+          reject(er);
+          return;
+        }
+        resolve({ result, fields });
+      });
+    });
+  }
+  getConnection() {
+    return new Promise((resolve, reject) => {
+      const poolInfo = this.poolInfo(Error);
+      if (!poolInfo) {
+        return;
+      }
       poolInfo.getConnection((err, cnn) => {
         if (err) {
           Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
-          Error && Error(err);
+          reject(err);
           return;
         }
-        cnn.query(Sql, (er, result, fields) => {
-          cnn.release();
-          if (er) {
-            Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
-            Error && Error(er);
-            return;
-          }
-          const __result = __ProcessResult(Sql, result, fields, Type);
-          Success && Success({ fields, result: __result });
-        });
+        resolve(cnn);
       });
-    }
+    });
   }
 
   /**
