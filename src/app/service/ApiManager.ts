@@ -5,11 +5,12 @@ export class ApiManagerService {
   constructor(private client) {
     this.ApiClient = client;
   }
+
   List(): Promise<any> {
     const __self = this;
     const options = {
       action: {
-        promise: (client) => client.get(client.API.Api.List, { params: {} }),
+        promise: (client) => client.get(client.API.Api.List, { params: { cmd: 'ApiList' } }),
         types: ['Loading', 'Success', 'Fail']
       },
     };

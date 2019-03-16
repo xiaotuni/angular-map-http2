@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start-dev": "better-npm-run start-dev",
-    "watch-client": "better-npm-run watch-client",
+    "watch-client": "better-npm-run watch:client",
     "dev": "concurrent --kill-others  \"npm run start-dev\" \"npm run watch-client\"",
     "start": "ng serve --port 3000",
     "start:dev": "better-npm-run start:dev",
@@ -15,21 +15,20 @@
     "e2e": "ng e2e"
   },
   "betterScripts": {
-    "watch-client": {
-      "command": "ng serve",
+    "watch:client": {
+      "command": "ng serve --port 30000",
       "env": {
         "NODE_PATH": "./src",
         "NODE_ENV": "development ",
-        "PORT": 30000,
         "APIPORT": 30001
       }
     },
     "start-dev": {
-      "command": "supervisor ./server/index.js",
+      "command": "nodemon ./server/index.js",
       "env": {
         "NODE_PATH": "./server",
         "NODE_ENV": "development ",
-        "PORT": 30000,
+        "PORT": 40000,
         "DEVPORT": 30080,
         "APIPORT": 30081
       }
@@ -54,7 +53,23 @@
     "@angular/platform-browser": "^4.0.0",
     "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/router": "^4.0.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-register": "^6.26.0",
     "core-js": "^2.4.1",
+    "eslint": "^5.15.2",
+    "import-dir": "^0.0.1",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-compose": "^4.1.0",
+    "koa-convert": "^1.2.0",
+    "koa-cors": "^0.0.16",
+    "koa-generic-session": "^2.0.1",
+    "koa-helmet": "^4.1.0",
+    "koa-redis": "^3.1.3",
+    "koa-router": "^7.4.0",
+    "nodemon": "^1.18.10",
     "rxjs": "^5.1.0",
     "supervisor": "^0.12.0",
     "zone.js": "^0.8.4"
@@ -65,7 +80,7 @@
     "@angular/compiler-cli": "^4.0.0",
     "@types/jasmine": "2.5.38",
     "@types/node": "~6.0.60",
-    "better-npm-run": "0.0.15",
+    "better-npm-run": "^0.1.1",
     "code-point-at": "^1.1.0",
     "codelyzer": "~2.0.0",
     "concurrent": "^0.3.2",

@@ -13,9 +13,48 @@ const _encrypt_key = "xiaotuni@liaohaibing!@#$%^&*()";
  *
  * @type {{ToMD5: Function, ToSHA1: Function, ToEncryptAES: Function, ToDecryptAES: Function, IsArray: Function, IsString: Function, IsDate: Function, IsFunction: Function, IsObject: Function, IsNumber: Function}}
  */
-class Utility {
+export default class Utility {
 	constructor() {
 		this.Log = _LogInfo;
+	}
+
+	static secret = _encrypt_key;
+
+  /**
+   * 打印输出日志
+   * @method __PrintLog
+   * @param {object} args 内容
+   * @private
+   */
+	static printLog(args) {
+		try {
+			const _curDate = new Date();
+			const _aa = `${_curDate.toLocaleDateString()} ${_curDate.toLocaleTimeString()}.${_curDate.getMilliseconds()}`;
+			console.log(`${_aa}-->`, ...arguments);
+			// console.log(args);
+		} catch (ex) {
+			console.log('---------输出日志，传入的内容传为JSON出现在异常--------------');
+			console.log(ex);
+			console.log('---------输出日志，内容为下--------------');
+			console.log(args);
+		}
+	}
+
+	/**
+	 * 向请求接口返回 错误信息。
+	 * 
+	 * @static
+	 * @param {any} ctx 
+	 * @param {any} ex 
+	 * @memberof Utility
+	 */
+	static clientErrorInfo(ctx, error) {
+		// console.log(new Date(), error);
+		const { status } = error;
+		ctx.status = 400;
+		let errmsg = error.toString().replace('Error: ', '');
+		Utility.printLog(error);
+		ctx.body = { errcode: status, errmsg };
 	}
 
 	static format(format) {
@@ -180,10 +219,3 @@ class Utility {
 	}
 
 }
-Utility.ConstItem = {
-	CaptchaInfo: {
-
-	}
-}
-
-module.exports = Utility;

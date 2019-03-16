@@ -1,5 +1,4 @@
 const Utility = require('../lib/Utility');
-const Log = Utility.Log;
 
 const mysql = require('mysql');
 
@@ -20,7 +19,7 @@ const OperatorType = {
  * 
  * @class MySqlHelper
  */
-class MySqlHelper {
+export default class MySqlHelper {
 
   constructor() {
     this.__CreatePool();
@@ -33,11 +32,11 @@ class MySqlHelper {
    */
   __CreatePool() {
     this.pool = mysql.createPool({
-      connectionLimit: 5,
-      host: 'localhost', // 数据库连接
-      user: 'liaohb',    // 数据库名用户名
-      password: 'xiaotuni', // 密码
-      database: 'nodejs'   // 表空间
+      connectionLimit: 10,
+      host: 'localhost',                      // 数据库连接
+      user: 'nodejs',                         // 数据库名用户名
+      password: 'nodejs@nodejs',              // 密码
+      database: 'nodejs'                      // 表空间
     });
 
     this.pool.on('connection', function (cnn) {
@@ -73,9 +72,10 @@ class MySqlHelper {
    * @param {any} error 失败后调用的方法
    * @memberof MySqlHelper
    */
-  Query(sql, success, error) {
-    this.__ExecuteSQL(sql, success, error, OperatorType.QueryList);
+  async Query(sql) {
+    return this.__ExecuteSQL(sql, OperatorType.QueryList);
   }
+
   /**
    * 查询操作，获取一条语句
    * 
@@ -84,8 +84,8 @@ class MySqlHelper {
    * @param {any} error 失败后调用的方法
    * @memberof MySqlHelper
    */
-  QueryOne(sql, success, error) {
-    this.__ExecuteSQL(sql, success, error, OperatorType.QueryOne);
+  async QueryOne(sql) {
+    return this.__ExecuteSQL(sql, OperatorType.QueryOne);
   }
   /**
    * 更新操作
@@ -95,8 +95,8 @@ class MySqlHelper {
    * @param {any} Error 失败后调用的方法
    * @memberof MySqlHelper
    */
-  UpdateSQL(Sql, Success, Error) {
-    this.__ExecuteSQL(Sql, Success, Error, OperatorType.Update);
+  async  UpdateSQL(Sql) {
+    return this.__ExecuteSQL(Sql, OperatorType.Update);
   }
 
   /**
@@ -107,20 +107,26 @@ class MySqlHelper {
    * @param {any} Error 失败后调用的方法
    * @memberof MySqlHelper
    */
-  InsertSQL(Sql, Success, Error) {
-    this.__ExecuteSQL(Sql, Success, Error, OperatorType.Insert);
+  async InsertSQL(Sql) {
+    return this.__ExecuteSQL(Sql, OperatorType.Insert);
   }
 
-  BatchInsertSQL(Sql, values, Success, Error) {
+  /**
+   * 批量插入
+   *
+   * @param {*} Sql
+   * @param {*} values
+   * @returns
+   * @memberof MySqlHelper
+   */
+  async BatchInsertSQL(Sql, values) {
     const { IsBeginTrConn, BeginTrConn } = this;
     const __self = this;
     if (!!IsBeginTrConn) {
       Log.Print('事务线程ID：', BeginTrConn.threadId);
       // 事务处理
       const bSQL = BeginTrConn.query(Sql, [values], (err, result, fields) => {
-        console.log('---------batch insert-------------------');
-        console.log(bSQL.sql);
-        console.log('---------batch insert-------------------');
+
         if (err) {
           Log.Print('执行此SQL【 %s 】出错了，请检查SQL语句是否正确。', bSQL.sql);
           __self.Rollback(err);
@@ -132,28 +138,16 @@ class MySqlHelper {
       return;
     }
 
-    const poolInfo = this.poolInfo(Error);
-    if (!poolInfo) {
-      return;
-    }
-    poolInfo.getConnection((err, cnn) => {
-      if (err) {
-        Log.Print('获取数据库连接出错了。', Sql);
-        Error && Error(err);
-        return;
-      }
-      const _q = cnn.query(Sql, [values], (er, result, fields) => {
-        console.log('---------batch insert-------------------');
-        console.log(_q.sql);
-        console.log('---------batch insert-------------------');
-        cnn.release();
-        if (er) {
-          Log.Print('执行此SQL【 %s 】出错了，请检查SQL语句是否正确。', _q.sql);
-          Error && Error(er);
-          return;
+    const conn = await this.getConnection();
+    return new Promise((resolve, reject) => {
+      const q = conn.query(Sql, [values], (err, result, fields) => {
+        conn.release();
+        if (err) {
+          Utility.printLog(`执行此SQL【 ${q.sql} 】出错了，请检查SQL语句是否正确。`)
+          reject(err);
+        } else {
+          resolve({ result, fields });
         }
-
-        Success && Success({ fields, result });
       });
     });
   }
@@ -166,8 +160,8 @@ class MySqlHelper {
    * @param {any} Error 失败后调用的方法
    * @memberof MySqlHelper
    */
-  DeleteSQL(Sql, Success, Error) {
-    this.__ExecuteSQL(Sql, Success, Error, OperatorType.Delete);
+  async DeleteSQL(Sql) {
+    return this.__ExecuteSQL(Sql, OperatorType.Delete);
   }
 
   /**
@@ -180,103 +174,91 @@ class MySqlHelper {
    * @returns 
    * @memberof MySqlHelper
    */
-  __ExecuteSQL(Sql, Success, Error, Type) {
-    const __self = this;
-    const __ProcessResult = (__sql, result, fields, Type) => {
-      const _type = Type || OperatorType.QueryOne;
-      let __result = result;
-      switch (Type) {
-        case OperatorType.Insert:
-          const { insertId } = result;
-          __result = { insertId };
-          break;
-        case OperatorType.Delete:
-          break;
-        case OperatorType.Update:
-          break;
-        case OperatorType.QueryList:
-          break;
-        case OperatorType.QueryOne:
-          __result = result && result.length > 0 ? result[0] : null;
-          break;
-      }
-      return __result;
-    };
+  async __ExecuteSQL(Sql, Type) {
     const { IsBeginTrConn, BeginTrConn } = this;
     if (!!IsBeginTrConn) {
       Log.Print('事务线程ID：', BeginTrConn.threadId);
-      // 事务处理
-      BeginTrConn.query(Sql, (err, result, fields) => {
-        if (err) {
-          __self.Rollback(err);
-          Error && Error(err);
-          return;
-        }
-        const __result = __ProcessResult(Sql, result, fields, Type);
-        Success && Success({ fields, result: __result });
-      });
-    } else {
-      const poolInfo = this.poolInfo(Error);
-      if (!poolInfo) {
-        return;
-      }
-      const __self = this;
-      this.getConnection().then((cnn) => {
-        return __self.getQuery(cnn, Sql);
-      }).then(({ result, fields }) => {
-        const __result = __ProcessResult(Sql, result, fields, Type);
-        Success && Success({ fields, result: __result });
-      }).catch((ex) => {
-        console.log(ex);
-        Error && Error(er);
-      });
-
-      // poolInfo.getConnection((err, cnn) => {
-      //   if (err) {
-      //     Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
-      //     Error && Error(err);
-      //     return;
-      //   }
-      //   cnn.query(Sql, (er, result, fields) => {
-      //     cnn.release();
-      //     if (er) {
-      //       Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
-      //       Error && Error(er);
-      //       return;
-      //     }
-      //     const __result = __ProcessResult(Sql, result, fields, Type);
-      //     Success && Success({ fields, result: __result });
-      //   });
-      // });
+      // return await this.getQueryTran(sql, Type);
     }
+    return await this.getQuery(Sql, Type);
   }
 
-  getQuery(cnn, Sql) {
+  __ProcessResult({ result, fields, type }) {
+    const _type = type || OperatorType.QueryOne;
+    let __result = result;
+    switch (_type) {
+      case OperatorType.Insert:
+        const { insertId } = result;
+        __result = { insertId };
+        break;
+      case OperatorType.Delete:
+        break;
+      case OperatorType.Update:
+        break;
+      case OperatorType.QueryList:
+        break;
+      case OperatorType.QueryOne:
+        __result = result && result.length > 0 ? result[0] : null;
+        break;
+    }
+    return __result;
+  }
+
+  /**
+   * 获取查询 
+   *
+   * @param {*} Sql
+   * @returns
+   * @memberof MySqlHelper
+   */
+  async getQuery(Sql, type = OperatorType.QueryList) {
+    const cnn = await this.getConnection();
     return new Promise((resolve, reject) => {
       cnn.query(Sql, (er, result, fields) => {
         cnn.release();
         if (er) {
           Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
           reject(er);
-          return;
+        } else {
+          const data = this.__ProcessResult({ result, fields, type });
+          resolve(data);
         }
-        resolve({ result, fields });
       });
     });
   }
-  getConnection() {
+
+  async getQueryTran({ cnn, sql, type }) {
+    return new Promise((resolve, reject) => {
+      cnn.query(sql, (err, result, fields) => {
+        if (err) {
+          reject(err);
+        } else {
+          const data = this.__ProcessResult({ result, fields, type });
+          resolve(data);
+        }
+      });
+    });
+  }
+  /**
+   * 获取连接
+   *
+   * @returns
+   * @memberof MySqlHelper
+   */
+  async getConnection() {
     return new Promise((resolve, reject) => {
       const poolInfo = this.poolInfo(Error);
       if (!poolInfo) {
-        return;
+        reject({ msg: '连接池出错了' });
       }
       poolInfo.getConnection((err, cnn) => {
         if (err) {
           Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
           reject(err);
           return;
+        } else {
+          resolve(cnn);
         }
-        resolve(cnn);
       });
     });
   }
@@ -289,25 +271,25 @@ class MySqlHelper {
    * @returns 
    * @memberof MySqlHelper
    */
-  BeginTransaction(Success, Error) {
+  async BeginTransaction() {
     const poolInfo = this.poolInfo(Error);
     if (!poolInfo) {
       return;
     }
-    const __self = this;
-    poolInfo.getConnection((err, conn) => {
-      if (err) {
-        Error && Error(err);
-      }
-      conn.beginTransaction((btErr) => {
-        if (btErr) {
-          Error && Error(btErr);
+    return new Promise((resolve, reject) => {
+      poolInfo.getConnection((err, conn) => {
+        if (err) {
+          reject(err);
         }
-        Log.Print('开始事务处理...');
-        __self.BeginTrConn = conn;
-        __self.IsBeginTrConn = true;
-        Success && Success();
+        conn.beginTransaction((btErr) => {
+          if (btErr) {
+            reject(btErr);
+          }
+          Utility.printLog('开始事务处理...');
+          resolve(conn);
+        });
       });
+
     });
   }
 
@@ -396,5 +378,3 @@ class MySqlHelper {
     });
   }
 }
-
-module.exports = MySqlHelper;
