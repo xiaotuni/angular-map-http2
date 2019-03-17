@@ -44,3 +44,4 @@ Thumbs.db
 public/
 yarn.lock
 package-lock.json
+yarn-error.log
