@@ -77,8 +77,51 @@ npm run start
 ```bash
 npm run start-dev
 ```
-
 如果专门调试接口的话，还是分别单独启动为好.
+
+____
+
+## 添加Redis配置--> ./server/common/redis.js
+```
+ {
+    host: '127.0.0.1', 
+    port: 6379, 
+    auth_pass: 'RedisPasswordXTNLHB2018' 
+ }
+
+```
+
+* redis 的安装就不说了，可以去官网下载对应系统的redis或可以在docker里安装redis等等。
+
+```
+->  docker 安装 redis.
+
+查找
+docker search redis
+
+下载镜像
+docker pull redis
+
+启动redis 里面的一些参数可以多网上找一下.
+docker run --name redis -p 6379:6379 -d --restart=always redis:latest redis-server --appendonly yes --requirepass "RedisPasswordXTNLHB2018"
+```
+* 引用bluebird包，这样在操作redis的方法的时候，只要在方便后面加上 Async就可以了。
+
+```
+function getValue(key,cb){
+  redis.get(key,(err,data)=>{
+      cb(err,data);
+  });
+}
+```
+* bluebird 包后可以改用这样来获取
+```
+async getValue(key){
+   return  redis.getAsync(key);
+}
+```
+
+____
 
 ## nodejs.sql MySql 5.7以上版本。
 由于本试例中要用到MYSQL数据，所在在项目的根目录中有一个nodejs.sql的文件。将结构导入到数据库中即可，数据库版本是5.7以的，因为里面有一个sys_rule表里的Content存放的是JSON,只有5.7才能支持JSON字段。

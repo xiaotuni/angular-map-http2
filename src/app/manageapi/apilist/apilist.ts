@@ -29,6 +29,7 @@ export class ApiList implements OnInit {
 
   ngOnInit() {
     const __self = this;
+
     this.sHelper.ApiManager.List().then(() => {
       __self.ApiList = __self.sHelper.ApiManager.ApiList;
       // const { ApiList } = __self;

@@ -20,6 +20,10 @@ export default class Utility {
 
 	static secret = _encrypt_key;
 
+	static ConstItem = {
+		CaptchaInfo: {}
+	}
+
   /**
    * 打印输出日志
    * @method __PrintLog

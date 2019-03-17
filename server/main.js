@@ -3,10 +3,15 @@ import Koa from 'koa';
 import api from './api/index.api';
 import Utility from './lib/Utility';
 import middleware from './middleware';
+import redis from './common/redis';
+
 
 const init = async () => {
+
+  redis.init();
+
   const port = process.env.PORT || 10000;
-  const app = new Koa()
+  const app = new Koa();
   app.keys = ['secret'];
   app.use(middleware());
   app.use(api());

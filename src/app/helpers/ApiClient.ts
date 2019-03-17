@@ -132,7 +132,7 @@ export default class ApiClient {
             if (!!isFormData) {
               const fd = new FormData();
               Object.keys(data).forEach((field) => {
-                fd.append(field, data[field])
+                fd.append(field, data[field]);
               });
               request.send(fd);
             } else {
@@ -191,6 +191,7 @@ export default class ApiClient {
               const { body } = Response || { body: {} };
               if (err) {
                 __ProcessError(err, body, Response);
+                console.log('1234', new Date());
                 reject(body);
               } else {
                 if (!body) {

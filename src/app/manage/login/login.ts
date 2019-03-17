@@ -2,6 +2,8 @@ import { Component, OnInit, Output, Input } from '@angular/core';
 import { Utility, ServiceHelper, routeAnimation, BaseComponent } from '../Core';
 import * as CryptoJS from 'crypto-js';
 
+const bashUrl = 'http://127.0.0.1:40000/xtn/api/captcha';
+
 @Component({
   selector: 'xtn-manage-login',
   templateUrl: './login.html',
@@ -11,7 +13,7 @@ import * as CryptoJS from 'crypto-js';
 })
 export class Login extends BaseComponent implements OnInit {
   public UserInfo: any;
-  captchaUrl: string = "https://127.0.0.1:30081/webapi/apihelper/captchaCode";
+  captchaUrl: string = bashUrl;
   /**
    * Creates an instance of Login.
    * @param {ServiceHelper} sHelper service用于接口调用等
@@ -31,7 +33,7 @@ export class Login extends BaseComponent implements OnInit {
    * @memberof Login
    */
   submit() {
-    const data = Object.assign({}, this.UserInfo);
+    const data = Object.assign({ cmd: '/webapi/userinfo/login' }, this.UserInfo);
     data.password = CryptoJS.MD5(data.password).toString();
     this.sHelper.UserInfo.Login(data).then(() => {
       const { Params } = Utility.$GetContent(Utility.$ConstItem.UrlPathInfo) || { Params: {} };
@@ -47,7 +49,7 @@ export class Login extends BaseComponent implements OnInit {
   }
 
   onClickUpdateCaptcha() {
-    this.captchaUrl = "https://127.0.0.1:30081/webapi/apihelper/captchaCode?times" + new Date().getTime();
+    this.captchaUrl = `${bashUrl}?times=${new Date().getTime()}`;
   }
 
   forgetPassword() {
