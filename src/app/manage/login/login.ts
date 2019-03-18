@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, Input } from '@angular/core';
 import { Utility, ServiceHelper, routeAnimation, BaseComponent } from '../Core';
 import * as CryptoJS from 'crypto-js';
+import HttpHelper from 'app/helpers/HttpHelper';
 
 const bashUrl = 'http://127.0.0.1:40000/xtn/api/captcha';
 
@@ -21,7 +22,7 @@ export class Login extends BaseComponent implements OnInit {
    */
   constructor(private sHelper: ServiceHelper) {
     super();
-    this.UserInfo = { username: 'admin', password: 'admin@163.com' };
+    this.UserInfo = { username: 'admin', password: 'admin' };
   }
 
   ngOnInit() {
@@ -36,13 +37,13 @@ export class Login extends BaseComponent implements OnInit {
     const data = Object.assign({ cmd: '/webapi/userinfo/login' }, this.UserInfo);
     data.password = CryptoJS.MD5(data.password).toString();
     this.sHelper.UserInfo.Login(data).then(() => {
-      const { Params } = Utility.$GetContent(Utility.$ConstItem.UrlPathInfo) || { Params: {} };
-      const { IsGoBack } = Params || { IsGoBack: 0 };
-      if (!!Number(IsGoBack)) {
-        Utility.$GoBack();
-      } else {
-        Utility.$ToPage(Utility.$ConstItem.UrlItem.ManagerDashboard, {});
-      }
+      // const { Params } = Utility.$GetContent(Utility.$ConstItem.UrlPathInfo) || { Params: {} };
+      // const { IsGoBack } = Params || { IsGoBack: 0 };
+      // if (!!Number(IsGoBack)) {
+      //   Utility.$GoBack();
+      // } else {
+      //   Utility.$ToPage(Utility.$ConstItem.UrlItem.ManagerDashboard, {});
+      // }
     }, () => {
 
     });
@@ -52,6 +53,8 @@ export class Login extends BaseComponent implements OnInit {
     this.captchaUrl = `${bashUrl}?times=${new Date().getTime()}`;
   }
 
-  forgetPassword() {
+  async forgetPassword() {
+    const a = await HttpHelper.get('/captcha', {});
+    console.log(a);
   }
 }

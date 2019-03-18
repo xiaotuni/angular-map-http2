@@ -8,7 +8,7 @@
     "watch-client": "better-npm-run watch:client",
     "dev": "concurrent --kill-others  \"npm run start-dev\" \"npm run watch-client\"",
     "start": "ng serve --port 3000",
-    "start:dev": "better-npm-run start:dev",
+    "start:dev": "better-npm-run start-dev",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -29,6 +29,7 @@
         "NODE_PATH": "./server",
         "NODE_ENV": "development ",
         "PORT": 40000,
+        "DOMAIN": "http://localhost:30000",
         "DEVPORT": 30080,
         "APIPORT": 30081
       }

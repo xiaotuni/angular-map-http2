@@ -1,4 +1,5 @@
 import { Utility } from './Core';
+import HttpHelper from 'app/helpers/HttpHelper';
 
 export class UserInfoService {
   public UserInfo: any;
@@ -14,19 +15,15 @@ export class UserInfoService {
    * @returns {Promise<any>} 
    * @memberof UserInfoService
    */
-  Login(obj: any): Promise<any> {
-    const __List = { actions: { list: [], loading: 'Load', fail: 'Fail', complete: 'Complete' } };
-    __List.actions.list.push({
-      StateName: 'StateName', Condition: obj,
-      promise: (client) => client.post(client.API.UserInfo.Login, { data: obj, isFormData: false }),
-    });
-    const __self = this;
-    return this.Client(__List).then((result) => {
-      __self.UserInfo = result && result[0] ? result[0] : [];
-      // 将token保存下来。
-      Utility.$SetContent(Utility.$ConstItem.UserInfo, __self.UserInfo, true);
+  async Login(obj: any): Promise<any> {
+    try {
+
+      const result = await HttpHelper.post('/msuser', { data: obj });
+      console.log('1234----', result);
       return result;
-    });
+    } catch (ex) {
+      console.log('---------------1234--------------', ex);
+    }
   }
 
   /**

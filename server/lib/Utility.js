@@ -9,6 +9,32 @@ const _LogInfo = require("./Log");
 
 const _encrypt_key = "xiaotuni@liaohaibing!@#$%^&*()";
 
+
+class ClientError extends Error {
+	constructor(message, status = 400) {
+		super(message);
+		this.status = status;
+	}
+	push(error) {
+		if (!this.errors) {
+			this.errors = [];
+		}
+		this.errors.push(error);
+	}
+}
+
+class ServerError extends Error {
+	constructor(message, status = 500) {
+		super(message);
+		this.status = status;
+	}
+	push(error) {
+		if (!this.errors) {
+			this.errors = [];
+		}
+		this.errors.push(error);
+	}
+}
 /**
  *
  * @type {{ToMD5: Function, ToSHA1: Function, ToEncryptAES: Function, ToDecryptAES: Function, IsArray: Function, IsString: Function, IsDate: Function, IsFunction: Function, IsObject: Function, IsNumber: Function}}
@@ -148,8 +174,15 @@ export default class Utility {
 	 * @returns {boolean}
 	 * @constructor
 	 */
-	static IsArray(data) {
-		return (typeof data == 'array') && data.constructor == Array;
+	static isArray(data) {
+		if (!data) {
+			return false;
+		}
+		if (data.length === 0) {
+			return false;
+		}
+
+		return (typeof data == 'object') && data.constructor.name == 'Array';
 	}
 
 	/**
@@ -220,6 +253,28 @@ export default class Utility {
 	 */
 	static ParseObject(args) {
 		return util.inspect(object, true, 12, true);
+	}
+
+	/**
+	 * 抛出异常信息
+	 * 
+	 * @static
+	 * @param {any} { msg, status = 500 } 
+	 * @memberof Utility
+	 */
+	static throwServerError({ msg, status = 500 }) {
+		throw new ServerError(msg, status);
+	}
+
+  /**
+   * 抛出异常信息
+   * 
+   * @static
+   * @param {any} { msg, status = 400 } 
+   * @memberof Utility
+   */
+	static throwClientError({ msg, status = 400 }) {
+		throw new ClientError(msg, status);
 	}
 
 }

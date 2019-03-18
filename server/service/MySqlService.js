@@ -1,16 +1,16 @@
-const Utility = require('../lib/Utility');
-
 const mysql = require('mysql');
+
+import { Utility } from '.';
 
 /**
  * 操作类型，插入，更新，删除，查询
  */
 const OperatorType = {
-  Insert: 0,
-  Update: 1,
-  Delete: 2,
-  QueryList: 3,
-  QueryOne: 4,
+  Insert: 1,
+  Update: 2,
+  Delete: 3,
+  QueryList: 4,
+  QueryOne: 5,
 }
 
 /**
@@ -20,6 +20,7 @@ const OperatorType = {
  * @class MySqlHelper
  */
 export default class MySqlHelper {
+
 
   constructor() {
     this.__CreatePool();
@@ -85,7 +86,7 @@ export default class MySqlHelper {
    * @memberof MySqlHelper
    */
   async QueryOne(sql) {
-    return this.__ExecuteSQL(sql, OperatorType.QueryOne);
+    return this.__ExecuteSQL(`select * from ( ${sql} )v1 limit 0,1 `, OperatorType.QueryOne);
   }
   /**
    * 更新操作
@@ -123,12 +124,12 @@ export default class MySqlHelper {
     const { IsBeginTrConn, BeginTrConn } = this;
     const __self = this;
     if (!!IsBeginTrConn) {
-      Log.Print('事务线程ID：', BeginTrConn.threadId);
+      Utility.printLog('事务线程ID：', BeginTrConn.threadId);
       // 事务处理
       const bSQL = BeginTrConn.query(Sql, [values], (err, result, fields) => {
 
         if (err) {
-          Log.Print('执行此SQL【 %s 】出错了，请检查SQL语句是否正确。', bSQL.sql);
+          Utility.printLog('执行此SQL【 %s 】出错了，请检查SQL语句是否正确。', bSQL.sql);
           __self.Rollback(err);
           Error && Error(err);
           return;
@@ -180,18 +181,19 @@ export default class MySqlHelper {
       Log.Print('事务线程ID：', BeginTrConn.threadId);
       // return await this.getQueryTran(sql, Type);
     }
-    return await this.getQuery(Sql, Type);
+    return this.getQuery(Sql, Type);
   }
 
   __ProcessResult({ result, fields, type }) {
     const _type = type || OperatorType.QueryOne;
     let __result = result;
+    const { insertId, affectedRows } = result;
     switch (_type) {
       case OperatorType.Insert:
-        const { insertId } = result;
         __result = { insertId };
         break;
       case OperatorType.Delete:
+        __result = { deleteCount: affectedRows };
         break;
       case OperatorType.Update:
         break;
@@ -212,12 +214,13 @@ export default class MySqlHelper {
    * @memberof MySqlHelper
    */
   async getQuery(Sql, type = OperatorType.QueryList) {
+    // Utility.printLog('getQuery:', Sql);
     const cnn = await this.getConnection();
     return new Promise((resolve, reject) => {
       cnn.query(Sql, (er, result, fields) => {
         cnn.release();
         if (er) {
-          Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
+          Utility.printLog(`执行此SQL【 ${Sql} 】出错了，请查询SQL语句是否正确。`);
           reject(er);
         } else {
           const data = this.__ProcessResult({ result, fields, type });
@@ -253,9 +256,8 @@ export default class MySqlHelper {
       }
       poolInfo.getConnection((err, cnn) => {
         if (err) {
-          Log.Print('执行此SQL【 %s 】出错了，请查询SQL语句是否正确。', Sql);
+          Utility.printLog('获取连接出错了');
           reject(err);
-          return;
         } else {
           resolve(cnn);
         }

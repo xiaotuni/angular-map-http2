@@ -14,19 +14,8 @@
         "${workspaceRoot}/out/**/*.js"
       ],
       "env": {
-        "PORT": "30001",
+        "PORT": "40000",
         "APIPORT": "30081"
-      }
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "NodeJsEs6",
-      "protocol": "auto",
-      "program": "${workspaceRoot}/server/nodejs_es6.js",
-      "env": {
-        "PORT": "10001",
-        "DEVPORT": "10081"
       }
     }
   ]

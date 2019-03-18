@@ -59,7 +59,7 @@ export default class ApiClient {
       Add: '/userinfo/user',
       Delete: '/userinfo/user',
       Put: '/userinfo/user',
-      Login: '/userinfo/login',
+      Login: '/msuser',
     },
     Map: {
       /**
@@ -107,6 +107,9 @@ export default class ApiClient {
    * @memberof ApiClient
    */
   constructor(req) {
+
+    // console.log('api client ---cookie', req.get('cookie'));
+
     /**
      * 循环生成五个方法
      */
@@ -123,6 +126,8 @@ export default class ApiClient {
           }
 
           if (req && req.get('cookie')) {
+            // cookie
+            console.log('--------cookie---');
             request.set('cookie', req.getCookie());
           }
 

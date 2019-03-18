@@ -26,6 +26,7 @@ export default class RedisService {
     return result;
   }
 
+
   /**
    * 设置过期时间
    *
@@ -49,7 +50,6 @@ export default class RedisService {
    * @memberof RedisService
    */
   async GetValue(key) {
-    // const client = await Redis.Client();
     return Redis.Client.getAsync(key);
   }
 
@@ -101,5 +101,18 @@ export default class RedisService {
   async Delete(key) {
     const result = await Redis.Client.delAsync(key);
     return result;
+  }
+
+  async HDelete(key, fields) {
+    const result = await Redis.Client.hdelAsync(key, fields);
+    return result;
+  }
+
+  async HSetValue(key, field, value) {
+    await Redis.Client.hsetAsync(key, field, value);
+  }
+
+  async HGetValue(key, field) {
+    return await Redis.Client.hgetAsync(key, field);
   }
 }
