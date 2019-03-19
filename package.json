@@ -12,14 +12,23 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
+    "grpc:dev": "better-npm-run start-grpc-dev",
     "e2e": "ng e2e"
   },
   "betterScripts": {
+    "start-grpc-dev": {
+      "command": "nodemon ./grpc/ucenter/index.js",
+      "env": {
+        "NODE_PATH": "./grpc",
+        "NODE_ENV": "development",
+        "PORT": 5000
+      }
+    },
     "watch:client": {
       "command": "ng serve --port 30000",
       "env": {
         "NODE_PATH": "./src",
-        "NODE_ENV": "development ",
+        "NODE_ENV": "development",
         "APIPORT": 30001
       }
     },
@@ -27,9 +36,11 @@
       "command": "nodemon ./server/index.js",
       "env": {
         "NODE_PATH": "./server",
-        "NODE_ENV": "development ",
+        "NODE_ENV": "development",
         "PORT": 40000,
         "DOMAIN": "http://localhost:30000",
+        "NODE_GRPC_HOST": "127.0.0.1",
+        "NODE_GRPC_PORT": "5000",
         "DEVPORT": 30080,
         "APIPORT": 30081
       }
@@ -74,7 +85,13 @@
     "nodemon": "^1.18.10",
     "rxjs": "^5.1.0",
     "supervisor": "^0.12.0",
-    "zone.js": "^0.8.4"
+    "zone.js": "^0.8.4",
+    "@grpc/proto-loader": "^0.1.0",
+    "async": "^1.5.2",
+    "google-protobuf": "^3.0.0",
+    "grpc": "^1.11.0",
+    "lodash": "^4.6.1",
+    "minimist": "^1.2.0"
   },
   "devDependencies": {
     "@angular/animations": "^4.1.3",

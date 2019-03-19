@@ -1,5 +1,38 @@
 # TravelTogether
 
+## 集成grpc
+ 学习nodejs微服务器，微服务之前的调用，可以通过http，socker，rpc调用。 学习rpc 调用，于由就是网上找了 grpc ，把它集成到里面去了。
+ grpc的项目代码目录在 ./grpc里。
+
+### 启用
+```
+npm run grpc:dev
+如果出现在  grpc 服务启动 0.0.0.0:5000 说明启动成功。
+
+API网关启动 
+
+npm run start:dev
+```
+
+如果出现说明grpc连接成功 
+
+```
+连接ucenter服务 127.0.0.1:5000
+服务器启动 http://127.0.0.1:40000
+```
+
+调用 http://localhost:40000/xtn/api/demo/grpc
+如果返回结果如下，说明调用成功。
+```
+{"code":200,"msg":"ok","body":{"result":true,"data":[{"id":1,"value":"内容1"},{"id":2,"value":"内容2"}]}}
+```
+
+**现在还没有想到好的办法，微服务之间的调用，如果有一个微服注册中心就更好了，通过注册中心就可以调用其它服务了。**
+
+
+-----
+
+
 ## ！！注意！！
 由于用的是http2请求，证书是在一个网站 https://csr.chinassl.net/index.html 里申请的。因此，如果用IE进行调试的话，后台NodeJs服务器会报异常,google浏览器没有发现问题。所有写的prototype.的方法在IE10下找不到，服务器就报异常了；
 ``` code

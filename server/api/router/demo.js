@@ -1,6 +1,8 @@
 // import Utility from "../../lib/Utility";
 
-import { Utility, RedisService } from '../../service';
+
+import { Utility, RedisService, DemoService } from '../../service';
+
 
 const __PRE__ = '/demo'
 
@@ -39,6 +41,13 @@ export default (router) => {
       } catch (ex) {
         console.log(ex.message);
         Utility.throwClientError(ctx, ex);
+      }
+    })
+    .get(`${__PRE__}/grpc`, async (ctx) => {
+      try {
+        ctx.body = await DemoService.UserLogin({});
+      } catch (ex) {
+        Utility.clientErrorInfo(ctx, ex);
       }
     })
 }

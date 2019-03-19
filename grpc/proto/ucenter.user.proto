@@ -1,0 +1,21 @@
+syntax="proto3";
+
+package xtn.ucenter;
+
+service User {
+  rpc UserLogin(UserRequest) returns (UserResponse){}
+}
+
+message UserRequest {
+  required string userName  = 1;
+  required string password  = 2;
+  required string captcha   = 3;
+  required string sessionId = 4;
+
+}
+
+message UserResponse {
+  required int32 code  = 1;
+  required string msg  = 2;
+  string body          = 3;
+}
